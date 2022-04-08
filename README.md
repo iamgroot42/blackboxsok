@@ -27,7 +27,38 @@ A Second Look at Transferable Targeted Attacks](https://proceedings.neurips.cc/p
     * [Adversarial Attack across Datasets](https://arxiv.org/pdf/2110.07718.pdf), [No Code]: Unpublished, requires training a meta-learner based training on a different dataset withgout label space overlap with the data of target models. Extension to full-auxiliary information is straightforward.
     * [Perturbing Across the Feature Hierarchy to Improve Standard and Strict Blackbox Attack Transferability](https://arxiv.org/pdf/2004.14861.pdf), [No Code]: NeurIPS 2020, requires training binary classifier that learns the target class distribution of the intermediate layers of source network. For `partial-auxiliary information` setting, the training data have partial overlap or no overlap, but the label space overlaps.
     * [Can Targeted Adversarial Examples Transfer When the Source and Target Models Have No Label Space Overlap?](https://arxiv.org/pdf/2103.09916.pdf), [No Code]: similar idea as above. However, the considered setting is, there is even no label space overlap and aims to find the good proxy class (of the target class in mind) for the source models.
-    * [On Generating Transferable Targeted Perturbations](), [Code](): Published at ICCV 2021, requires training a generator for target class feature distribution. This method is outperformed by the first attack of this list in the targeted setting and is also designed only for targeted setting. However, it may still be interesting to see if it will perform better for partial auxiliary information.
+    * [On Generating Transferable Targeted Perturbations](https://arxiv.org/abs/2103.14641), [Code](https://github.com/Muzammal-Naseer/TTP): Published at ICCV 2021, requires training a generator for target class feature distribution. This method is outperformed by the first attack of this list in the targeted setting and is also designed only for targeted setting. However, it may still be interesting to see if it will perform better for partial auxiliary information. 
+
+### Full-Score, Limited/Unlimited Access, No-/Partial-/Full Auxiliary Information
+1. No auxiliary information: 
+    * [Square Attack: a query-efficient black-box adversarial attack via random search](https://arxiv.org/abs/1912.00049) [Code](https://github.com/max-andr/square-attack): still the SOTA without additional auxiliary information. 
+    * [Sparse-RS: a versatile framework for query-efficient sparse black-box adversarial attacks](https://arxiv.org/abs/2006.12834), [Code](https://github.com/fra31/sparse-rs): current SOTA for L_0 norm.
+    * [BayesOpt Adversarial Attack](https://openreview.net/forum?id=Hkem-lrtvH), [Code](https://github.com/rubinxin/BayesOpt_Attack): Publisghed at ICLR 2020, mainly designed for low quqery regime and need to check if it performs better than `square-attack`.
+2. Partial auxiliary information:
+    * [Meta-Learning the Search Distribution of Black-Box Random Search Based Adversarial Attacks](https://arxiv.org/abs/2111.01714), [Code](https://github.com/boschresearch/meta-rs): Published at NeurIPS 2021, meta-learns the search distribution of square-attack and improves its performance compared to manual tuning. 
+    * not many attacks for this cases, but can check any of the methods in full-score category can be used to derive some attacks in this setting. 
+3. Full auxiliary information: 
+    * Test the combination of best transfer attacks and best no auxiliary information attacks above and see if we can get SOTA performance. 
+    * [Meta-Learning the Search Distribution of Black-Box Random Search Based Adversarial Attacks](https://arxiv.org/abs/2111.01714), [Code](https://github.com/boschresearch/meta-rs): Published at NeurIPS 2021, meta-learns the search distribution of square-attack and improves its performance compared to manual tuning. 
+    * [Diversity can be Transferred: Output Diversification for White- and Black-box Attacks](https://arxiv.org/abs/2003.06878), [Code](https://github.com/ermongroup/ODS): Published at NeurIPS 2020, uses diversified sampling distribution from source models to boost SimBA attack. * [Simulating Unknown Target Models for Query-Efficient Black-box Attacks](https://arxiv.org/abs/2009.00960), [Code](https://github.com/machanic/SimulatorAttack): Published at CVPR 2021 2020, simulates target model and trains better source models along the black-box query process. 
+    * [Learning Black-Box Attackers with Transferable Priors and Query Feedback](https://arxiv.org/abs/2010.11742), [Code](https://github.com/TrustworthyDL/LeBA): NeurIPS 2021, hybrid attack with tunable local models using higher order gradients. 
+    * [QueryNet: Attack by Multi-Identity Surrogates](https://arxiv.org/abs/2105.15010), [Code](https://github.com/allenchen1998/querynet): smarter way of utilizing multiple surrogate models to provide better starting points for black-box attacks and also tunes local models in the attack process.  
+    * [Boosting Black-Box Attack with Partially Transferred Conditional Adversarial Distribution](https://arxiv.org/abs/2006.08538), [No Code]: Unpublished, the results are relatively comprehensive and if we can get the code, it is worthwhile to play. 
+    * [Black-Box Adversarial Attack with Transferable Model-based Embedding](https://arxiv.org/abs/1911.07140), [Code](https://github.com/TransEmbedBA/TREMBA) (ICLR 2020): uses the latent space representation as the starting point and deloys NES attack subsequently (only applies to gradient estimation attacks). 
+    * [Query-efficient Meta Attack to Deep Neural Networks](https://openreview.net/forum?id=Skxd6gSYDS), [Code](https://github.com/dydjw9/MetaAttack_ICLR2020): Puboished at ICLR 2020, uses meta-learning to extract attacks from prior attacks, and then leverages the attack pattern in the actual black-box attacks. 
+
+### Hard-label, No Access, No-/Partial-/Full Auxiliary Information
+1. No auxiliary information:
+    * [RayS: A Ray Searching Method for Hard-label Adversarial Attack](https://arxiv.org/abs/2006.12792), [code](https://github.com/uclaml/RayS): SOTA attack with no auxiliary information for L_infty setting. We will need to adapt this attack to targeted setting also, the original paper only does for untargeted setting. Applicable to Hybrid attack.   
+    * [Query Efficient Decision Based Sparse Attacks Against Black-Box Deep Learning Models]https://arxiv.org/abs/2202.00091, [No Code]: reported SOTA in L_0 setting. Applicable to hybrid attack. 
+    * [Hard-label Manifolds: Unexpected Advantages of Query Efficiency for Finding On-manifold Adversarial Examples](https://arxiv.org/abs/2103.03325), [No Code]: Possible new insights (double check paper details), from UFL security group.
+    * [Simple and Efficient Hard Label Black-box Adversarial Attacks in Low Query Budget Regimes](https://arxiv.org/abs/2007.07210), [Code]( https://github.com/satyanshukla/bayes_attack): Bayesian optimization, suits better for limited access scenarios.
+2. Partial auxiliary information: 
+    * No existing work, but can combine like hybrid attack with No Access+Partial Information setting to propose new attacks for this category. Easy to implement. 
+3. Full auxiliary information: 
+    * Combine listed attacks in No-Auxiliary information with techniques found in full-auxiliary information+No-access category. 
+    * TODO: check whether the tunable local model hybrid attacks in full-score setting is applicable here.
+    * [Progressive-Scale Boundary Blackbox Attack via Projective Gradient Estimation](https://arxiv.org/abs/2106.06056), [Code](https://github.com/AI-secure/PSBA): requires training an autoencoder (latent space projection) on the same train data (applicable to hybrid attack). 
 
 ## Malware Domain
 
