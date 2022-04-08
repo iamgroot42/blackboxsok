@@ -50,7 +50,7 @@ A Second Look at Transferable Targeted Attacks](https://proceedings.neurips.cc/p
 ### Hard-label, No Access, No-/Partial-/Full Auxiliary Information
 1. No auxiliary information:
     * [RayS: A Ray Searching Method for Hard-label Adversarial Attack](https://arxiv.org/abs/2006.12792), [code](https://github.com/uclaml/RayS): SOTA attack with no auxiliary information for L_infty setting. We will need to adapt this attack to targeted setting also, the original paper only does for untargeted setting. Applicable to Hybrid attack.   
-    * [Query Efficient Decision Based Sparse Attacks Against Black-Box Deep Learning Models]https://arxiv.org/abs/2202.00091, [No Code]: reported SOTA in L_0 setting. Applicable to hybrid attack. 
+    * [Query Efficient Decision Based Sparse Attacks Against Black-Box Deep Learning Models](https://arxiv.org/abs/2202.00091, [No Code]: reported SOTA in L_0 setting. Applicable to hybrid attack. 
     * [Hard-label Manifolds: Unexpected Advantages of Query Efficiency for Finding On-manifold Adversarial Examples](https://arxiv.org/abs/2103.03325), [No Code]: Possible new insights (double check paper details), from UFL security group.
     * [Simple and Efficient Hard Label Black-box Adversarial Attacks in Low Query Budget Regimes](https://arxiv.org/abs/2007.07210), [Code]( https://github.com/satyanshukla/bayes_attack): Bayesian optimization, suits better for limited access scenarios.
 2. Partial auxiliary information: 
