@@ -2,9 +2,9 @@
 
 Below, we list the candidate experiments to run in each domain and also the corresponding source code.
 
-## Selection Criteria
+## Selection Criteria and Other Information
 
-We only select attacks that: 1) reported state-of-the-art (SOTA) results in the paper with enough baselines, 2) peer-reviewed or have open source implementations available. Note that there can exist multiple SOTA attacks as those SOTA methods are not individually compared. In that case, we include all of them.
+We only select attacks that: 1) reported state-of-the-art (SOTA) results in the paper with enough baselines, 2) peer-reviewed or have open source implementations available. Note that there can exist multiple SOTA attacks as those SOTA methods are not individually compared. In that case, we include all of them. We plan to report experiments for: 1) 1-2 standard models (undefended) and 1-2 robust models (can be obtained from robust bench: https://robustbench.github.io), 2) targeted (with different target classes) and untargeted settings, 2) different attack strenths.
 
 ## Image Domain
 
@@ -59,6 +59,14 @@ A Second Look at Transferable Targeted Attacks](https://proceedings.neurips.cc/p
     * Combine listed attacks in No-Auxiliary information with techniques found in full-auxiliary information+No-access category. 
     * TODO: check whether the tunable local model hybrid attacks in full-score setting is applicable here.
     * [Progressive-Scale Boundary Blackbox Attack via Projective Gradient Estimation](https://arxiv.org/abs/2106.06056), [Code](https://github.com/AI-secure/PSBA): requires training an autoencoder (latent space projection) on the same train data (applicable to hybrid attack). 
+
+### Top-K, Limited/Unlimited Access, No-/Partial-/Full Auxiliary Information
+1. No Auxiliary information:
+    * [NES attack](https://arxiv.org/abs/1804.08598), [Code](https://github.com/labsix/limited-blackbox-attacks): The only paper that considers Top-k prediction settings. Their main idea for top-k case should also be applicable to other attacks in full-score case. 
+    * Adapt the [BayesOpt Adversarial Attack](https://openreview.net/forum?id=Hkem-lrtvH)([Code](https://github.com/rubinxin/BayesOpt_Attack)) using the the attack strategy in `NES` attack and check if it gives better performace, especially in limited access setting.
+    * Adapt the [Square Attack: a query-efficient black-box adversarial attack via random search](https://arxiv.org/abs/1912.00049) [Code](https://github.com/max-andr/square-attack) using the idea in `NES`.
+2. Partial auxiliary information: adapt the [Meta-Learning the Search Distribution of Black-Box Random Search Based Adversarial Attacks](https://arxiv.org/abs/2111.01714), [Code](https://github.com/boschresearch/meta-rs), while the meta-training distribution is now searched on a different dataset compared to the dataset of the target model. This experiments should be enough for this category.
+3. Full auxiliary information: [Meta-Learning the Search Distribution of Black-Box Random Search Based Adversarial Attacks](https://arxiv.org/abs/2111.01714), [Code](https://github.com/boschresearch/meta-rs), and the meta-training distribution is obtained on the exact same dataset of the target model. This experiments should be enough for this category.
 
 ## Malware Domain
 
