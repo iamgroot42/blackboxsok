@@ -61,13 +61,13 @@ Estimated time for all experiments: **1 week**
 
 1. No auxiliary information:
     * [RayS: A Ray Searching Method for Hard-label Adversarial Attack](https://arxiv.org/abs/2006.12792), [code](https://github.com/uclaml/RayS): Published at KDD 2020, SOTA attack with no auxiliary information for L_infty setting. We will need to adapt this attack to targeted setting also, the original paper only does for untargeted setting. Applicable to Hybrid attack.
-    * [Query Efficient Decision Based Sparse Attacks Against Black-Box Deep Learning Models](https://arxiv.org/abs/2202.00091), [No Code]: **No Response** Published at ICLR 2022, reported SOTA in L_0 setting. Applicable to hybrid attack. I will directly talk to the authors at ICLR this year. 
-    * [Simple and Efficient Hard Label Black-box Adversarial Attacks in Low Query Budget Regimes](https://arxiv.org/abs/2007.07210), [Code]( https://github.com/satyanshukla/bayes_attack): Bayesian optimization, suits better for limited access scenarios.
+    * [Query Efficient Decision Based Sparse Attacks Against Black-Box Deep Learning Models](https://arxiv.org/abs/2202.00091), [No Code]: **No Response**, Published at ICLR 2022, reported SOTA in L_0 setting. Applicable to hybrid attack. I will directly talk to the authors at ICLR this year. 
+    * [Simple and Efficient Hard Label Black-box Adversarial Attacks in Low Query Budget Regimes](https://arxiv.org/abs/2007.07210), [Code]( https://github.com/satyanshukla/bayes_attack): Published at KDD 2021, Bayesian optimization, suits better for limited access scenarios.
     * [~~Hard-label Manifolds: Unexpected Advantages of Query Efficiency for Finding On-manifold Adversarial Examples~~](https://arxiv.org/abs/2103.03325), [No Code]: Preprint, possible new insights (double check paper details), from UFL security group. Update: did not gain enough insight and will not include this method. 
 2. Partial auxiliary information:
     * No existing work found, but can combine (in the form of hybrid attack) attacks in no auxiliary information with attacks in `No Access, Partial Auxiliary Information` category to propose new attacks. Easy to implement.
 3. Full auxiliary information:
-    * Combine listed attacks in No-Auxiliary information with techniques found in full-auxiliary information+No-access category.
+    * Combine listed attacks in `No-Auxiliary information` with techniques found in `Full-Auxiliary Information+No-Access` category.
     * The local model tuning strategy identified in `QueryNet: Attack by Multi-Identity Surrogates` can also be used for this setting with almost no modifications.
     * The local model tuning strategy identified in `Query-efficient Meta Attack to Deep Neural Networks` may also be used for this setting, but requires thinking on how we leverage the estimated gradients in hard-label setting. 
     * [Progressive-Scale Boundary Blackbox Attack via Projective Gradient Estimation](https://arxiv.org/abs/2106.06056), [Code](https://github.com/AI-secure/PSBA): Published at ICML 2021, requires training an autoencoder (latent space projection) on the same train data (applicable to hybrid attack).
