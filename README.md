@@ -10,7 +10,7 @@ We only select attacks that: 1) reported state-of-the-art (SOTA) results in the 
 
 Black-box attacks are heavily investigated in image domain and hence, we can summarize and syatemize existing knowledge and also gain new insights. Below are the list of experiments to run. The candidate attacks are selected to reflect the current state-of-the-art in each black-box attack scenario.
 
-Setting up the framework (1-2 weeks, but may be less than this) based on the category: 1) target model, 2) auxiliary information available to attacker. We should ensure the target model only has black-box query access and the user can choose the specific auxiliary information (e.g., local models) available to the attacker. 
+We need to setting up the unified testing framework (estimated time: **1-2 weeks**, but may be less than this). This framework should 1) ensure the target model can only be accessed with (simulated) API calls, 2) users can choose the specific auxiliary information (e.g., local models) available to the attacker and the framework will load the corresponding modules, 3) should be able to figure the attack details such as `norm, perturbation threshold, targeted/untargeted, robust/standard models, different types of target classes (e.g., most/least likely) for targeted attack`.  
 
 ### Hard-label, No Access, No-/Partial-/Full Auxiliary Information
 
