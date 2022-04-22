@@ -2,6 +2,10 @@
 
 Below, we list the candidate experiments to run in each domain and also the corresponding source code.
 
+## Framework
+
+We need to setting up the unified testing framework (estimated time: **1-2 weeks**, but may be less than this). This framework should 1) ensure the target model can only be accessed with (simulated) API calls, 2) users can choose the specific auxiliary information (e.g., local models) available to the attacker and the framework will load the corresponding modules, 3) should be able to figure the attack details such as `norm, perturbation threshold, targeted/untargeted, robust/standard models, different types of target classes (e.g., most/least likely) for targeted attack`. We can also refer to <https://blackboxbench.github.io> for some guidance on designing the framework.
+
 ## Selection Criteria and Other Information
 
 We only select attacks that: 1) reported state-of-the-art (SOTA) results in the paper with enough baselines, 2) peer-reviewed or have open source implementations available. Note that there can exist multiple SOTA attacks as those SOTA methods are not individually compared. In that case, we include all of them. We plan to report experiments for: 1) 1-2 standard models (undefended) and 1-2 robust models (can be obtained from robust bench: <https://robustbench.github.io>), 2) targeted (with different target classes) and untargeted settings, 2) different attack strenths. 
@@ -9,8 +13,6 @@ We only select attacks that: 1) reported state-of-the-art (SOTA) results in the 
 ## Image Domain
 
 Black-box attacks are heavily investigated in image domain and hence, we can summarize and syatemize existing knowledge and also gain new insights. Below are the list of experiments to run. The candidate attacks are selected to reflect the current state-of-the-art in each black-box attack scenario.
-
-We need to setting up the unified testing framework (estimated time: **1-2 weeks**, but may be less than this). This framework should 1) ensure the target model can only be accessed with (simulated) API calls, 2) users can choose the specific auxiliary information (e.g., local models) available to the attacker and the framework will load the corresponding modules, 3) should be able to figure the attack details such as `norm, perturbation threshold, targeted/untargeted, robust/standard models, different types of target classes (e.g., most/least likely) for targeted attack`. We can also refer to <https://blackboxbench.github.io> for some guidance on designing the framework.   
 
 ### Hard-label, No Access, No-/Partial-/Full Auxiliary Information
 
@@ -82,6 +84,7 @@ Estimated time for all experiments: (**< 1 week**)
 ## Malware Domain
 
 ### Hard-label, No Access, No-/Partial-/Full Auxiliary Information
+(Estimated time: **2-3 weeks**)
 
 1. Requires no access to training data or target model architecture
     * [Adversarial EXEmples: A Survey and Experimental Evaluation of Practical Attacks on Machine Learning for Windows Malware Detection](https://arxiv.org/pdf/2008.07125.pdf), [Code](https://github.com/pralab/secml_malware): `genetic algorithm` `transfer` - Analysis of Windows malware. Proposes 3 attacks that outperform existing ones in white-box (and use for transfer) and black-box scenarios. The black-box variant is the simplest & tries to minimize the loss with a surrogate model. The paper does not seem to have a core taxonomy, but rather shows how existing attacks can be implemented with RAMEN (their framework). Attack bounded by total number of queries.
@@ -94,6 +97,7 @@ Estimated time for all experiments: (**< 1 week**)
     * [Generating End-to-End Adversarial Examples for Malware Classifiers Using Explainability](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=9207168), No Code **Contacted**: Use explanations fron interpretable models to bypass multi-feature-type malwares. First identifies relevant features, and then modify them selectively. Considers transferability of explainability, "first to leverage explainability algorithms from the adversary side, to generate and facilitate adversarial attacks". Using substitute model, adversary can figure out "some features" used in training. Tried both 'same' and 'diff' train datasets, coming from the same dataset.
 
 ### Hard-label, Unlimited Access, No-/Partial-/Full Auxiliary Information
+(Estimated time: **2-3 weeks**)
 
 1. Does not explicitly use training data, but the data used for training local models is labeled by one of the target models (VirusTotal)
     * [Toward an Effective Black-Box Adversarial Attack on Functional JavaScript Malware against Commercial Anti-Virus](https://dl.acm.org/doi/pdf/10.1145/3459637.3481956) , No Code **Contacted**: `loss function` - Attacks against Javascript Malware detection systems. Full black-box scenario with unlimited query access. Train substitute model (using term frequency as features), with a PGD + seq2seq attack on the proxy model. PGD is launched on the term frequencies, followed by building adversarial vocabulary. Injection code is sampled (for the best variant) using a seq2seq model.
