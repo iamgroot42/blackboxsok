@@ -84,6 +84,7 @@ Estimated time for all experiments: (**< 1 week**)
 ## Malware Domain
 
 ### Hard-label, No Access, No-/Partial-/Full Auxiliary Information
+(Estimated time: **2-3 weeks**)
 
 1. Requires no access to training data or target model architecture
     * [Adversarial EXEmples: A Survey and Experimental Evaluation of Practical Attacks on Machine Learning for Windows Malware Detection](https://arxiv.org/pdf/2008.07125.pdf), [Code](https://github.com/pralab/secml_malware): `genetic algorithm` `transfer` - Analysis of Windows malware. Proposes 3 attacks that outperform existing ones in white-box (and use for transfer) and black-box scenarios. The black-box variant is the simplest & tries to minimize the loss with a surrogate model. The paper does not seem to have a core taxonomy, but rather shows how existing attacks can be implemented with RAMEN (their framework). Attack bounded by total number of queries.
@@ -96,6 +97,7 @@ Estimated time for all experiments: (**< 1 week**)
     * [Generating End-to-End Adversarial Examples for Malware Classifiers Using Explainability](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=9207168), No Code **Contacted**: Use explanations fron interpretable models to bypass multi-feature-type malwares. First identifies relevant features, and then modify them selectively. Considers transferability of explainability, "first to leverage explainability algorithms from the adversary side, to generate and facilitate adversarial attacks". Using substitute model, adversary can figure out "some features" used in training. Tried both 'same' and 'diff' train datasets, coming from the same dataset.
 
 ### Hard-label, Unlimited Access, No-/Partial-/Full Auxiliary Information
+(Estimated time: **2-3 weeks**)
 
 1. Does not explicitly use training data, but the data used for training local models is labeled by one of the target models (VirusTotal)
     * [Toward an Effective Black-Box Adversarial Attack on Functional JavaScript Malware against Commercial Anti-Virus](https://dl.acm.org/doi/pdf/10.1145/3459637.3481956) , No Code **Contacted**: `loss function` - Attacks against Javascript Malware detection systems. Full black-box scenario with unlimited query access. Train substitute model (using term frequency as features), with a PGD + seq2seq attack on the proxy model. PGD is launched on the term frequencies, followed by building adversarial vocabulary. Injection code is sampled (for the best variant) using a seq2seq model.
