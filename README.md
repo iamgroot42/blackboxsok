@@ -2,6 +2,10 @@
 
 Below, we list the candidate experiments to run in each domain and also the corresponding source code.
 
+## Framework
+
+We need to setting up the unified testing framework (estimated time: **1-2 weeks**, but may be less than this). This framework should 1) ensure the target model can only be accessed with (simulated) API calls, 2) users can choose the specific auxiliary information (e.g., local models) available to the attacker and the framework will load the corresponding modules, 3) should be able to figure the attack details such as `norm, perturbation threshold, targeted/untargeted, robust/standard models, different types of target classes (e.g., most/least likely) for targeted attack`. We can also refer to <https://blackboxbench.github.io> for some guidance on designing the framework.
+
 ## Selection Criteria and Other Information
 
 We only select attacks that: 1) reported state-of-the-art (SOTA) results in the paper with enough baselines, 2) peer-reviewed or have open source implementations available. Note that there can exist multiple SOTA attacks as those SOTA methods are not individually compared. In that case, we include all of them. We plan to report experiments for: 1) 1-2 standard models (undefended) and 1-2 robust models (can be obtained from robust bench: <https://robustbench.github.io>), 2) targeted (with different target classes) and untargeted settings, 2) different attack strenths. 
@@ -9,8 +13,6 @@ We only select attacks that: 1) reported state-of-the-art (SOTA) results in the 
 ## Image Domain
 
 Black-box attacks are heavily investigated in image domain and hence, we can summarize and syatemize existing knowledge and also gain new insights. Below are the list of experiments to run. The candidate attacks are selected to reflect the current state-of-the-art in each black-box attack scenario.
-
-We need to setting up the unified testing framework (estimated time: **1-2 weeks**, but may be less than this). This framework should 1) ensure the target model can only be accessed with (simulated) API calls, 2) users can choose the specific auxiliary information (e.g., local models) available to the attacker and the framework will load the corresponding modules, 3) should be able to figure the attack details such as `norm, perturbation threshold, targeted/untargeted, robust/standard models, different types of target classes (e.g., most/least likely) for targeted attack`. We can also refer to <https://blackboxbench.github.io> for some guidance on designing the framework.   
 
 ### Hard-label, No Access, No-/Partial-/Full Auxiliary Information
 
