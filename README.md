@@ -61,7 +61,7 @@ Estimated time for all experiments: **1 week**
 
 1. No auxiliary information:
     * [RayS: A Ray Searching Method for Hard-label Adversarial Attack](https://arxiv.org/abs/2006.12792), [code](https://github.com/uclaml/RayS): Published at KDD 2020, SOTA attack with no auxiliary information for L_infty setting. We will need to adapt this attack to targeted setting also, the original paper only does for untargeted setting. Applicable to Hybrid attack.
-    * [Query Efficient Decision Based Sparse Attacks Against Black-Box Deep Learning Models](https://arxiv.org/abs/2202.00091), [No Code]: **No Response**, Published at ICLR 2022, reported SOTA in L_0 setting. Applicable to hybrid attack. I will directly talk to the authors at ICLR this year. 
+    * [Query Efficient Decision Based Sparse Attacks Against Black-Box Deep Learning Models](https://arxiv.org/abs/2202.00091), [Code](https://sparseevoattack.github.io/): Published at ICLR 2022, reported SOTA in L_0 setting. Applicable to hybrid attack case. 
     * [Simple and Efficient Hard Label Black-box Adversarial Attacks in Low Query Budget Regimes](https://arxiv.org/abs/2007.07210), [Code]( https://github.com/satyanshukla/bayes_attack): Published at KDD 2021, Bayesian optimization, suits better for limited access scenarios.
     * [~~Hard-label Manifolds: Unexpected Advantages of Query Efficiency for Finding On-manifold Adversarial Examples~~](https://arxiv.org/abs/2103.03325), [No Code]: Preprint, possible new insights (double check paper details), from UFL security group. Update: did not gain enough insight and will not include this method. 
 2. Partial auxiliary information:
