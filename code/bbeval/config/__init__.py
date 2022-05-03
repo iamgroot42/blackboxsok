@@ -1,1 +1,1 @@
-from bbeval.config.config import *
+from bbeval.config.core import *

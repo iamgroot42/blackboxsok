@@ -39,6 +39,15 @@ class TrainConfig(Serializable):
 
 
 @dataclass
+class ModelConfig(Serializable):
+    """
+        Configuration for model
+    """
+    use_pretrained: Optional[bool] = False
+    "Use pre-trained model from library?"
+
+
+@dataclass
 class AttackerConfig(Serializable):
     """
         Configuration for the attacker

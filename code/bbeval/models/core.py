@@ -8,6 +8,14 @@ import numpy as np
 class GenericModelWrapper:
     def __init__(self, model):
         self.model = model
+    
+    def set_train(self):
+        raise NotImplementedError(
+            "This method must be implemented by the child class")
+    
+    def set_eval(self):
+        raise NotImplementedError(
+            "This method must be implemented by the child class")
 
     def forward(self, x):
         raise NotImplementedError(
@@ -24,11 +32,11 @@ class GenericModelWrapper:
         raise NotImplementedError(
             "This method must be implemented by the child class")
 
-    def train(self, X, Y, **kwargs):
+    def train(self, train_loader, val_loader, **kwargs):
         raise NotImplementedError(
             "This method must be implemented by the child class")
 
-    def eval(self, X, Y, **kwargs):
+    def eval(self, loader, loss_function, acc_fn, **kwargs):
         raise NotImplementedError(
             "This method must be implemented by the child class")
 
