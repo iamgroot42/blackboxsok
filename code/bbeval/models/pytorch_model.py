@@ -4,7 +4,6 @@ import numpy as np
 
 from bbeval.models.core import GenericModelWrapper
 from bbeval.utils import AverageMeter
-from code.bbeval.config.core import TrainConfig
 from tqdm import tqdm
 
 
@@ -15,20 +14,23 @@ class PyTorchModelWrapper(GenericModelWrapper):
     def set_train(self):
         self.model.train()
     
+    def post_process_fn(self, tensor):
+        return tensor
+    
     def set_eval(self):
         self.model.eval()
     
     def forward(self, x):
-        return self.model(x)
+        return self.post_process_fn(self.model(x))
     
     def get_top_k_probabilities(self, x, k) -> np.ndarray:
         predictions = self.forward(x)
         top_k_probs = ch.topk(predictions, k, dim=1)[0]
-        return top_k_probs.detach().numpy()
+        return self.post_process_fn(top_k_probs)
 
     def get_predicted_class(self, x) -> int:
         predictions = self.forward(x)
-        return ch.argmax(predictions, dim=1).detach().numpy()[0]
+        return self.post_process_fn(ch.argmax(predictions, dim=1)[0])
 
     def train(self, train_loader, val_loader, **kwargs):
         # TODO: Implement
