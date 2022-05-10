@@ -1,14 +1,17 @@
 import numpy as np
 from bbeval.models.core import GenericModelWrapper
 from bbeval.attacker.core import Attacker
+from bbeval.config import AttackerConfig
+from bbeval.loss import get_loss_fn
+
 
 import time
 np.set_printoptions(precision=5, suppress=True)
 
 
 class Square_Attack(Attacker):
-    def __init__(self, model: GenericModelWrapper, query_budget: int, norm_type: float, targeted: bool, seed: int):
-        super().__init__(model, query_budget, norm_type, targeted, seed)
+    def __init__(self, model: GenericModelWrapper, config: AttackerConfig):
+        super().__init__(model, config)
 
     def attack(self, x, y, eps, **kwargs):
         # TODO: merge the metrics_path into the logging function
@@ -23,6 +26,7 @@ class Square_Attack(Attacker):
                 x, y, eps, n_iters, p_init, metrics_path)
         else:
             raise NotImplementedError("Unsupported Norm Type!")
+        return x_adv, num_queries
 
     def p_selection(self, p_init, it, n_iters):
         """ Piece-wise constant schedule for p (the fraction of pixels changed on every iteration). """
@@ -106,8 +110,7 @@ class Square_Attack(Attacker):
         ### initialization
         delta_init = np.zeros(x.shape)
         s = h // 5
-        # TODO: merge this part into the logging system
-        print('Initial square side={} for bumps'.format(s))
+        self.logger.log('Initial square side={} for bumps'.format(s))
         sp_init = (h - s * 5) // 2
         center_h = sp_init + 0
         for _ in range(h // s):
@@ -121,13 +124,9 @@ class Square_Attack(Attacker):
         x_best = np.clip(x + delta_init / np.sqrt(np.sum(delta_init **
                          2, axis=(1, 2, 3), keepdims=True)) * eps, 0, 1)
 
-        # TODO: this should return the prediction confidence score, sync with Anshuman, originally, it was logits
-        probs = self.model.predict(x_best)
-        # TODO: sync with Anshuman, the model should contain a loss computation function that support different loss functions
-        loss_min = self.model.loss(
-            y, probs, self.targeted, loss_type=self.loss_type)
-        margin_min = self.model.loss(
-            y, probs, self.targeted, loss_type='margin_loss')  # TODO: similar to above
+        probs = self.model.predict_proba(x_best)
+        loss_min = get_loss_fn(self.loss_type)(y, probs, self.targeted)
+        margin_min = get_loss_fn('margin_loss')(y, probs, self.targeted)
         # ones because we have already used 1 query
         n_queries = np.ones(x.shape[0])
 
@@ -199,11 +198,9 @@ class Square_Attack(Attacker):
             curr_norms_image = np.sqrt(
                 np.sum((x_new - x_curr) ** 2, axis=(1, 2, 3), keepdims=True))
 
-            probs = self.model.predict(x_new)
-            loss = self.model.loss(
-                y_curr, probs, self.targeted, loss_type=self.loss_type)
-            margin = self.model.loss(
-                y_curr, probs, self.targeted, loss_type='margin_loss')
+            probs = self.model.predict_proba(x_new)
+            loss = get_loss_fn(self.loss_type)(y_curr, probs, self.targeted)
+            margin = get_loss_fn('margin_loss')(y_curr, probs, self.targeted)
 
             idx_improved = loss < loss_min_curr
             loss_min[idx_to_fool] = idx_improved * \
@@ -223,8 +220,7 @@ class Square_Attack(Attacker):
                 n_queries[margin_min <= 0]), np.median(n_queries), np.median(n_queries[margin_min <= 0])
 
             time_total = time.time() - time_start
-            # TODO: merge below with the logging system
-            print(
+            self.logger.log(
                 '{}: acc={:.2%} acc_corr={:.2%} avg#q_ae={:.1f} med#q_ae={:.1f} {}, n_ex={}, {:.0f}s, loss={:.3f}, max_pert={:.1f}, impr={:.0f}'.
                 format(i_iter + 1, acc, acc_corr, mean_nq_ae, median_nq_ae, hps_str, x.shape[0], time_total,
                        np.mean(margin_min), np.amax(curr_norms_image), np.sum(idx_improved)))
@@ -235,13 +231,13 @@ class Square_Attack(Attacker):
             if acc == 0:
                 curr_norms_image = np.sqrt(
                     np.sum((x_best - x) ** 2, axis=(1, 2, 3), keepdims=True))
-                print('Maximal norm of the perturbations: {:.5f}'.format(
+                self.logger.log('Maximal norm of the perturbations: {:.5f}'.format(
                     np.amax(curr_norms_image)))
                 break
 
         curr_norms_image = np.sqrt(
             np.sum((x_best - x) ** 2, axis=(1, 2, 3), keepdims=True))
-        print('Maximal norm of the perturbations: {:.5f}'.format(
+        self.logger.log('Maximal norm of the perturbations: {:.5f}'.format(
             np.amax(curr_norms_image)))
 
         return n_queries, x_best
@@ -259,11 +255,9 @@ class Square_Attack(Attacker):
         init_delta = np.random.choice([-eps, eps], size=[x.shape[0], c, 1, w])
         x_best = np.clip(x + init_delta, min_val, max_val)
 
-        probs = self.model.predict(x_best)
-        loss_min = self.model.loss(
-            y, probs, self.targeted, loss_type=self.loss_type)
-        margin_min = self.model.loss(
-            y, probs, self.targeted, loss_type='margin_loss')
+        probs = self.model.predict_proba(x_best)
+        loss_min = get_loss_fn(self.loss_type)(y, probs, self.targeted)
+        margin_min = get_loss_fn('margin_loss')(y, probs, self.targeted)
         # ones because we have already used 1 query
         n_queries = np.ones(x.shape[0])
 
@@ -294,11 +288,9 @@ class Square_Attack(Attacker):
 
             x_new = np.clip(x_curr + deltas, min_val, max_val)
 
-            probs = self.model.predict(x_new)
-            loss = self.model.loss(
-                y_curr, probs, self.targeted, loss_type=self.loss_type)
-            margin = self.model.loss(
-                y_curr, probs, self.targeted, loss_type='margin_loss')
+            probs = self.model.predict_proba(x_new)
+            loss = get_loss_fn(self.loss_type)(y_curr, probs, self.targeted)
+            margin = get_loss_fn('margin_loss')(y_curr, probs, self.targeted)
 
             idx_improved = loss < loss_min_curr
             loss_min[idx_to_fool] = idx_improved * \
@@ -317,8 +309,7 @@ class Square_Attack(Attacker):
                 n_queries[margin_min <= 0]), np.median(n_queries[margin_min <= 0])
             avg_margin_min = np.mean(margin_min)
             time_total = time.time() - time_start
-            #TODO: merge below with the logging system
-            print('{}: acc={:.2%} acc_corr={:.2%} avg#q_ae={:.2f} med#q={:.1f}, avg_margin={:.2f} (n_ex={}, eps={:.3f}, {:.2f}s)'.
+            self.logger.log('{}: acc={:.2%} acc_corr={:.2%} avg#q_ae={:.2f} med#q={:.1f}, avg_margin={:.2f} (n_ex={}, eps={:.3f}, {:.2f}s)'.
                   format(i_iter+1, acc, acc_corr, mean_nq_ae, median_nq_ae, avg_margin_min, x.shape[0], eps, time_total))
 
             metrics[i_iter] = [acc, acc_corr, mean_nq, mean_nq_ae,

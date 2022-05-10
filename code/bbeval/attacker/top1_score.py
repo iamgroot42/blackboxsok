@@ -1,15 +1,17 @@
 from tqdm import tqdm
+import logging
 import numpy as np
 import torch as ch
 from bbeval.attacker.core import Attacker
+from bbeval.config import AttackerConfig
 from bbeval.models.core import GenericModelWrapper
 
 np.set_printoptions(precision=5, suppress=True)
 
 
 class RayS(Attacker):
-    def __init__(self, model: GenericModelWrapper, query_budget: int, norm_type: float, targeted: bool, seed: int):
-        super().__init__(model, query_budget, norm_type, targeted, seed=seed)
+    def __init__(self, model: GenericModelWrapper, config: AttackerConfig):
+        super().__init__(model, config)
         self.sgn_t = None
         self.d_t = None
         self.x_final = None
@@ -61,7 +63,7 @@ class RayS(Attacker):
             attempt[valid_mask.nonzero().flatten(), start:end] *= -1.
             attempt = attempt.view(shape)
 
-            self.binary_search(x, y, self.targeted, attempt, valid_mask)
+            self.binary_search(x, y, attempt, valid_mask)
 
             block_ind += 1
             if block_ind == 2 ** block_level or end == dim:
@@ -73,24 +75,23 @@ class RayS(Attacker):
             working_ind = (dist > eps).nonzero().flatten()
 
             if ch.sum(self.queries >= self.query_budget) == shape[0]:
-                print('out of queries')
+                self.logger.log('Out of queries', level=logging.WARNING)
                 break
-            # TODO: merge this with logging system?
             query_string = f"Queries: {ch.min(self.queries.float())}/{self.query_budget}"
             info_string = 'd_t: %.4f | adbd: %.4f | queries: %.4f | rob acc: %.4f | iter: %d' % (ch.mean(
                 self.d_t), ch.mean(dist), ch.mean(self.queries.float()), len(working_ind) / len(x), i + 1)
             iterator.set_description(query_string + " | " + info_string)
 
         stop_queries = ch.clamp(stop_queries, 0, self.query_budget)
-        return self.x_final, stop_queries, dist, (dist <= eps)
+        return self.x_final, stop_queries
 
     # check whether solution is found
-    def search_succ(self, x, y, target, mask):
+    def search_succ(self, x, y, mask):
         self.queries[mask] += 1
         if self.targeted:
-            return self.model.predict_label(x[mask]) == target[mask]
+            return self.model.predict(x[mask]) == y[mask]
         else:
-            return self.model.predict_label(x[mask]) != y[mask]
+            return self.model.predict(x[mask]) != y[mask]
 
     # binary search for decision boundary along sgn direction
     def binary_search(self, x, y, sgn, valid_mask, tol=1e-3):
@@ -101,14 +102,14 @@ class RayS(Attacker):
         d_end = self.d_t.clone()
 
         initial_succ_mask = self.search_succ(self.get_xadv(
-            x, sgn_unit, self.d_t), y, self.targeted, valid_mask)
+            x, sgn_unit, self.d_t), y, valid_mask)
         to_search_ind = valid_mask.nonzero().flatten()[initial_succ_mask]
         d_end[to_search_ind] = ch.min(self.d_t, sgn_norm)[to_search_ind]
 
         while len(to_search_ind) > 0:
             d_mid = (d_start + d_end) / 2.0
             search_succ_mask = self.search_succ(self.get_xadv(
-                x, sgn_unit, d_mid), y, self.targeted, to_search_ind)
+                x, sgn_unit, d_mid), y, to_search_ind)
             d_end[to_search_ind[search_succ_mask]
                   ] = d_mid[to_search_ind[search_succ_mask]]
             d_start[to_search_ind[~search_succ_mask]

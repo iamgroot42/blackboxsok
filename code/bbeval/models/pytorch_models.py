@@ -3,22 +3,28 @@ import torch.nn as nn
 import numpy as np
 
 from bbeval.models.core import GenericModelWrapper
+from bbeval.config import ModelConfig
 from bbeval.utils import AverageMeter
 from tqdm import tqdm
+
+from torchvision.models import inception_v3
 
 
 class PyTorchModelWrapper(GenericModelWrapper):
     def __init__(self, model: nn.Module):
         super().__init__(model)
     
-    def set_train(self):
+    def train(self):
         self.model.train()
     
     def post_process_fn(self, tensor):
         return tensor
     
-    def set_eval(self):
+    def eval(self):
         self.model.eval()
+    
+    def cuda(self):
+        self.model.cuda()
     
     def forward(self, x):
         return self.post_process_fn(self.model(x))
@@ -28,12 +34,13 @@ class PyTorchModelWrapper(GenericModelWrapper):
         top_k_probs = ch.topk(predictions, k, dim=1)[0]
         return self.post_process_fn(top_k_probs)
 
-    def get_predicted_class(self, x) -> int:
+    def predict(self, x) -> int:
         predictions = self.forward(x)
         return self.post_process_fn(ch.argmax(predictions, dim=1)[0])
 
     def train(self, train_loader, val_loader, **kwargs):
         # TODO: Implement
+        pass
 
     def eval(self, loader, loss_function, acc_fn, **kwargs):
         loss_tracker, acc_tracker = AverageMeter(), AverageMeter()
@@ -51,3 +58,12 @@ class PyTorchModelWrapper(GenericModelWrapper):
             iterator.set_description("Loss: {:.4f}, Accuracy: {:.4f}".format(
                 loss_tracker.avg, acc_tracker.avg))
         return loss_tracker.avg, acc_tracker.avg
+
+
+class Inceptionv3(PyTorchModelWrapper):
+    def __init__(self, model_config: ModelConfig):
+        model = inception_v3(pretrained=model_config.use_pretrained)
+        super().__init__(model)
+
+    def forward(self, x):
+        return self.post_process_fn(self.model(x).logits)

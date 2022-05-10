@@ -1,6 +1,8 @@
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Optional
-from simple_parsing.helpers import Serializable, choice
+import numpy as np
+from simple_parsing.helpers import Serializable, choice, field
 
 
 @dataclass
@@ -9,9 +11,13 @@ class DatasetConfig(Serializable):
         Parameters for datasets
     """
     name: str
-    """Name of the dataset"""
-    type = choice(["image", "malware"])
+    """Name of str = the dataset"""
+    type: str = field(choice(["image", "malware"]))
     """What domain does the dataset belong to?"""
+    augment: bool = False
+    """Use data augmentation?"""
+    root: str = "./data"
+    """Path to datasets"""
     
 
 @dataclass
@@ -52,8 +58,21 @@ class AttackerConfig(Serializable):
     """
         Configuration for the attacker
     """
-    access_level: choice(["only label", "top-k", "all"])
+    experiment_name: str
+    """Name for experiment"""
+    access_level: str = field(choice(["only label", "top-k", "all"]))
     """What level of access does the attacker have?"""
+    query_budget: int = np.inf
+    """Query budget"""
+    norm_type: float = np.inf
+    """Norm type (for bounding perturbations)"""
+    targeted: bool = True
+    """Is the attack targeted?"""
+    loss_type: str = "xent"
+    """Loss type"""
+    seed: int = None
+    """Seed for RNG"""
+
 
 
 @dataclass
@@ -61,5 +80,5 @@ class VictimConfig(Serializable):
     """
         Configuration for the victim
     """
-    access_level: choice(["only label", "top-k", "all"])
+    access_level: str = field(choice(["only label", "top-k", "all"]))
     """What level of access does the victim provide?"""

@@ -1,10 +1,28 @@
 # Based on code from: https://github.com/iamgroot42/property_inference
 
 import json
+import logging
 from pathlib import Path
 from typing import List
 from datetime import datetime
 from simple_parsing.helpers import Serializable
+
+
+class Logger:
+    def __init__(self, exp_name: str, path: Path):
+        self.formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        self.logger = logging.getLogger(exp_name)
+        self.fileHandler = logging.FileHandler(f"{path}.log")
+        # Print to log file
+        self.fileHandler.setFormatter(self.formatter)
+        self.logger.addHandler(self.fileHandler)
+        # And console simultaneously
+        consoleHandler = logging.StreamHandler()
+        consoleHandler.setFormatter(self.formatter)
+        self.logger.addHandler(consoleHandler)
+        
+    def log(self, msg: str, level: int = logging.INFO):
+        self.logger.log(level, msg)
 
 
 class Result:

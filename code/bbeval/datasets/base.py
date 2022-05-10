@@ -13,9 +13,10 @@ class CustomDatasetWrapper:
             self.ds_train and self.ds_test should be set to
             datasets to be used to train and evaluate.
         """
-        self.classify = data_config.classify
         self.augment = data_config.augment
         self.root = data_config.root
+        self.train_transforms = None
+        self.test_transforms = None
     
     def get_train_transforms(self):
         return None
@@ -83,4 +84,4 @@ class CustomDatasetWrapper:
         raise NotImplementedError("Function to load model not implemented")
 
     def __str__(self):
-        return f"{type(self).__name__}(classify={self.classify})"
+        return f"{type(self).__name__}"

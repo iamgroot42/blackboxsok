@@ -1,21 +1,23 @@
-import numpy as np
+from bbeval.logging.core import Logger
 from bbeval.models.core import GenericModelWrapper
+from bbeval.config import AttackerConfig
 
 
 class Attacker:
     def __init__(self,
                  model: GenericModelWrapper,
-                 query_budget: int = np.inf,
-                 norm_type: float = np.inf,
-                 targeted: bool = True,
-                 loss_type: str = 'xent',
-                 seed: int = None):
+                 config: AttackerConfig):
         self.model = model
-        self.query_budget = query_budget
-        self.norm_type = norm_type
-        self.targeted = targeted
-        self.loss_type = loss_type
-        self.seed = seed
+        self.config = config
+        # Extract relevant parameters from config
+        self.query_budget = self.config.query_budget
+        self.norm_type = self.config.norm_type
+        self.targeted = self.config.targeted
+        self.loss_type = self.config.loss_type
+        self.seed = self.config.seed
+        # Creat new logger
+        # TODO: Extract path from config automatically
+        self.logger = Logger(self.config.experiment_name, "./LOG")
 
     def attack(self, x, y, eps: float, **kwargs):
         pass

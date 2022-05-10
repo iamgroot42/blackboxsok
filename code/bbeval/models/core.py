@@ -9,11 +9,15 @@ class GenericModelWrapper:
     def __init__(self, model):
         self.model = model
     
-    def set_train(self):
+    def cuda(self):
+        raise NotImplementedError(
+            "This method must be implemented by the child class")
+
+    def train(self):
         raise NotImplementedError(
             "This method must be implemented by the child class")
     
-    def set_eval(self):
+    def eval(self):
         raise NotImplementedError(
             "This method must be implemented by the child class")
 
@@ -25,10 +29,10 @@ class GenericModelWrapper:
         raise NotImplementedError(
             "This method must be implemented by the child class")
 
-    def get_all_probabilities(self, x) -> np.ndarray:
+    def predict_proba(self, x) -> np.ndarray:
         return self.get_top_k_probabilities(x, k=np.inf)
 
-    def get_predicted_class(self, x) -> int:
+    def predict(self, x) -> int:
         raise NotImplementedError(
             "This method must be implemented by the child class")
 
