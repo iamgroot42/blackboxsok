@@ -1,4 +1,4 @@
-from bbeval.logging.core import Logger
+from bbeval.logging.core import Logger, AttackResult
 from bbeval.models.core import GenericModelWrapper
 from bbeval.config import AttackerConfig
 
@@ -15,11 +15,13 @@ class Attacker:
         self.targeted = self.config.targeted
         self.loss_type = self.config.loss_type
         self.seed = self.config.seed
-        # Creat new logger
-        # TODO: Extract path from config automatically
-        self.logger = Logger(self.config.experiment_name, "./LOG")
+        # TODO: Combine two loggers below into one
+        # Creat new logger (for debugging, etc.)
+        self.logger = Logger(self.config.experiment_name)
+        # Create new logger for actual results (JSON readable)
+        self.result_logger = AttackResult(self.config)
 
     def attack(self, x, y, eps: float, **kwargs):
         pass
 
-# TODO: Figure out a good way to strucutre classes for partial/full auxiliary information
+# TODO: Figure out a good way to structure classes for partial/full auxiliary information

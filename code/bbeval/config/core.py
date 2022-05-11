@@ -58,8 +58,12 @@ class AttackerConfig(Serializable):
     """
         Configuration for the attacker
     """
+    attack_name: str
+    """Which attack is this?"""
     experiment_name: str
     """Name for experiment"""
+    dataset_config: DatasetConfig
+    """Config file for the dataset this attack will use"""
     access_level: str = field(choice(["only label", "top-k", "all"]))
     """What level of access does the attacker have?"""
     query_budget: int = np.inf

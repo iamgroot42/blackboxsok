@@ -1,17 +1,24 @@
 # Based on code from: https://github.com/iamgroot42/property_inference
+# The 'Result' class and its children were written by Yifu Lu
 
 import json
+import os
 import logging
 from pathlib import Path
 from typing import List
 from datetime import datetime
+from copy import deepcopy
 from simple_parsing.helpers import Serializable
+
+from bbeval.config import AttackerConfig
+from bbeval.utils import get_log_save_path
 
 
 class Logger:
-    def __init__(self, exp_name: str, path: Path):
+    def __init__(self, exp_name: str):
         self.formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
         self.logger = logging.getLogger(exp_name)
+        path = get_log_save_path()
         self.fileHandler = logging.FileHandler(f"{path}.log")
         # Print to log file
         self.fileHandler.setFormatter(self.formatter)
@@ -59,3 +66,31 @@ class Result:
             k = keys.pop(0)
             self.not_empty_dic(dic, k)
             self.check_rec(dic[k], keys)
+
+
+class AttackResult(Result):
+    def __init__(self,
+                 attack_config: AttackerConfig):
+        # Infer path from data_config inside attack_config
+        dataset_name = attack_config.dataset_config.name
+        attack_name = attack_config.attack_name
+        experiment_name = attack_config.experiment_name 
+        save_path = get_log_save_path()
+        path = Path(os.path.join(save_path, dataset_name, attack_name))
+        super().__init__(path, experiment_name)
+        # Worthwhile to save the attack config
+        self.dic["attack_config"] = deepcopy(attack_config)
+        self.convert_to_dict(self.dic)
+
+
+    def add_result(self, attack_acc: float, queries_used: int):
+        """
+            Log attack accuracy and number of queries used
+        """
+        self.check_rec(self.dic, ['result'])
+        if 'queries_used' not in self.dic['result']:
+            self.dic['result']['queries_used'] = []
+        self.dic['result']['queries_used'].append(queries_used)
+        if 'attack_acc' not in self.dic['result']:
+            self.dic['result']['attack_acc'] = []
+        self.dic['result']['attack_acc'].append(attack_acc)
