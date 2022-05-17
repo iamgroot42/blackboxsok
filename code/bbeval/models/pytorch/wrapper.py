@@ -3,31 +3,32 @@ import torch.nn as nn
 import numpy as np
 
 from bbeval.models.core import GenericModelWrapper
-from bbeval.config import ModelConfig
 from bbeval.utils import AverageMeter
 from tqdm import tqdm
-
-from torchvision.models import inception_v3
 
 
 class PyTorchModelWrapper(GenericModelWrapper):
     def __init__(self, model: nn.Module):
         super().__init__(model)
     
-    def train(self):
+    def set_eval(self):
         self.model.train()
     
     def post_process_fn(self, tensor):
         return tensor
     
-    def eval(self):
+    def set_eval(self):
         self.model.eval()
     
     def cuda(self):
         self.model.cuda()
     
+    def pre_process_fn(self, x):
+        return x
+    
     def forward(self, x):
-        return self.post_process_fn(self.model(x))
+        x_ = self.pre_process_fn(x)
+        return self.post_process_fn(self.model(x_))
     
     def get_top_k_probabilities(self, x, k) -> np.ndarray:
         predictions = self.forward(x)
@@ -58,12 +59,3 @@ class PyTorchModelWrapper(GenericModelWrapper):
             iterator.set_description("Loss: {:.4f}, Accuracy: {:.4f}".format(
                 loss_tracker.avg, acc_tracker.avg))
         return loss_tracker.avg, acc_tracker.avg
-
-
-class Inceptionv3(PyTorchModelWrapper):
-    def __init__(self, model_config: ModelConfig):
-        model = inception_v3(pretrained=model_config.use_pretrained)
-        super().__init__(model)
-
-    def forward(self, x):
-        return self.post_process_fn(self.model(x).logits)

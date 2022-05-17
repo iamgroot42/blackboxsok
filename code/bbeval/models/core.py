@@ -13,11 +13,11 @@ class GenericModelWrapper:
         raise NotImplementedError(
             "This method must be implemented by the child class")
 
-    def train(self):
+    def set_train(self):
         raise NotImplementedError(
             "This method must be implemented by the child class")
     
-    def eval(self):
+    def set_eval(self):
         raise NotImplementedError(
             "This method must be implemented by the child class")
 

@@ -1,0 +1,13 @@
+{
+    "experiment_name": "dummy_exp",
+    "attack_name": "rays",
+    "access_level": "all",
+    "query_budget": 200,
+    "dataset_config": {
+        "name": "cifar10",
+        "type": "image"
+    },
+    "adv_model_config": {
+        "use_pretrained": true
+    }
+}

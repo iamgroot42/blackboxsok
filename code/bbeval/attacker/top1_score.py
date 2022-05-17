@@ -16,6 +16,8 @@ class RayS(Attacker):
         self.d_t = None
         self.x_final = None
         self.queries = None
+        # Put model in eval model
+        self.model.set_eval()
 
     def get_xadv(self, x, v, d, lb=0., ub=1.):
         if isinstance(d, int):

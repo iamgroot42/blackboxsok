@@ -54,6 +54,18 @@ class ModelConfig(Serializable):
 
 
 @dataclass
+class MalwareModelConfig(ModelConfig):
+    embedding_size: Optional[int] = None
+    """Embedding size (if used)"""
+    max_input_size: Optional[int] = None
+    """Maximum input size (if used)"""
+    embedding_value: Optional[int] = 256
+    """Embedding value (if used)"""
+    shift_values: Optional[bool] = False
+    """Shift values (if used)"""
+
+
+@dataclass
 class AttackerConfig(Serializable):
     """
         Configuration for the attacker
@@ -64,17 +76,19 @@ class AttackerConfig(Serializable):
     """Name for experiment"""
     dataset_config: DatasetConfig
     """Config file for the dataset this attack will use"""
+    adv_model_config: ModelConfig
+    """Model config for adversary's model"""
     access_level: str = field(choice(["only label", "top-k", "all"]))
     """What level of access does the attacker have?"""
-    query_budget: int = np.inf
+    query_budget: Optional[int] = np.inf
     """Query budget"""
-    norm_type: float = np.inf
+    norm_type: Optional[float] = np.inf
     """Norm type (for bounding perturbations)"""
-    targeted: bool = True
+    targeted: Optional[bool] = True
     """Is the attack targeted?"""
-    loss_type: str = "xent"
+    loss_type: Optional[str] = "xent"
     """Loss type"""
-    seed: int = None
+    seed: Optional[int] = None
     """Seed for RNG"""
 
 
