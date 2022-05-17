@@ -14,16 +14,14 @@ class Square_Attack(Attacker):
         super().__init__(model, config)
 
     def attack(self, x, y, eps, **kwargs):
-        # TODO: merge the metrics_path into the logging function
         p_init = kwargs.get('p_init')
         n_iters = kwargs.get('n_iters')
-        metrics_path = kwargs.get('metrics_path')
         if self.norm_type == np.inf:
             x_adv, num_queries = self.square_attack_l2(
-                x, y, eps, n_iters, p_init, metrics_path)
+                x, y, eps, n_iters, p_init)
         elif self.norm_type == 2:
             x_adv, num_queries = self.square_attack_linf(
-                x, y, eps, n_iters, p_init, metrics_path)
+                x, y, eps, n_iters, p_init)
         else:
             raise NotImplementedError("Unsupported Norm Type!")
         return x_adv, num_queries
@@ -95,7 +93,7 @@ class Square_Attack(Attacker):
 
         return delta
 
-    def square_attack_l2(self, x, y, eps, n_iters, p_init, metrics_path):
+    def square_attack_l2(self, x, y, eps, n_iters, p_init):
         """ The L2 square attack """
         if self.seed is not None:
             np.random.seed(self.seed)
@@ -132,7 +130,6 @@ class Square_Attack(Attacker):
 
         time_start = time.time()
         s_init = int(np.sqrt(p_init * n_features / c))
-        metrics = np.zeros([n_iters, 7])
         for i_iter in range(n_iters):
             idx_to_fool = (margin_min > 0.0)
 
@@ -224,10 +221,17 @@ class Square_Attack(Attacker):
                 '{}: acc={:.2%} acc_corr={:.2%} avg#q_ae={:.1f} med#q_ae={:.1f} {}, n_ex={}, {:.0f}s, loss={:.3f}, max_pert={:.1f}, impr={:.0f}'.
                 format(i_iter + 1, acc, acc_corr, mean_nq_ae, median_nq_ae, hps_str, x.shape[0], time_total,
                        np.mean(margin_min), np.amax(curr_norms_image), np.sum(idx_improved)))
-            metrics[i_iter] = [acc, acc_corr, mean_nq, mean_nq_ae,
-                               median_nq, margin_min.mean(), time_total]
-            if (i_iter <= 500 and i_iter % 500) or (i_iter > 100 and i_iter % 500) or i_iter + 1 == n_iters or acc == 0:
-                np.save(metrics_path, metrics)
+            # if (i_iter <= 500 and i_iter % 500) or (i_iter > 100 and i_iter % 500) or i_iter + 1 == n_iters or acc == 0:
+            # TODO: Make sure right things are being logged
+            self.logger.add_result(i_iter + 1, {
+                "acc": acc,
+                "acc_corr": acc_corr,
+                "mean_nq": mean_nq,
+                "mean_nq_ae": mean_nq_ae,
+                "median_nq": median_nq,
+                "mean_margin_min": margin_min.mean(),
+                "time_total": time_total,
+            })
             if acc == 0:
                 curr_norms_image = np.sqrt(
                     np.sum((x_best - x) ** 2, axis=(1, 2, 3), keepdims=True))
@@ -242,7 +246,7 @@ class Square_Attack(Attacker):
 
         return n_queries, x_best
 
-    def square_attack_linf(self, x, y, eps, n_iters, p_init, metrics_path):
+    def square_attack_linf(self, x, y, eps, n_iters, p_init):
         """ The Linf square attack """
         np.random.seed(0)  # important to leave it here as well
         min_val, max_val = 0, 1 if x.max() <= 1 else 255
@@ -262,7 +266,6 @@ class Square_Attack(Attacker):
         n_queries = np.ones(x.shape[0])
 
         time_start = time.time()
-        metrics = np.zeros([n_iters, 7])
         for i_iter in range(n_iters - 1):
             idx_to_fool = margin_min > 0
             x_curr, x_best_curr, y_curr = x[idx_to_fool], x_best[idx_to_fool], y[idx_to_fool]
@@ -312,10 +315,16 @@ class Square_Attack(Attacker):
             self.logger.log('{}: acc={:.2%} acc_corr={:.2%} avg#q_ae={:.2f} med#q={:.1f}, avg_margin={:.2f} (n_ex={}, eps={:.3f}, {:.2f}s)'.
                   format(i_iter+1, acc, acc_corr, mean_nq_ae, median_nq_ae, avg_margin_min, x.shape[0], eps, time_total))
 
-            metrics[i_iter] = [acc, acc_corr, mean_nq, mean_nq_ae,
-                               median_nq_ae, margin_min.mean(), time_total]
-            if (i_iter <= 500 and i_iter % 20 == 0) or (i_iter > 100 and i_iter % 50 == 0) or i_iter + 1 == n_iters or acc == 0:
-                np.save(metrics_path, metrics)
+            # if (i_iter <= 500 and i_iter % 500) or (i_iter > 100 and i_iter % 500) or i_iter + 1 == n_iters or acc == 0:
+            self.logger.add_result(i_iter + 1, {
+                "acc": acc,
+                "acc_corr": acc_corr,
+                "mean_nq": mean_nq,
+                "mean_nq_ae": mean_nq_ae,
+                "median_nq_ae": median_nq_ae,
+                "mean_margin_min": margin_min.mean(),
+                "time_total": time_total
+            })
             if acc == 0:
                 break
 

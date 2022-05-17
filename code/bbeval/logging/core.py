@@ -14,24 +14,6 @@ from bbeval.config import AttackerConfig
 from bbeval.utils import get_log_save_path
 
 
-class Logger:
-    def __init__(self, exp_name: str):
-        self.formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-        self.logger = logging.getLogger(exp_name)
-        path = get_log_save_path()
-        self.fileHandler = logging.FileHandler(f"{path}.log")
-        # Print to log file
-        self.fileHandler.setFormatter(self.formatter)
-        self.logger.addHandler(self.fileHandler)
-        # And console simultaneously
-        consoleHandler = logging.StreamHandler()
-        consoleHandler.setFormatter(self.formatter)
-        self.logger.addHandler(consoleHandler)
-        
-    def log(self, msg: str, level: int = logging.INFO):
-        self.logger.log(level, msg)
-
-
 class Result:
     def __init__(self, path: Path, name: str) -> None:
         self.name = name
@@ -45,7 +27,7 @@ class Result:
         save_p = self.path.joinpath(f"{self.name}.json")
         self.path.mkdir(parents=True, exist_ok=True)
         with save_p.open('w') as f:
-            json.dump(self.dic, f)
+            json.dump(self.dic, f, indent=4)
 
     def not_empty_dic(self, dic: dict, key):
         if key not in dic:
@@ -81,16 +63,36 @@ class AttackResult(Result):
         # Worthwhile to save the attack config
         self.dic["attack_config"] = deepcopy(attack_config)
         self.convert_to_dict(self.dic)
-
-
-    def add_result(self, attack_acc: float, queries_used: int):
+    
+    def add_result(self, queries_used: int, result: dict):
         """
-            Log attack accuracy and number of queries used
+            Log misc. information
         """
         self.check_rec(self.dic, ['result'])
-        if 'queries_used' not in self.dic['result']:
-            self.dic['result']['queries_used'] = []
-        self.dic['result']['queries_used'].append(queries_used)
-        if 'attack_acc' not in self.dic['result']:
-            self.dic['result']['attack_acc'] = []
-        self.dic['result']['attack_acc'].append(attack_acc)
+        self.dic['result'][queries_used] = result
+
+
+class Logger:
+    def __init__(self, attack_config: AttackerConfig):
+        self.formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        self.logger = logging.getLogger(attack_config.experiment_name)
+        path = get_log_save_path()
+        self.fileHandler = logging.FileHandler(f"{path}.log")
+        # Print to log file
+        self.fileHandler.setFormatter(self.formatter)
+        self.logger.addHandler(self.fileHandler)
+        # And console simultaneously
+        consoleHandler = logging.StreamHandler()
+        consoleHandler.setFormatter(self.formatter)
+        self.logger.addHandler(consoleHandler)
+        # Also create a tracker for query-wise results
+        self.result_logger = AttackResult(attack_config)
+        
+    def log(self, msg: str, level: int = logging.INFO):
+        self.logger.log(level, msg)
+    
+    def add_result(self, queries_used: int, result: dict):
+        self.result_logger.add_result(queries_used, result)
+    
+    def save(self):
+        self.result_logger.save()

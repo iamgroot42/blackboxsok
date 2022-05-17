@@ -80,6 +80,15 @@ class RayS(Attacker):
             query_string = f"Queries: {ch.min(self.queries.float())}/{self.query_budget}"
             info_string = 'd_t: %.4f | adbd: %.4f | queries: %.4f | rob acc: %.4f | iter: %d' % (ch.mean(
                 self.d_t), ch.mean(dist), ch.mean(self.queries.float()), len(working_ind) / len(x), i + 1)
+            # Also log all of this information
+            # TODO: Make sure right things are being logged
+            self.logger.log(query_string + " | " + info_string)
+            self.logger.add_result(i + 1, {
+                "d_t": ch.mean(self.d_t).item(),
+                "adbd": ch.mean(dist).item(),
+                "queries": ch.min(self.queries.float()).item(),
+                "rob acc": len(working_ind) / len(x),
+            })
             iterator.set_description(query_string + " | " + info_string)
 
         stop_queries = ch.clamp(stop_queries, 0, self.query_budget)
