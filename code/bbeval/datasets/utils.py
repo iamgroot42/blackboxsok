@@ -1,7 +1,20 @@
 import numpy as np
 
+from bbeval.datasets.image import mnist, cifar10, imagenet
+from bbeval.config import DatasetConfig
 
-# Fix for repeated random augmentation issue
-# https://tanelp.github.io/posts/a-bug-that-plagues-thousands-of-open-source-ml-projects/
-def worker_init_fn(worker_id):
-    np.random.seed(np.random.get_state()[1][0] + worker_id)
+DATASET_WRAPPER_MAPPING = {
+    "mnist": mnist.MNISTWrapper,
+    "cifar10": cifar10.CIFAR10Wrapper,
+    "imagenet": imagenet.ImageNetWrapper,
+}
+
+
+def get_dataset_wrapper(data_config: DatasetConfig):
+    """
+        Create dataset wrapper for given data-config
+    """
+    wrapper = DATASET_WRAPPER_MAPPING.get(data_config.name, None)
+    if not wrapper:
+        raise NotImplementedError(f"Dataset {data_config.name} not implemented")
+    return wrapper(data_config)

@@ -1,10 +1,11 @@
 import torch as ch
-from bbeval.attacker.top1_score import RayS
-from bbeval.datasets.image.cifar10 import CIFAR10Wrapper
-from bbeval.models.pytorch.image import Inceptionv3
-from bbeval.config import AttackerConfig
 from simple_parsing import ArgumentParser
 from pathlib import Path
+
+from bbeval.models.pytorch.image import Inceptionv3
+from bbeval.config import AttackerConfig
+from bbeval.datasets.utils import get_dataset_wrapper
+from bbeval.attacker.utils import get_attack_wrapper
 
 
 if __name__ == "__main__":
@@ -24,19 +25,19 @@ if __name__ == "__main__":
     model_config = attacker_config.adv_model_config
     ds_config = attacker_config.dataset_config
 
-    # TODO: Implement getters that get the right model, attack, dataset
-    # Using names provided
+    # TODO: Implement getters that get the right model
 
     # Get a pretrained ImageNet model
     model = Inceptionv3(model_config)
     model.cuda()
     # Get data-loader, make sure it works
-    ds = CIFAR10Wrapper(ds_config)
+    ds = get_dataset_wrapper(ds_config)
+
     _, _, test_loader = ds.get_loaders(batch_size=32)
     x_sample, y_sample = next(iter(test_loader))
     x_sample, y_sample = x_sample.cuda(), y_sample.cuda()
     # For now, make a random image
     x_sample = ch.rand(32, 3, 299, 299).cuda()
-    attacker = RayS(model, attacker_config)
+    attacker = get_attack_wrapper(model, attacker_config)
     x_sample_adv, queries_used = attacker.attack(x_sample, y_sample, eps=1.0)
     attacker.save_results()

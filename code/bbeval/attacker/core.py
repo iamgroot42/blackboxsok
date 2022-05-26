@@ -10,6 +10,7 @@ class Attacker:
         self.model = model
         self.config = config
         # Extract relevant parameters from config
+        self.name = self.config.name
         self.query_budget = self.config.query_budget
         self.norm_type = self.config.norm_type
         self.targeted = self.config.targeted

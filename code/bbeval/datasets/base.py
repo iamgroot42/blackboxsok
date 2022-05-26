@@ -4,7 +4,6 @@ from torch.utils.data import DataLoader
 
 from bbeval.config import DatasetConfig, TrainConfig
 from bbeval.models.core import GenericModelWrapper
-from bbeval.datasets.utils import worker_init_fn
 
 
 class CustomDatasetWrapper:
@@ -85,3 +84,9 @@ class CustomDatasetWrapper:
 
     def __str__(self):
         return f"{type(self).__name__}"
+
+
+# Fix for repeated random augmentation issue
+# https://tanelp.github.io/posts/a-bug-that-plagues-thousands-of-open-source-ml-projects/
+def worker_init_fn(worker_id):
+    np.random.seed(np.random.get_state()[1][0] + worker_id)

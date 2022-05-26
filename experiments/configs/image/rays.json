@@ -1,10 +1,10 @@
 {
     "experiment_name": "dummy_exp",
-    "attack_name": "rays",
+    "name": "rays",
     "access_level": "all",
     "query_budget": 200,
     "dataset_config": {
-        "name": "cifar10",
+        "name": "mnist",
         "type": "image"
     },
     "adv_model_config": {

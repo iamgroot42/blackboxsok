@@ -70,7 +70,7 @@ class AttackerConfig(Serializable):
     """
         Configuration for the attacker
     """
-    attack_name: str
+    name: str
     """Which attack is this?"""
     experiment_name: str
     """Name for experiment"""
