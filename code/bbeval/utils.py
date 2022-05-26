@@ -12,14 +12,7 @@ def get_models_save_path():
     """
         Path where models are stored
     """
-    return "./models"
-
-
-def get_datasets_path():
-    """
-        Path where datasets are available
-    """
-    return "./datasets"
+    return "/p/blackboxsok/models"
 
 
 class AverageMeter(object):

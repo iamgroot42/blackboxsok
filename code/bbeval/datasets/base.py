@@ -14,7 +14,7 @@ class CustomDatasetWrapper:
             datasets to be used to train and evaluate.
         """
         self.augment = data_config.augment
-        self.root = data_config.root
+        self.root = os.path.join(data_config.root, data_config.name)
         self.train_transforms = None
         self.test_transforms = None
     

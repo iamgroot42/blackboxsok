@@ -16,7 +16,7 @@ class DatasetConfig(Serializable):
     """What domain does the dataset belong to?"""
     augment: bool = False
     """Use data augmentation?"""
-    root: str = "./data"
+    root: str = "/p/blackboxsok/datasets"
     """Path to datasets"""
     
 

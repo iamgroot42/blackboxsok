@@ -17,6 +17,7 @@ class CIFAR10Wrapper(CustomDatasetWrapper):
         self.ds_train = CIFAR10(self.root, train=True,
                                 transform=self.train_transforms,
                                 download=True)
+        self.ds_test = CIFAR10(self.root, train=False,
+                               transform=self.test_transforms,
+                               download=True)
         self.ds_val = None
-        self.ds_test = CIFAR10(self.root, train=False, transform=self.test_transforms,download=True)
-
