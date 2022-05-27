@@ -1,16 +1,13 @@
-from tqdm import tqdm
-import logging
 import numpy as np
 import torch as ch
 import torch.nn.functional as F
-import torchvision.transforms as T
 from torch.autograd import Variable as V
 
 from bbeval.attacker.core import Attacker
 from bbeval.config import AttackerConfig
 from bbeval.models.core import GenericModelWrapper
-from transfer_methods.manipulate_gradient import *
-from transfer_methods.manipulate_input import *
+from bbeval.attacker.transfer_methods.manipulate_gradient import torch_staircase_sign, project_noise
+from bbeval.attacker.transfer_methods.manipulate_input import ensemble_input_diversity
 
 np.set_printoptions(precision=5, suppress=True)
 
@@ -27,7 +24,8 @@ class Transfer(Attacker):
             (x, y): original image
         """
         models = kwargs.get('models')
-        assert isinstance(models,dict) # we should be working with ensemble of models 
+        if not isinstance(models, dict):
+            raise ValueError("Expected a dictionary of models, since we will be working with an ensemble")
         n_iters = kwargs.get('n_iters')
         n_ensemble = kwargs.get('n_ensemble')
         amplification = kwargs.get('amplification')
@@ -44,6 +42,7 @@ class Transfer(Attacker):
         amplification = 0.0
         pre_grad = ch.zeros(adv.shape).cuda()
         # quite specific piece of code to staircase attack
+        # TODO: THe 0/1 below should be dataset-specific
         x_min = clip_by_tensor(x - eps, 0.0, 1.0)
         x_max = clip_by_tensor(x + eps, 0.0, 1.0)
 
@@ -140,7 +139,7 @@ class Transfer(Attacker):
 
             # PI-FGSM
             amplification += alpha_beta * torch_staircase_sign(noise, 1.5625)
-            cut_noise = clip_by_tensor(abs(amplification) - eps, 0.0, 10000.0) * torch.sign(amplification)
+            cut_noise = clip_by_tensor(abs(amplification) - eps, 0.0, 10000.0) * ch.sign(amplification)
             projection = alpha * torch_staircase_sign(project_noise(cut_noise, stack_kern, kern_size), 1.5625)
 
             # staircase sign method (under review) can effectively boost the transferability of adversarial examples, and we will release our paper soon.
