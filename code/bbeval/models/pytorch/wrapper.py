@@ -26,6 +26,9 @@ class PyTorchModelWrapper(GenericModelWrapper):
     def pre_process_fn(self, x):
         return x
     
+    def zero_grad(self):
+        self.model.zero_grad()
+    
     def forward(self, x):
         x_ = self.pre_process_fn(x)
         return self.post_process_fn(self.model(x_))

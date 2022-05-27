@@ -28,8 +28,7 @@ def input_diversity(input_tensor, **kwargs):
     pad_left = torch.randint(0, w_rem, ())
     pad_right = w_rem - pad_left
     pad_list = (pad_left, pad_right, pad_top, pad_bottom)
-    padded = nn.ConstantPad2d(
-        (pad_left, pad_right, pad_top, pad_bottom), 0.)(rescaled)
+    padded = nn.ConstantPad2d(pad_list, 0.)(rescaled)
     padded = nn.functional.interpolate(padded, [image_resize, image_resize])
     return padded if torch.rand(()) < prob else input_tensor
 
@@ -50,3 +49,15 @@ def ensemble_input_diversity(input_tensor, idx, **kwargs):
     padded = nn.ConstantPad2d(pad_list, 0.)(rescaled)
     padded = nn.functional.interpolate(padded, [256, 256], mode='bilinear')
     return padded
+
+def clip_by_tensor(t, t_min, t_max):
+    """
+    clip_by_tensor
+    :param t: tensor
+    :param t_min: min
+    :param t_max: max
+    :return: cliped tensor
+    """
+    result = (t >= t_min).float() * t + (t < t_min).float() * t_min
+    result = (result <= t_max).float() * result + (result > t_max).float() * t_max
+    return result

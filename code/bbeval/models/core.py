@@ -43,7 +43,10 @@ class GenericModelWrapper:
     def eval(self, loader, loss_function, acc_fn, **kwargs):
         raise NotImplementedError(
             "This method must be implemented by the child class")
-
+    
+    def zero_grad(self):
+        raise NotImplementedError(
+            "This method must be implemented by the child class")
 
 # We can have two classes that inheret from this class- one for PyTorch, one for Tensorflow.
 # The train() and eval() methods will be different for each, but the same for all models

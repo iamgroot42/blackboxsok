@@ -6,8 +6,8 @@ from torch.autograd import Variable as V
 from bbeval.attacker.core import Attacker
 from bbeval.config import AttackerConfig
 from bbeval.models.core import GenericModelWrapper
-from bbeval.attacker.transfer_methods.manipulate_gradient import torch_staircase_sign, project_noise
-from bbeval.attacker.transfer_methods.manipulate_input import ensemble_input_diversity
+from bbeval.attacker.transfer_methods._manipulate_gradient import torch_staircase_sign, project_noise, gkern, project_kern
+from bbeval.attacker.transfer_methods._manipulate_input import ensemble_input_diversity, clip_by_tensor
 
 np.set_printoptions(precision=5, suppress=True)
 
@@ -46,6 +46,15 @@ class Transfer(Attacker):
         x_min = clip_by_tensor(x - eps, 0.0, 1.0)
         x_max = clip_by_tensor(x + eps, 0.0, 1.0)
 
+        # Create Gaussian kernel
+        kernel_size = 5
+        kernel = gkern(kernel_size, 3).astype(np.float32)
+        gaussian_kernel = np.stack([kernel, kernel, kernel])
+        gaussian_kernel = np.expand_dims(gaussian_kernel, 1)
+        gaussian_kernel = ch.from_numpy(gaussian_kernel).cuda()
+
+        stack_kern, kern_size = project_kern(3)
+
         # use for loop to replace the original manual attack process
         """
         eff = models["eff"]
@@ -67,7 +76,8 @@ class Transfer(Attacker):
         # lpipsLoss.zero_grad(True)
         """
         for model in models:
-            model.zero_grad()
+            model.set_eval()  # Make sure model is in eval model
+            model.zero_grad()  # Make sure no leftover gradients
 
         # start the main attack process: ensemble input diveristy as a demo
         for i in range(n_iters):
@@ -124,7 +134,7 @@ class Transfer(Attacker):
             for i in range(n_ensemble):
                 output = 0
                 for model in models:
-                    output += model(F.interpolate(ensemble_input_diversity(adv + pre_grad, i), (rescaled_dim, rescaled_dim), mode='bilinear')) * 1./6
+                    output += model.forward(F.interpolate(ensemble_input_diversity(adv + pre_grad, i), (rescaled_dim, rescaled_dim), mode='bilinear')) * 1./6
                 loss += F.cross_entropy(output * 1.5, y, reduction="none")
             loss  = loss/n_ensemble
             loss.mean().backward()

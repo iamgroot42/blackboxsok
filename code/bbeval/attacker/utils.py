@@ -1,6 +1,6 @@
 from bbeval.attacker.full_score import Square_Attack
 from bbeval.attacker.top1_score import RayS
-# from bbeval.attacker.transfer import Transfer
+from bbeval.attacker.transfer_methods.transfer import Transfer
 from bbeval.config import AttackerConfig
 from bbeval.models.core import GenericModelWrapper
 
@@ -8,7 +8,7 @@ from bbeval.models.core import GenericModelWrapper
 ATTACK_WRAPPER_MAPPING = {
     "square_attack": Square_Attack,
     "rays": RayS,
-    # "transfer": Transfer,
+    "transfer": Transfer,
 }
 
 
