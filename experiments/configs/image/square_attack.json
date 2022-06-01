@@ -1,0 +1,13 @@
+{
+    "experiment_name": "square_attack_mnist",
+    "name": "square_attack",
+    "access_level": "all",
+    "query_budget": 2000,
+    "dataset_config": {
+        "name": "mnist",
+        "type": "image"
+    },
+    "adv_model_config": {
+        "use_pretrained": true
+    }
+}
