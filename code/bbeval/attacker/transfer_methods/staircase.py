@@ -12,7 +12,7 @@ from bbeval.attacker.transfer_methods._manipulate_input import ensemble_input_di
 np.set_printoptions(precision=5, suppress=True)
 
 
-class Transfer(Attacker):
+class Staircase(Attacker):
     def __init__(self, model: GenericModelWrapper, config: AttackerConfig):
         super().__init__(model, config)
         self.x_final = None

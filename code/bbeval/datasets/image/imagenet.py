@@ -1,4 +1,5 @@
 from torchvision.datasets import ImageNet
+from torchvision import transforms
 
 from bbeval.datasets.base import CustomDatasetWrapper
 from bbeval.config import DatasetConfig
@@ -14,4 +15,5 @@ class ImageNetWrapper(CustomDatasetWrapper):
                                 transform=train_transforms)
         self.ds_val = None
         self.ds_test = ImageNet(self.root, split='val')
+    
 
