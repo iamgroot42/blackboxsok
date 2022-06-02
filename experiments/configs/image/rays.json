@@ -1,8 +1,8 @@
 {
-    "experiment_name": "dummy_exp",
+    "experiment_name": "rays_imagenet",
     "name": "rays",
     "access_level": "all",
-    "query_budget": 200,
+    "query_budget": 2000,
     "dataset_config": {
         "name": "imagenet",
         "type": "image"

@@ -1,13 +1,14 @@
 import torch as ch
 from simple_parsing import ArgumentParser
 from pathlib import Path
+import os
 
 from bbeval.models.pytorch.image import Inceptionv3
 from bbeval.config import AttackerConfig
 from bbeval.datasets.utils import get_dataset_wrapper
 from bbeval.attacker.utils import get_attack_wrapper
 
-
+os.environ['TORCH_HOME'] = '/p/blackboxsok/models/imagenet_torch' # download imagenet models to project directory
 if __name__ == "__main__":
     parser = ArgumentParser(add_help=False)
     parser.add_argument(
@@ -29,13 +30,18 @@ if __name__ == "__main__":
 
     # Get a pretrained ImageNet model
     model = Inceptionv3(model_config)
-    model.cuda()
+    # model.cuda()
     # Get data-loader, make sure it works
     ds = get_dataset_wrapper(ds_config)
 
     _, _, test_loader = ds.get_loaders(batch_size=32)
     x_sample, y_sample = next(iter(test_loader))
     x_sample, y_sample = x_sample.cuda(), y_sample.cuda()
+    pred_labs = model.predict(x_sample)
+    corr_classified = pred_labs == y_sample
+    print("clean accuracy: {:.2f}".format(ch.mean(corr_classified).numpy()))
+    sys.exit(0)
+
     # For now, make a random image
     # x_sample = ch.rand(32, 3, 299, 299).cuda()
     attacker = get_attack_wrapper(model, attacker_config)

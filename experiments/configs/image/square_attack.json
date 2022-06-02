@@ -1,8 +1,8 @@
 {
-    "experiment_name": "square_attack_mnist",
+    "experiment_name": "square_attack_imagenet",
     "name": "square_attack",
     "access_level": "all",
-    "query_budget": 2000,
+    "query_budget": 5000,
     "dataset_config": {
         "name": "imagenet",
         "type": "image"
