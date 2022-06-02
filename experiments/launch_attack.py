@@ -30,15 +30,16 @@ if __name__ == "__main__":
 
     # Get a pretrained ImageNet model
     model = Inceptionv3(model_config)
-    model.cuda()
+    # model.cuda()
     # Get data-loader, make sure it works
     ds = get_dataset_wrapper(ds_config)
 
     _, _, test_loader = ds.get_loaders(batch_size=32)
     x_sample, y_sample = next(iter(test_loader))
-    x_sample, y_sample = x_sample.cuda(), y_sample.cuda()
+    # x_sample, y_sample = x_sample.cuda(), y_sample.cuda()
     pred_labs = model.predict(x_sample)
     corr_classified = 1. * (pred_labs == y_sample)
+    print(corr_classified)
     print("clean accuracy: {:.2f}".format(ch.mean(corr_classified).cpu().numpy()))
     exit()
 

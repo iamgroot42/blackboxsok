@@ -41,7 +41,8 @@ class PyTorchModelWrapper(GenericModelWrapper):
 
     def predict(self, x) -> int:
         predictions = self.forward(x)
-        return self.post_process_fn(ch.argmax(predictions, dim=1)[0])
+        # return self.post_process_fn(ch.argmax(predictions, dim=1)[0])
+        return self.post_process_fn(ch.argmax(predictions, dim=1))
 
     def train(self, train_loader, val_loader, **kwargs):
         # TODO: Implement
