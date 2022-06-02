@@ -1,5 +1,6 @@
 import numpy as np
 import torch as ch
+from torch.nn import CrossEntropyLoss, BCEWithLogitsLoss
 
 
 class Loss:
@@ -20,7 +21,9 @@ class MarginLoss:
 
 
 _LOSS_FUNCTION_MAPPING = {
-    "margin_loss": MarginLoss
+    "margin": MarginLoss,
+    "ce": CrossEntropyLoss,
+    "bce": BCEWithLogitsLoss
 }
 
 

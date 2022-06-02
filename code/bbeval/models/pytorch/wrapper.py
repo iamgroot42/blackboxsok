@@ -48,17 +48,18 @@ class PyTorchModelWrapper(GenericModelWrapper):
         # TODO: Implement
         pass
 
-    def eval(self, loader, loss_function, acc_fn, **kwargs):
+    def eval(self, loader, loss_function, acc_fn, detach: bool = True, **kwargs):
         loss_tracker, acc_tracker = AverageMeter(), AverageMeter()
         # Set model to eval model
         self.set_eval()
-        # Do not use 'ch.no_grad()' because we may want to
-        # keep the gradients in some attacks
         iterator = tqdm(loader)
-        for x, y in iterator():
-            y_predicted = self.forward(x)
-            loss = loss_function(y_predicted, y)
-            accuracy = acc_fn(y_predicted, y)
+        for x, y in iterator:
+            x, y = x.cuda(), y.cuda()
+            with ch.set_grad_enabled(not detach):
+                y_logits = self.forward(x)
+                loss = loss_function(y_logits, y)
+                y_predicted = ch.argmax(y_logits, dim=1)
+                accuracy = acc_fn(y_predicted, y)
             loss_tracker.update(loss, x.size(0))
             acc_tracker.update(accuracy, x.size(0))
             iterator.set_description("Loss: {:.4f}, Accuracy: {:.4f}".format(

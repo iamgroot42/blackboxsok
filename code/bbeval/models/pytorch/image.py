@@ -25,7 +25,7 @@ class Inceptionv3(PyTorchModelWrapper):
 
     def forward(self, x):
         outputs = self.model(x)
-        return self.post_process_fn(outputs.logits)
+        return self.post_process_fn(outputs)
 
 
 class RobustBenchModel(PyTorchModelWrapper):
@@ -33,8 +33,7 @@ class RobustBenchModel(PyTorchModelWrapper):
         super().__init__(model_config)
         self.use_pretrained = True
         self.is_robust = True
-        # TODO: Make dataset configurable
-        # As well as norm/threat-model
+        # TODO: Make threat model configurable
         self.model = load_model(model_name=self.config.name,
                                 model_dir=self.save_dir,
                                 dataset=self.config.dataset)

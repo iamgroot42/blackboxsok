@@ -7,8 +7,9 @@ from bbeval.models.pytorch.image import Inceptionv3
 from bbeval.config import AttackerConfig
 from bbeval.datasets.utils import get_dataset_wrapper
 from bbeval.attacker.utils import get_attack_wrapper
+from bbeval.loss import get_loss_fn
 
-os.environ['TORCH_HOME'] = '/p/blackboxsok/models/imagenet_torch' # download imagenet models to project directory
+# os.environ['TORCH_HOME'] = '/p/blackboxsok/models/imagenet_torch' # download imagenet models to project directory
 if __name__ == "__main__":
     parser = ArgumentParser(add_help=False)
     parser.add_argument(
@@ -30,17 +31,18 @@ if __name__ == "__main__":
 
     # Get a pretrained ImageNet model
     model = Inceptionv3(model_config)
-    # model.cuda()
+    model.cuda()
     # Get data-loader, make sure it works
     ds = get_dataset_wrapper(ds_config)
 
-    _, _, test_loader = ds.get_loaders(batch_size=32)
-    x_sample, y_sample = next(iter(test_loader))
-    # x_sample, y_sample = x_sample.cuda(), y_sample.cuda()
-    pred_labs = model.predict(x_sample)
-    corr_classified = 1. * (pred_labs == y_sample)
-    print(corr_classified)
-    print("clean accuracy: {:.2f}".format(ch.mean(corr_classified).cpu().numpy()))
+    _, _, test_loader = ds.get_loaders(batch_size=256, eval_shuffle=True)
+    # Compute clean accuracy
+    loss_function = get_loss_fn("ce")()
+    def acc_fn(predicted, true):
+        return ch.mean(1. * (predicted == true))
+    
+    eval_loss, eval_acc = model.eval(test_loader, loss_function, acc_fn)
+    print("Clean accuracy: {:.2f}".format(eval_acc))
     exit()
 
     # For now, make a random image
