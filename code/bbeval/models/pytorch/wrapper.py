@@ -12,7 +12,7 @@ class PyTorchModelWrapper(GenericModelWrapper):
     def __init__(self, model_config: ModelConfig):
         super().__init__(model_config)
     
-    def set_eval(self):
+    def set_train(self):
         self.model.train()
     
     def post_process_fn(self, tensor):
