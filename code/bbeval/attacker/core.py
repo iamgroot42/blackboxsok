@@ -1,6 +1,6 @@
-from bbeval.logging.core import Logger
 from bbeval.models.core import GenericModelWrapper
 from bbeval.config import AttackerConfig
+from bbeval.logger.core import Logger
 
 
 class Attacker:

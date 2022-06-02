@@ -18,4 +18,3 @@ class MNISTWrapper(CustomDatasetWrapper):
                               transform=self.train_transforms, download=True)
         self.ds_test = MNIST(self.root, train=False,
                              transform=self.test_transforms, download=True)
-        self.ds_val = None

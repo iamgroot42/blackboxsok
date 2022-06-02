@@ -16,6 +16,9 @@ class CustomDatasetWrapper:
         self.root = os.path.join(data_config.root, data_config.name)
         self.train_transforms = None
         self.test_transforms = None
+        self.ds_train = None
+        self.ds_val = None
+        self.ds_test = None
     
     def get_train_transforms(self):
         return None
@@ -27,14 +30,19 @@ class CustomDatasetWrapper:
                     num_workers: int = 0,
                     prefetch_factor: int = 2):
         # This function should return new loaders at every call
-        train_loader = DataLoader(
-            self.ds_train,
-            batch_size=batch_size,
-            shuffle=shuffle,
-            num_workers=num_workers,
-            worker_init_fn=worker_init_fn,
-            prefetch_factor=prefetch_factor
-        )
+
+        # Not all datasets will have val loaders
+        if self.ds_train is None:
+            train_loader = None
+        else:
+            train_loader = DataLoader(
+                self.ds_train,
+                batch_size=batch_size,
+                shuffle=shuffle,
+                num_workers=num_workers,
+                worker_init_fn=worker_init_fn,
+                prefetch_factor=prefetch_factor
+            )
 
         # Not all datasets will have val loaders
         if self.ds_val is None:

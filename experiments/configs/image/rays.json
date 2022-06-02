@@ -4,7 +4,7 @@
     "access_level": "all",
     "query_budget": 200,
     "dataset_config": {
-        "name": "mnist",
+        "name": "imagenet",
         "type": "image"
     },
     "adv_model_config": {

@@ -9,3 +9,4 @@ pandas
 colorama
 seaborn
 jsonargparse
+git+https://github.com/RobustBench/robustbench.git

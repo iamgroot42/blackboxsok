@@ -37,7 +37,7 @@ if __name__ == "__main__":
     x_sample, y_sample = next(iter(test_loader))
     x_sample, y_sample = x_sample.cuda(), y_sample.cuda()
     # For now, make a random image
-    x_sample = ch.rand(32, 3, 299, 299).cuda()
+    # x_sample = ch.rand(32, 3, 299, 299).cuda()
     attacker = get_attack_wrapper(model, attacker_config)
     x_sample_adv, queries_used = attacker.attack(x_sample, y_sample, eps=1.0)
     attacker.save_results()
