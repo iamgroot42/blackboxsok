@@ -8,6 +8,8 @@
         "type": "image"
     },
     "adv_model_config": {
-        "use_pretrained": true
+        "use_pretrained": true,
+        "name": "inceptionv3",
+        "dataset": "imagenet"
     }
 }

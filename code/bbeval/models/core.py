@@ -3,11 +3,21 @@
     cross-attack and cross-platform compatibility.
 """
 import numpy as np
+import os
+from bbeval.config import ModelConfig
+from bbeval.utils import get_models_save_path
 
 
 class GenericModelWrapper:
-    def __init__(self, model):
-        self.model = model
+    def __init__(self, model_config: ModelConfig):
+        self.config = model_config
+        self.save_dir = os.path.join(
+            get_models_save_path(),
+            self.config.dataset,
+            self.config.name)
+        # Make sure save-dir exists
+        os.makedirs(self.save_dir, exist_ok=True)
+        self.is_robust = False
     
     def cuda(self):
         raise NotImplementedError(

@@ -1,5 +1,3 @@
-import numpy as np
-
 from bbeval.datasets.image import mnist, cifar10, imagenet
 from bbeval.config import DatasetConfig
 

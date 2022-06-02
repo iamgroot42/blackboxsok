@@ -1,4 +1,5 @@
 
+from robustbench.utils import load_model
 from torchvision.models import inception_v3
 from torchvision import transforms
 
@@ -8,9 +9,9 @@ from bbeval.models.pytorch.wrapper import PyTorchModelWrapper
 
 class Inceptionv3(PyTorchModelWrapper):
     def __init__(self, model_config: ModelConfig):
+        super().__init__(model_config)
         self.use_pretrained = model_config.use_pretrained
-        model = inception_v3(pretrained=self.use_pretrained)
-        super().__init__(model)
+        self.model = inception_v3(pretrained=self.use_pretrained)
     
     def pre_process_fn(self, x):
         # imagenet inputs need to be normalized
@@ -23,4 +24,17 @@ class Inceptionv3(PyTorchModelWrapper):
         return transform_norm(x)
 
     def forward(self, x):
-        return self.post_process_fn(self.model(x))
+        outputs = self.model(x)
+        return self.post_process_fn(outputs.logits)
+
+
+class RobustBenchModel(PyTorchModelWrapper):
+    def __init__(self, model_config: ModelConfig):
+        super().__init__(model_config)
+        self.use_pretrained = True
+        self.is_robust = True
+        # TODO: Make dataset configurable
+        # As well as norm/threat-model
+        self.model = load_model(model_name=self.config.name,
+                                model_dir=self.save_dir,
+                                dataset=self.config.dataset)

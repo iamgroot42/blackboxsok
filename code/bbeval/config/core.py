@@ -49,6 +49,10 @@ class ModelConfig(Serializable):
     """
         Configuration for model
     """
+    name: str
+    """Name of model"""
+    dataset: str
+    """Which dataset this model is for"""
     use_pretrained: Optional[bool] = False
     "Use pre-trained model from library?"
 

@@ -1,15 +1,16 @@
+from bbeval.config.core import ModelConfig
 import torch as ch
-import torch.nn as nn
 import numpy as np
 
 from bbeval.models.core import GenericModelWrapper
 from bbeval.utils import AverageMeter
+from bbeval.config import ModelConfig
 from tqdm import tqdm
 
 
 class PyTorchModelWrapper(GenericModelWrapper):
-    def __init__(self, model: nn.Module):
-        super().__init__(model)
+    def __init__(self, model_config: ModelConfig):
+        super().__init__(model_config)
     
     def set_eval(self):
         self.model.train()
