@@ -12,8 +12,7 @@ class ImageNetWrapper(CustomDatasetWrapper):
             # Maybe consider making these sizes configurable
             transforms.Resize(299),
             transforms.RandomCrop(299),
-            transforms.ToTensor(),
-            transforms.Normalize((0.5,), (0.5,))])
+            transforms.ToTensor()])
         self.test_transforms = self.train_transforms
         if data_config.augment:
             self.train_transforms = self.get_train_transforms()

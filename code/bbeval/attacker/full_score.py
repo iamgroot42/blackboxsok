@@ -1,4 +1,5 @@
 import numpy as np
+import torch as ch
 from bbeval.models.core import GenericModelWrapper
 from bbeval.attacker.core import Attacker
 from bbeval.config import AttackerConfig
@@ -12,16 +13,34 @@ np.set_printoptions(precision=5, suppress=True)
 class Square_Attack(Attacker):
     def __init__(self, model: GenericModelWrapper, config: AttackerConfig):
         super().__init__(model, config)
+    
+    def _workaround_choice(self, shape, eps=1.0):
+        """
+            Trick to generate numbers out of [-eps, eps]
+            using numbers generated in [0, 1)
+        """
+        y = ch.rand(shape).cuda() - 0.5
+        y = ch.sign(y) * ch.abs(y) * eps
+        return y
 
     def attack(self, x, y, eps, **kwargs):
-        p_init = kwargs.get('p_init')
-        n_iters = kwargs.get('n_iters')
+        # Hard-coding for now, will handle extra args later
+        n_iters = 100
+        p_init = 0.2
+        # p_init = kwargs.get('p_init')
+        # n_iters = kwargs.get('n_iters')
+        if p_init is None:
+            raise ValueError("p_init must be specified")
+        if n_iters is None:
+            raise ValueError("n_iters must be specified")
+        # Don't need gradients for the attack, detach x if it has gradient collection on
+        x_ = x.detach()
         if self.norm_type == np.inf:
             x_adv, num_queries = self.square_attack_l2(
-                x, y, eps, n_iters, p_init)
+                x_, y, eps, n_iters, p_init)
         elif self.norm_type == 2:
             x_adv, num_queries = self.square_attack_linf(
-                x, y, eps, n_iters, p_init)
+                x_, y, eps, n_iters, p_init)
         else:
             raise NotImplementedError("Unsupported Norm Type!")
         return x_adv, num_queries
@@ -54,7 +73,7 @@ class Square_Attack(Attacker):
         return p
 
     def pseudo_gaussian_pert_rectangles(self, x, y):
-        delta = np.zeros([x, y])
+        delta = ch.zeros([x, y]).cuda()
         x_c, y_c = x // 2 + 1, y // 2 + 1
 
         counter2 = [x_c - 1, y_c - 1]
@@ -65,38 +84,38 @@ class Square_Attack(Attacker):
             counter2[0] -= 1
             counter2[1] -= 1
 
-        delta /= np.sqrt(np.sum(delta ** 2, keepdims=True))
+        delta /= ch.sqrt(ch.sum(delta ** 2, dim=(0, 1), keepdim=True))
 
         return delta
 
     def meta_pseudo_gaussian_pert(self, s):
-        delta = np.zeros([s, s])
+        delta = ch.zeros([s, s]).cuda()
         n_subsquares = 2
         if n_subsquares == 2:
             delta[:s // 2] = self.pseudo_gaussian_pert_rectangles(s // 2, s)
             delta[s //
                   2:] = self.pseudo_gaussian_pert_rectangles(s - s // 2, s) * (-1)
-            delta /= np.sqrt(np.sum(delta ** 2, keepdims=True))
-            if np.random.rand(1) > 0.5:
-                delta = np.transpose(delta)
+            delta /= ch.sqrt(ch.sum(delta ** 2, dim=(0, 1), keepdim=True))
+            if ch.rand(1).item() > 0.5:
+                delta = delta.T
 
         elif n_subsquares == 4:
             delta[:s // 2, :s // 2] = self.pseudo_gaussian_pert_rectangles(
-                s // 2, s // 2) * np.random.choice([-1, 1])
+                s // 2, s // 2) * self._workaround_choice(1)
             delta[s // 2:, :s // 2] = self.pseudo_gaussian_pert_rectangles(
-                s - s // 2, s // 2) * np.random.choice([-1, 1])
+                s - s // 2, s // 2) * self._workaround_choice(1)
             delta[:s // 2, s // 2:] = self.pseudo_gaussian_pert_rectangles(
-                s // 2, s - s // 2) * np.random.choice([-1, 1])
+                s // 2, s - s // 2) * self._workaround_choice(1)
             delta[s // 2:, s // 2:] = self.pseudo_gaussian_pert_rectangles(
-                s - s // 2, s - s // 2) * np.random.choice([-1, 1])
-            delta /= np.sqrt(np.sum(delta ** 2, keepdims=True))
+                s - s // 2, s - s // 2) * self._workaround_choice(1)
+            delta /= ch.sqrt(ch.sum(delta ** 2, dim=(0, 1), keepdim=True))
 
         return delta
 
     def square_attack_l2(self, x, y, eps, n_iters, p_init):
         """ The L2 square attack """
         if self.seed is not None:
-            np.random.seed(self.seed)
+            ch.random.seed(self.seed)
 
         min_val, max_val = 0, 1
         c, h, w = x.shape[1:]
@@ -106,7 +125,7 @@ class Square_Attack(Attacker):
         # x, y = x[corr_classified], y[corr_classified]
 
         ### initialization
-        delta_init = np.zeros(x.shape)
+        delta_init = ch.zeros(x.shape).cuda()
         s = h // 5
         self.logger.log('Initial square side={} for bumps'.format(s))
         sp_init = (h - s * 5) // 2
@@ -115,18 +134,18 @@ class Square_Attack(Attacker):
             center_w = sp_init + 0
             for _ in range(w // s):
                 delta_init[:, :, center_h:center_h + s, center_w:center_w + s] += self.meta_pseudo_gaussian_pert(s).reshape(
-                    [1, 1, s, s]) * np.random.choice([-1, 1], size=[x.shape[0], c, 1, 1])
+                    [1, 1, s, s]) * self._workaround_choice([x.shape[0], c, 1, 1])
                 center_w += s
             center_h += s
 
-        x_best = np.clip(x + delta_init / np.sqrt(np.sum(delta_init **
-                         2, axis=(1, 2, 3), keepdims=True)) * eps, 0, 1)
+        x_best = ch.clip(x + delta_init / ch.sqrt(ch.sum(delta_init **
+                         2, dim=(1, 2, 3), keepdim=True)) * eps, 0, 1)
 
         probs = self.model.predict_proba(x_best)
         loss_min = get_loss_fn(self.loss_type)(y, probs, self.targeted)
-        margin_min = get_loss_fn('margin_loss')(y, probs, self.targeted)
+        margin_min = get_loss_fn('margin')(y, probs, self.targeted)
         # ones because we have already used 1 query
-        n_queries = np.ones(x.shape[0])
+        n_queries = ch.ones(x.shape[0]).cuda()
 
         time_start = time.time()
         s_init = int(np.sqrt(p_init * n_features / c))
@@ -148,40 +167,39 @@ class Square_Attack(Attacker):
             ### window_1
             center_h = np.random.randint(0, h - s)
             center_w = np.random.randint(0, w - s)
-            new_deltas_mask = np.zeros(x_curr.shape)
+            new_deltas_mask = ch.zeros(x_curr.shape).cuda()
             new_deltas_mask[:, :, center_h:center_h +
                             s, center_w:center_w + s] = 1.0
 
             ### window_2
             center_h_2 = np.random.randint(0, h - s2)
             center_w_2 = np.random.randint(0, w - s2)
-            new_deltas_mask_2 = np.zeros(x_curr.shape)
+            new_deltas_mask_2 = ch.zeros(x_curr.shape).cuda()
             new_deltas_mask_2[:, :, center_h_2:center_h_2 +
                               s2, center_w_2:center_w_2 + s2] = 1.0
-            norms_window_2 = np.sqrt(
-                np.sum(delta_curr[:, :, center_h_2:center_h_2 + s2, center_w_2:center_w_2 + s2] ** 2, axis=(-2, -1),
-                       keepdims=True))
+            norms_window_2 = ch.sqrt(
+                ch.sum(delta_curr[:, :, center_h_2:center_h_2 + s2, center_w_2:center_w_2 + s2] ** 2, dim=(-2, -1),
+                       keepdim=True))
 
             ### compute total norm available
-            curr_norms_window = np.sqrt(
-                np.sum(((x_best_curr - x_curr) * new_deltas_mask) ** 2, axis=(2, 3), keepdims=True))
-            curr_norms_image = np.sqrt(
-                np.sum((x_best_curr - x_curr) ** 2, axis=(1, 2, 3), keepdims=True))
-            mask_2 = np.maximum(new_deltas_mask, new_deltas_mask_2)
-            norms_windows = np.sqrt(
-                np.sum((delta_curr * mask_2) ** 2, axis=(2, 3), keepdims=True))
+            curr_norms_window = ch.sqrt(
+                ch.sum(((x_best_curr - x_curr) * new_deltas_mask) ** 2, dim=(2, 3), keepdim=True))
+            curr_norms_image = ch.sqrt(
+                ch.sum((x_best_curr - x_curr) ** 2, dim=(1, 2, 3), keepdim=True))
+            mask_2 = ch.maximum(new_deltas_mask, new_deltas_mask_2)
+            norms_windows = ch.sqrt(
+                ch.sum((delta_curr * mask_2) ** 2, dim=(2, 3), keepdim=True))
 
             ### create the updates
-            new_deltas = np.ones([x_curr.shape[0], c, s, s])
+            new_deltas = ch.ones([x_curr.shape[0], c, s, s]).cuda()
             new_deltas = new_deltas * \
                 self.meta_pseudo_gaussian_pert(s).reshape([1, 1, s, s])
-            new_deltas *= np.random.choice([-1, 1],
-                                           size=[x_curr.shape[0], c, 1, 1])
+            new_deltas *= self._workaround_choice([x_curr.shape[0], c, 1, 1])
             old_deltas = delta_curr[:, :, center_h:center_h + s,
                                     center_w:center_w + s] / (1e-10 + curr_norms_window)
             new_deltas += old_deltas
-            new_deltas = new_deltas / np.sqrt(np.sum(new_deltas ** 2, axis=(2, 3), keepdims=True)) * (
-                np.maximum(eps ** 2 - curr_norms_image ** 2, 0) / c + norms_windows ** 2) ** 0.5
+            new_deltas = new_deltas / ch.sqrt(ch.sum(new_deltas ** 2, dim=(2, 3), keepdim=True)) * (
+                ch.maximum(eps ** 2 - curr_norms_image ** 2, 0) / c + norms_windows ** 2) ** 0.5
             delta_curr[:, :, center_h_2:center_h_2 + s2,
                        center_w_2:center_w_2 + s2] = 0.0  # set window_2 to 0
             delta_curr[:, :, center_h:center_h + s,
@@ -189,15 +207,15 @@ class Square_Attack(Attacker):
 
             hps_str = 's={}->{}'.format(s_init, s)
             x_new = x_curr + delta_curr / \
-                np.sqrt(np.sum(delta_curr ** 2,
-                        axis=(1, 2, 3), keepdims=True)) * eps
-            x_new = np.clip(x_new, min_val, max_val)
-            curr_norms_image = np.sqrt(
-                np.sum((x_new - x_curr) ** 2, axis=(1, 2, 3), keepdims=True))
+                ch.sqrt(ch.sum(delta_curr ** 2,
+                        dim=(1, 2, 3), keepdim=True)) * eps
+            x_new = ch.clip(x_new, min_val, max_val)
+            curr_norms_image = ch.sqrt(
+                ch.sum((x_new - x_curr) ** 2, dim=(1, 2, 3), keepdim=True))
 
             probs = self.model.predict_proba(x_new)
             loss = get_loss_fn(self.loss_type)(y_curr, probs, self.targeted)
-            margin = get_loss_fn('margin_loss')(y_curr, probs, self.targeted)
+            margin = get_loss_fn('margin')(y_curr, probs, self.targeted)
 
             idx_improved = loss < loss_min_curr
             loss_min[idx_to_fool] = idx_improved * \
@@ -205,7 +223,7 @@ class Square_Attack(Attacker):
             margin_min[idx_to_fool] = idx_improved * \
                 margin + ~idx_improved * margin_min_curr
 
-            idx_improved = np.reshape(
+            idx_improved = ch.reshape(
                 idx_improved, [-1, *[1] * len(x.shape[:-1])])
             x_best[idx_to_fool] = idx_improved * \
                 x_new + ~idx_improved * x_best_curr
@@ -213,14 +231,14 @@ class Square_Attack(Attacker):
 
             acc = (margin_min > 0.0).sum() / n_ex_total
             acc_corr = (margin_min > 0.0).mean()
-            mean_nq, mean_nq_ae, median_nq, median_nq_ae = np.mean(n_queries), np.mean(
-                n_queries[margin_min <= 0]), np.median(n_queries), np.median(n_queries[margin_min <= 0])
+            mean_nq, mean_nq_ae, median_nq, median_nq_ae = ch.mean(n_queries), ch.mean(
+                n_queries[margin_min <= 0]), ch.median(n_queries), ch.median(n_queries[margin_min <= 0])
 
             time_total = time.time() - time_start
             self.logger.log(
                 '{}: acc={:.2%} acc_corr={:.2%} avg#q_ae={:.1f} med#q_ae={:.1f} {}, n_ex={}, {:.0f}s, loss={:.3f}, max_pert={:.1f}, impr={:.0f}'.
                 format(i_iter + 1, acc, acc_corr, mean_nq_ae, median_nq_ae, hps_str, x.shape[0], time_total,
-                       np.mean(margin_min), np.amax(curr_norms_image), np.sum(idx_improved)))
+                       ch.mean(margin_min), ch.amax(curr_norms_image), ch.sum(idx_improved)))
             # if (i_iter <= 500 and i_iter % 500) or (i_iter > 100 and i_iter % 500) or i_iter + 1 == n_iters or acc == 0:
             # TODO: Make sure right things are being logged
             self.logger.add_result(i_iter + 1, {
@@ -233,22 +251,22 @@ class Square_Attack(Attacker):
                 "time_total": time_total,
             })
             if acc == 0:
-                curr_norms_image = np.sqrt(
-                    np.sum((x_best - x) ** 2, axis=(1, 2, 3), keepdims=True))
+                curr_norms_image = ch.sqrt(
+                    ch.sum((x_best - x) ** 2, dim=(1, 2, 3), keepdim=True))
                 self.logger.log('Maximal norm of the perturbations: {:.5f}'.format(
-                    np.amax(curr_norms_image)))
+                    ch.amax(curr_norms_image)))
                 break
 
-        curr_norms_image = np.sqrt(
-            np.sum((x_best - x) ** 2, axis=(1, 2, 3), keepdims=True))
+        curr_norms_image = ch.sqrt(
+            ch.sum((x_best - x) ** 2, dim=(1, 2, 3), keepdim=True))
         self.logger.log('Maximal norm of the perturbations: {:.5f}'.format(
-            np.amax(curr_norms_image)))
+            ch.amax(curr_norms_image)))
 
         return n_queries, x_best
 
     def square_attack_linf(self, x, y, eps, n_iters, p_init):
         """ The Linf square attack """
-        np.random.seed(0)  # important to leave it here as well
+        ch.random.seed(0)  # important to leave it here as well
         min_val, max_val = 0, 1 if x.max() <= 1 else 255
         c, h, w = x.shape[1:]
         n_features = c*h*w
@@ -256,14 +274,14 @@ class Square_Attack(Attacker):
         # x, y = x[corr_classified], y[corr_classified]
 
         # [c, 1, w], i.e. vertical stripes work best for untargeted attacks
-        init_delta = np.random.choice([-eps, eps], size=[x.shape[0], c, 1, w])
-        x_best = np.clip(x + init_delta, min_val, max_val)
+        init_delta = self._workaround_choice([x.shape[0], c, 1, w], eps)
+        x_best = ch.clip(x + init_delta, min_val, max_val)
 
         probs = self.model.predict_proba(x_best)
         loss_min = get_loss_fn(self.loss_type)(y, probs, self.targeted)
-        margin_min = get_loss_fn('margin_loss')(y, probs, self.targeted)
+        margin_min = get_loss_fn('margin')(y, probs, self.targeted)
         # ones because we have already used 1 query
-        n_queries = np.ones(x.shape[0])
+        n_queries = ch.ones(x.shape[0]).cuda()
 
         time_start = time.time()
         for i_iter in range(n_iters - 1):
@@ -274,7 +292,7 @@ class Square_Attack(Attacker):
 
             p = self.p_selection(p_init, i_iter, n_iters)
             for i_img in range(x_best_curr.shape[0]):
-                s = int(round(np.sqrt(p * n_features / c)))
+                s = int(round(ch.sqrt(p * n_features / c)))
                 # at least c x 1 x 1 window is taken and at most c x h-1 x h-1
                 s = min(max(s, 1), h-1)
                 center_h = np.random.randint(0, h - s)
@@ -285,22 +303,22 @@ class Square_Attack(Attacker):
                 x_best_curr_window = x_best_curr[i_img, :,
                                                  center_h:center_h+s, center_w:center_w+s]
                 # prevent trying out a delta if it doesn't change x_curr (e.g. an overlapping patch)
-                while np.sum(np.abs(np.clip(x_curr_window + deltas[i_img, :, center_h:center_h+s, center_w:center_w+s], min_val, max_val) - x_best_curr_window) < 10**-7) == c*s*s:
+                while ch.sum(ch.abs(ch.clip(x_curr_window + deltas[i_img, :, center_h:center_h+s, center_w:center_w+s], min_val, max_val) - x_best_curr_window) < 10**-7) == c*s*s:
                     deltas[i_img, :, center_h:center_h+s, center_w:center_w +
-                           s] = np.random.choice([-eps, eps], size=[c, 1, 1])
+                           s] = self._workaround_choice([c, 1, 1], eps)
 
-            x_new = np.clip(x_curr + deltas, min_val, max_val)
+            x_new = ch.clip(x_curr + deltas, min_val, max_val)
 
             probs = self.model.predict_proba(x_new)
             loss = get_loss_fn(self.loss_type)(y_curr, probs, self.targeted)
-            margin = get_loss_fn('margin_loss')(y_curr, probs, self.targeted)
+            margin = get_loss_fn('margin')(y_curr, probs, self.targeted)
 
             idx_improved = loss < loss_min_curr
             loss_min[idx_to_fool] = idx_improved * \
                 loss + ~idx_improved * loss_min_curr
             margin_min[idx_to_fool] = idx_improved * \
                 margin + ~idx_improved * margin_min_curr
-            idx_improved = np.reshape(
+            idx_improved = ch.reshape(
                 idx_improved, [-1, *[1]*len(x.shape[:-1])])
             x_best[idx_to_fool] = idx_improved * \
                 x_new + ~idx_improved * x_best_curr
@@ -308,9 +326,9 @@ class Square_Attack(Attacker):
 
             acc = (margin_min > 0.0).sum() / n_ex_total
             acc_corr = (margin_min > 0.0).mean()
-            mean_nq, mean_nq_ae, median_nq_ae = np.mean(n_queries), np.mean(
-                n_queries[margin_min <= 0]), np.median(n_queries[margin_min <= 0])
-            avg_margin_min = np.mean(margin_min)
+            mean_nq, mean_nq_ae, median_nq_ae = ch.mean(n_queries), ch.mean(
+                n_queries[margin_min <= 0]), ch.median(n_queries[margin_min <= 0])
+            avg_margin_min = ch.mean(margin_min)
             time_total = time.time() - time_start
             self.logger.log('{}: acc={:.2%} acc_corr={:.2%} avg#q_ae={:.2f} med#q={:.1f}, avg_margin={:.2f} (n_ex={}, eps={:.3f}, {:.2f}s)'.
                   format(i_iter+1, acc, acc_corr, mean_nq_ae, median_nq_ae, avg_margin_min, x.shape[0], eps, time_total))
@@ -345,7 +363,7 @@ class Square_Attack(Attacker):
 #     parser.add_argument('--n_iter', type=int, default=10000)
 #     parser.add_argument('--targeted', action='store_true', help='Targeted or untargeted attack.')
 #     args = parser.parse_args()
-#     args.loss = 'margin_loss' if not args.targeted else 'cross_entropy'
+#     args.loss = 'margin' if not args.targeted else 'cross_entropy'
 
 #     os.environ["CUDA_VISIBLE_DEVICES"] = args.gpu
 #     dataset = 'mnist' if 'mnist' in args.model else 'cifar10' if 'cifar10' in args.model else 'imagenet'

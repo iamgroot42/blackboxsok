@@ -33,7 +33,6 @@ class TrainConfig(Serializable):
     """Learning rate for optimizer"""
     batch_size: int
     """Batch size for training"""
-
     verbose: Optional[bool] = False
     """Whether to print out per-classifier stats"""
     weight_decay: Optional[float] = 0
@@ -90,7 +89,7 @@ class AttackerConfig(Serializable):
     """Norm type (for bounding perturbations)"""
     targeted: Optional[bool] = True
     """Is the attack targeted?"""
-    loss_type: Optional[str] = "xent"
+    loss_type: Optional[str] = "ce"
     """Loss type"""
     seed: Optional[int] = None
     """Seed for RNG"""

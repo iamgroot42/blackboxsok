@@ -17,15 +17,15 @@ class Inceptionv3(PyTorchModelWrapper):
         # imagenet inputs need to be normalized
         mean=[0.485, 0.456, 0.406],
         std=[0.229, 0.224, 0.225]
+        return x
+        # TODO: Fix below to remove shape-based errors
         transform_norm = transforms.Compose([
-            transforms.ToTensor(),
             transforms.Normalize(mean, std)
         ]) 
         return transform_norm(x)
-
-    def forward(self, x):
-        outputs = self.model(x)
-        return self.post_process_fn(outputs)
+    
+    def post_process_fn(self, tensor):
+        return tensor.logits
 
 
 class RobustBenchModel(PyTorchModelWrapper):

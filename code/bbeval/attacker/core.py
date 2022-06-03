@@ -23,7 +23,7 @@ class Attacker:
         pass
 
     def save_results(self):
-        # Save loggerr
+        # Save logger
         self.logger.save()
 
 # TODO: Figure out a good way to structure classes for partial/full auxiliary information

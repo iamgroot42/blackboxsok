@@ -9,8 +9,7 @@ class CIFAR10Wrapper(CustomDatasetWrapper):
     def __init__(self, data_config: DatasetConfig):
         super().__init__(data_config)
         self.train_transforms = transforms.Compose([
-            transforms.ToTensor(),
-            transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
+            transforms.ToTensor()])
         self.test_transforms = self.train_transforms
         if data_config.augment:
             self.train_transforms = self.get_train_transforms()
