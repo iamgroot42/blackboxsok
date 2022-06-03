@@ -50,4 +50,4 @@ if __name__ == "__main__":
     x_sample, y_sample = x_sample.cuda(), y_sample.cuda()
     attacker = get_attack_wrapper(model, attacker_config)
     x_sample_adv, queries_used = attacker.attack(x_sample, y_sample, eps=1.0)
-    # attacker.save_results()
+    attacker.save_results()

@@ -30,12 +30,15 @@ class PyTorchModelWrapper(GenericModelWrapper):
     def zero_grad(self):
         self.model.zero_grad()
 
-    def forward(self, x):
+    def forward(self, x, detach: bool = False):
         x_ = self.pre_process_fn(x)
-        return self.post_process_fn(self.model(x_))
+        output = self.post_process_fn(self.model(x_))
+        if detach:
+            return output.detach()
+        return output
 
-    def get_top_k_probabilities(self, x, k) -> np.ndarray:
-        predictions = self.forward(x)
+    def get_top_k_probabilities(self, x, k, detach: bool = False) -> np.ndarray:
+        predictions = self.forward(x, detach)
         predictions = ch.softmax(predictions, dim=1)
         if k == np.inf:
             return predictions
@@ -100,7 +103,7 @@ class PyTorchModelWrapper(GenericModelWrapper):
         for x, y in iterator:
             x, y = x.cuda(), y.cuda()
             with ch.set_grad_enabled(not detach):
-                y_logits = self.forward(x)
+                y_logits = self.forward(x, detach=True)
                 loss = loss_function(y_logits, y)
                 y_predicted = ch.argmax(y_logits, dim=1)
                 accuracy = acc_fn(y_predicted, y)

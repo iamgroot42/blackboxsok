@@ -31,7 +31,7 @@ class GenericModelWrapper:
         raise NotImplementedError(
             "This method must be implemented by the child class")
 
-    def forward(self, x):
+    def forward(self, x, detach: bool = False):
         raise NotImplementedError(
             "This method must be implemented by the child class")
 

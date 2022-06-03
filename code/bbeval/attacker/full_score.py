@@ -125,7 +125,7 @@ class Square_Attack(Attacker):
         # x, y = x[corr_classified], y[corr_classified]
 
         ### initialization
-        delta_init = ch.zeros(x.shape).cuda()
+        delta_init = ch.zeros_like(x).cuda()
         s = h // 5
         self.logger.log('Initial square side={} for bumps'.format(s))
         sp_init = (h - s * 5) // 2
@@ -141,9 +141,10 @@ class Square_Attack(Attacker):
         x_best = ch.clip(x + delta_init / ch.sqrt(ch.sum(delta_init **
                          2, dim=(1, 2, 3), keepdim=True)) * eps, 0, 1)
 
-        probs = self.model.predict_proba(x_best)
-        loss_min = get_loss_fn(self.loss_type)(y, probs, self.targeted)
-        margin_min = get_loss_fn('margin')(y, probs, self.targeted)
+        logits = self.model.forward(x_best, detach=True)
+        probs = ch.softmax(logits, 1)
+        loss_min = get_loss_fn(self.loss_type, 'none')(logits, y, self.targeted)
+        margin_min = get_loss_fn('margin', 'none')(probs, y, self.targeted)
         # ones because we have already used 1 query
         n_queries = ch.ones(x.shape[0]).cuda()
 
@@ -167,14 +168,14 @@ class Square_Attack(Attacker):
             ### window_1
             center_h = np.random.randint(0, h - s)
             center_w = np.random.randint(0, w - s)
-            new_deltas_mask = ch.zeros(x_curr.shape).cuda()
+            new_deltas_mask = ch.zeros_like(x_curr).cuda()
             new_deltas_mask[:, :, center_h:center_h +
                             s, center_w:center_w + s] = 1.0
 
             ### window_2
             center_h_2 = np.random.randint(0, h - s2)
             center_w_2 = np.random.randint(0, w - s2)
-            new_deltas_mask_2 = ch.zeros(x_curr.shape).cuda()
+            new_deltas_mask_2 = ch.zeros_like(x_curr).cuda()
             new_deltas_mask_2[:, :, center_h_2:center_h_2 +
                               s2, center_w_2:center_w_2 + s2] = 1.0
             norms_window_2 = ch.sqrt(
@@ -198,8 +199,9 @@ class Square_Attack(Attacker):
             old_deltas = delta_curr[:, :, center_h:center_h + s,
                                     center_w:center_w + s] / (1e-10 + curr_norms_window)
             new_deltas += old_deltas
+            cuda_zero = ch.tensor(0).cuda()
             new_deltas = new_deltas / ch.sqrt(ch.sum(new_deltas ** 2, dim=(2, 3), keepdim=True)) * (
-                ch.maximum(eps ** 2 - curr_norms_image ** 2, 0) / c + norms_windows ** 2) ** 0.5
+                ch.maximum(eps ** 2 - curr_norms_image ** 2, cuda_zero) / c + norms_windows ** 2) ** 0.5
             delta_curr[:, :, center_h_2:center_h_2 + s2,
                        center_w_2:center_w_2 + s2] = 0.0  # set window_2 to 0
             delta_curr[:, :, center_h:center_h + s,
@@ -213,9 +215,10 @@ class Square_Attack(Attacker):
             curr_norms_image = ch.sqrt(
                 ch.sum((x_new - x_curr) ** 2, dim=(1, 2, 3), keepdim=True))
 
-            probs = self.model.predict_proba(x_new)
-            loss = get_loss_fn(self.loss_type)(y_curr, probs, self.targeted)
-            margin = get_loss_fn('margin')(y_curr, probs, self.targeted)
+            logits = self.model.forward(x_new, detach=True)
+            probs = ch.softmax(logits, 1)
+            loss = get_loss_fn(self.loss_type, 'none')(logits, y_curr, self.targeted)
+            margin = get_loss_fn('margin', 'none')(probs, y_curr, self.targeted)
 
             idx_improved = loss < loss_min_curr
             loss_min[idx_to_fool] = idx_improved * \
@@ -230,7 +233,7 @@ class Square_Attack(Attacker):
             n_queries[idx_to_fool] += 1
 
             acc = (margin_min > 0.0).sum() / n_ex_total
-            acc_corr = (margin_min > 0.0).mean()
+            acc_corr = (1. * (margin_min > 0.0)).mean()
             mean_nq, mean_nq_ae, median_nq, median_nq_ae = ch.mean(n_queries), ch.mean(
                 n_queries[margin_min <= 0]), ch.median(n_queries), ch.median(n_queries[margin_min <= 0])
 
@@ -242,12 +245,12 @@ class Square_Attack(Attacker):
             # if (i_iter <= 500 and i_iter % 500) or (i_iter > 100 and i_iter % 500) or i_iter + 1 == n_iters or acc == 0:
             # TODO: Make sure right things are being logged
             self.logger.add_result(i_iter + 1, {
-                "acc": acc,
-                "acc_corr": acc_corr,
-                "mean_nq": mean_nq,
-                "mean_nq_ae": mean_nq_ae,
-                "median_nq": median_nq,
-                "mean_margin_min": margin_min.mean(),
+                "acc": acc.item(),
+                "acc_corr": acc_corr.item(),
+                "mean_nq": mean_nq.item(),
+                "mean_nq_ae": mean_nq_ae.item(),
+                "median_nq": median_nq.item(),
+                "mean_margin_min": margin_min.mean().item(),
                 "time_total": time_total,
             })
             if acc == 0:
@@ -277,9 +280,10 @@ class Square_Attack(Attacker):
         init_delta = self._workaround_choice([x.shape[0], c, 1, w], eps)
         x_best = ch.clip(x + init_delta, min_val, max_val)
 
-        probs = self.model.predict_proba(x_best)
-        loss_min = get_loss_fn(self.loss_type)(y, probs, self.targeted)
-        margin_min = get_loss_fn('margin')(y, probs, self.targeted)
+        logits = self.model.forward(x_best, detach=True)
+        probs = ch.softmax(logits, 1)
+        loss_min = get_loss_fn(self.loss_type, 'none')(logits, y, self.targeted)
+        margin_min = get_loss_fn('margin', 'none')(probs, y, self.targeted)
         # ones because we have already used 1 query
         n_queries = ch.ones(x.shape[0]).cuda()
 
@@ -309,9 +313,10 @@ class Square_Attack(Attacker):
 
             x_new = ch.clip(x_curr + deltas, min_val, max_val)
 
-            probs = self.model.predict_proba(x_new)
-            loss = get_loss_fn(self.loss_type)(y_curr, probs, self.targeted)
-            margin = get_loss_fn('margin')(y_curr, probs, self.targeted)
+            logits = self.model.forward(x_new, detach=True)
+            probs = ch.softmax(logits, 1)
+            loss = get_loss_fn(self.loss_type, 'none')(logits, y_curr, self.targeted)
+            margin = get_loss_fn('margin', 'none')(probs, y_curr, self.targeted)
 
             idx_improved = loss < loss_min_curr
             loss_min[idx_to_fool] = idx_improved * \
@@ -395,7 +400,7 @@ class Square_Attack(Attacker):
 #     models_class_dict = {'tf': models.ModelTF, 'pt': models.ModelPT}
 #     model = models_class_dict[model_type](args.model, batch_size, gpu_memory)
 
-#     logits_clean = model.predict(x_test)
+#     logits_clean = model.forward(x_test)
 #     corr_classified = logits_clean.argmax(1) == y_test
 #     # important to check that the model was restored correctly and the clean accuracy is high
 #     log.print('Clean accuracy: {:.2%}'.format(np.mean(corr_classified)))
