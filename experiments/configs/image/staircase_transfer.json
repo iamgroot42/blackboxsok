@@ -1,8 +1,8 @@
 {
-    "experiment_name": "square_attack_imagenet",
-    "name": "square_attack",
-    "access_level": "all",
-    "query_budget": 5000,
+    "experiment_name": "staircase_transfer_imagenet",
+    "name": "staircase_transfer",
+    "access_level": "no",
+    "query_budget": 1,
     "dataset_config": {
         "name": "imagenet",
         "type": "image"
@@ -14,7 +14,7 @@
     },
     "aux_model_config": {
         "use_pretrained:": true,
-        "name": [],
+        "name":"resnet18",
         "dataset":"imagenet"
     }
 }
