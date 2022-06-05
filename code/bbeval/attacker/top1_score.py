@@ -10,8 +10,8 @@ np.set_printoptions(precision=5, suppress=True)
 
 
 class RayS(Attacker):
-    def __init__(self, model: GenericModelWrapper, config: AttackerConfig):
-        super().__init__(model, config)
+    def __init__(self, model: GenericModelWrapper, aux_models: dict, config: AttackerConfig):
+        super().__init__(model, aux_models, config)
         self.sgn_t = None
         self.d_t = None
         self.x_final = None

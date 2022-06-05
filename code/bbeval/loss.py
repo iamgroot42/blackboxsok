@@ -15,7 +15,7 @@ class MarginLossWrapper(Loss):
         super().__init__("margin_loss", reduction)
         self.loss_obj = nn.MultiLabelMarginLoss(reduction=reduction)
     
-    def __call__(self, preds, label, is_targeted, **kwargs):
+    def __call__(self, preds, label, is_targeted=False, **kwargs):
         if preds.shape != label.shape:
             # Convert labels to one-hot
             label_ = nn.functional.one_hot(label, preds.shape[1])
@@ -29,7 +29,7 @@ class CrossEntropyLossWrapper(Loss):
         super().__init__("cross_entropy_loss", reduction)
         self.loss_obj = nn.CrossEntropyLoss(reduction=reduction)
     
-    def __call__(self, preds, label, is_targeted, **kwargs):
+    def __call__(self, preds, label, is_targeted=False, **kwargs):
         return self.loss_obj(preds, label)
 
 
@@ -38,7 +38,7 @@ class BCEWithLogitsLossWrapper(Loss):
         super().__init__("bce_with_logits_loss", reduction)
         self.loss_obj = nn.BCEWithLogitsLoss(reduction=reduction)
     
-    def __call__(self, preds, label, is_targeted, **kwargs):
+    def __call__(self, preds, label, is_targeted=False, **kwargs):
         return self.loss_obj(preds, label)
 
 

@@ -11,8 +11,8 @@ np.set_printoptions(precision=5, suppress=True)
 
 
 class Square_Attack(Attacker):
-    def __init__(self, model: GenericModelWrapper, config: AttackerConfig):
-        super().__init__(model, config)
+    def __init__(self, model: GenericModelWrapper, aux_model: dict, config: AttackerConfig):
+        super().__init__(model, aux_model, config)
     
     def _workaround_choice(self, shape, eps=1.0):
         """
@@ -117,7 +117,7 @@ class Square_Attack(Attacker):
         if self.seed is not None:
             ch.random.seed(self.seed)
 
-        min_val, max_val = 0, 1
+        x_min, x_max = 0, 1
         c, h, w = x.shape[1:]
         n_features = c * h * w
         n_ex_total = x.shape[0]
@@ -211,7 +211,7 @@ class Square_Attack(Attacker):
             x_new = x_curr + delta_curr / \
                 ch.sqrt(ch.sum(delta_curr ** 2,
                         dim=(1, 2, 3), keepdim=True)) * eps
-            x_new = ch.clip(x_new, min_val, max_val)
+            x_new = ch.clip(x_new, x_min, x_max)
             curr_norms_image = ch.sqrt(
                 ch.sum((x_new - x_curr) ** 2, dim=(1, 2, 3), keepdim=True))
 
@@ -270,7 +270,7 @@ class Square_Attack(Attacker):
     def square_attack_linf(self, x, y, eps, n_iters, p_init):
         """ The Linf square attack """
         ch.random.seed(0)  # important to leave it here as well
-        min_val, max_val = 0, 1 if x.max() <= 1 else 255
+        x_min, x_max = 0, 1 if x.max() <= 1 else 255
         c, h, w = x.shape[1:]
         n_features = c*h*w
         n_ex_total = x.shape[0]
@@ -278,7 +278,7 @@ class Square_Attack(Attacker):
 
         # [c, 1, w], i.e. vertical stripes work best for untargeted attacks
         init_delta = self._workaround_choice([x.shape[0], c, 1, w], eps)
-        x_best = ch.clip(x + init_delta, min_val, max_val)
+        x_best = ch.clip(x + init_delta, x_min, x_max)
 
         logits = self.model.forward(x_best, detach=True)
         probs = ch.softmax(logits, 1)
@@ -307,11 +307,11 @@ class Square_Attack(Attacker):
                 x_best_curr_window = x_best_curr[i_img, :,
                                                  center_h:center_h+s, center_w:center_w+s]
                 # prevent trying out a delta if it doesn't change x_curr (e.g. an overlapping patch)
-                while ch.sum(ch.abs(ch.clip(x_curr_window + deltas[i_img, :, center_h:center_h+s, center_w:center_w+s], min_val, max_val) - x_best_curr_window) < 10**-7) == c*s*s:
+                while ch.sum(ch.abs(ch.clip(x_curr_window + deltas[i_img, :, center_h:center_h+s, center_w:center_w+s], x_min, x_max) - x_best_curr_window) < 10**-7) == c*s*s:
                     deltas[i_img, :, center_h:center_h+s, center_w:center_w +
                            s] = self._workaround_choice([c, 1, 1], eps)
 
-            x_new = ch.clip(x_curr + deltas, min_val, max_val)
+            x_new = ch.clip(x_curr + deltas, x_min, x_max)
 
             logits = self.model.forward(x_new, detach=True)
             probs = ch.softmax(logits, 1)

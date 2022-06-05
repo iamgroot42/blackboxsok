@@ -2,12 +2,14 @@ from bbeval.models.core import GenericModelWrapper
 from bbeval.config import AttackerConfig
 from bbeval.logger.core import Logger
 
-
+# TODO: figure out if this way of defining aux_model is correct or not
 class Attacker:
     def __init__(self,
                  model: GenericModelWrapper,
+                 aux_models: dict,
                  config: AttackerConfig):
         self.model = model
+        self.aux_models = aux_models
         self.config = config
         # Extract relevant parameters from config
         self.name = self.config.name

@@ -7,14 +7,16 @@ from bbeval.attacker.core import Attacker
 from bbeval.config import AttackerConfig
 from bbeval.models.core import GenericModelWrapper
 from bbeval.attacker.transfer_methods._manipulate_gradient import torch_staircase_sign, project_noise, gkern, project_kern
-from bbeval.attacker.transfer_methods._manipulate_input import ensemble_input_diversity, clip_by_tensor
+from bbeval.attacker.transfer_methods._manipulate_input import ensemble_input_diversity, input_diversity, clip_by_tensor
+
+import torchvision.models as models #TODO: remove after test
 
 np.set_printoptions(precision=5, suppress=True)
 
 
 class Staircase(Attacker):
-    def __init__(self, model: GenericModelWrapper, config: AttackerConfig):
-        super().__init__(model, config)
+    def __init__(self, model: GenericModelWrapper, aux_models: dict, config: AttackerConfig):
+        super().__init__(model, aux_models, config)
         self.x_final = None
         self.queries = 1
 
@@ -23,13 +25,26 @@ class Staircase(Attacker):
             Attack the original image using combination of transfer methods and return adversarial example
             (x, y): original image
         """
-        models = kwargs.get('models')
-        if not isinstance(models, dict):
-            raise ValueError("Expected a dictionary of models, since we will be working with an ensemble")
-        n_iters = kwargs.get('n_iters')
-        n_ensemble = kwargs.get('n_ensemble')
+        image_resizes = kwargs.get('image_resizes')
+        image_width = kwargs.get('image_width')
+        prob = kwargs.get('prob')
         amplification = kwargs.get('amplification')
-        rescaled_dim = kwargs.get('rescaled_dim')
+        n_iters = kwargs.get('n_iters')
+        interpol_dim = kwargs.get('interpol_dim') # Not sure why this thing is different
+
+        if not isinstance(self.aux_models, dict):
+            raise ValueError("Expected a dictionary of auxiliary models, since we will be working with an ensemble")
+        # temporarily set these values for testing based on their original tf implementation
+        n_iters = 3
+        amplification = 1.5 # amplification_factor: 10.0 for tensorflow implementation
+        x_min_val,x_max_val = 0.0,1.0
+        image_width = 299
+        image_resizes = [330]
+        interpol_dim = 256
+        prob = 0.7
+
+        n_model_ensemble = len(self.aux_models)
+        n_input_ensemble = len(image_resizes)
         alpha = eps / n_iters
         alpha_beta = alpha * amplification
         gamma = alpha_beta
@@ -39,12 +54,11 @@ class Staircase(Attacker):
         adv = x.clone()
         adv = adv.cuda()
         adv.requires_grad = True
-        amplification = 0.0
+        # amplification = 0.0 # TODO: check what this is actually doing
         pre_grad = ch.zeros(adv.shape).cuda()
         # quite specific piece of code to staircase attack
-        # TODO: THe 0/1 below should be dataset-specific
-        x_min = clip_by_tensor(x - eps, 0.0, 1.0)
-        x_max = clip_by_tensor(x + eps, 0.0, 1.0)
+        x_min = clip_by_tensor(x - eps, x_min_val, x_max_val)
+        x_max = clip_by_tensor(x + eps, x_min_val, x_max_val)
 
         # Create Gaussian kernel
         kernel_size = 5
@@ -55,27 +69,8 @@ class Staircase(Attacker):
 
         stack_kern, kern_size = project_kern(3)
 
-        # use for loop to replace the original manual attack process
-        """
-        eff = models["eff"]
-        dense = models['dense']
-        res = models['res50']
-        res101 = models['res101']
-        # wide = models['wide']
-        dense169 = models['dense169']
-        vgg = models['vgg']
-        # lpipsLoss = models["lpips"]
-
-        res101.zero_grad()
-        eff.zero_grad()
-        dense.zero_grad()
-        dense169.zero_grad()
-        res.zero_grad()
-        # wide.zero_grad(True)
-        vgg.zero_grad()
-        # lpipsLoss.zero_grad(True)
-        """
-        for model in models:
+        for model_name in self.aux_models:
+            model = self.aux_models[model_name]
             model.set_eval()  # Make sure model is in eval model
             model.zero_grad()  # Make sure no leftover gradients
 
@@ -85,58 +80,15 @@ class Staircase(Attacker):
                 adv = F.conv2d(adv, gaussian_kernel, bias=None, stride=1, padding=(2, 2), groups=3)
                 adv = clip_by_tensor(adv, x_min, x_max)
                 adv = V(adv, requires_grad = True)
-
-            """
-            output1 = 0
-            
-            output1 += dense(F.interpolate(ensemble_input_diversity(adv + pre_grad, 0), (256, 256), mode='bilinear')) * 1./6
-            output1 += res(F.interpolate(ensemble_input_diversity(adv + pre_grad, 0), (256, 256), mode='bilinear')) * 1./6
-            output1 += res101(F.interpolate(ensemble_input_diversity(adv + pre_grad, 0), (256, 256), mode='bilinear')) * 1./6
-            output1 += dense169(F.interpolate(ensemble_input_diversity(adv + pre_grad, 0), (256, 256), mode='bilinear')) * 1./6
-            output1 += vgg(F.interpolate(ensemble_input_diversity(adv + pre_grad, 0), (256, 256), mode='bilinear')) * 1./6
-            output1 += eff(F.interpolate(ensemble_input_diversity(adv + pre_grad, 0), (256, 256), mode='bilinear')) * 1./6
-            # output1 += wide(F.interpolate(ensemble_input_diversity(adv + pre_grad, 0), (256, 256), mode='bilinear')) * 1./7
-            loss1 = F.cross_entropy(output1 * 1.5, gt, reduction="none")
-
-            output3 = 0
-            output3 += dense(F.interpolate(ensemble_input_diversity(adv + pre_grad, 1), (256, 256), mode='bilinear')) * 1./6
-            output3 += res(F.interpolate(ensemble_input_diversity(adv + pre_grad, 1), (256, 256), mode='bilinear')) * 1./6
-            output3 += res101(F.interpolate(ensemble_input_diversity(adv + pre_grad, 1), (256, 256), mode='bilinear')) * 1./6
-            output3 += dense169(F.interpolate(ensemble_input_diversity(adv + pre_grad, 1), (256, 256), mode='bilinear')) * 1./6
-            output3 += vgg(F.interpolate(ensemble_input_diversity(adv + pre_grad, 1), (256, 256), mode='bilinear')) * 1./6
-            output3 += eff(F.interpolate(ensemble_input_diversity(adv + pre_grad, 1), (256, 256), mode='bilinear')) * 1./6
-            # output3 += wide(F.interpolate(ensemble_input_diversity(adv + pre_grad, 2), (256, 256), mode='bilinear')) * 1./7
-            loss3 = F.cross_entropy(output3 * 1.5, gt, reduction="none")
-
-            output4 = 0
-            output4 += dense(F.interpolate(ensemble_input_diversity(adv + pre_grad, 2), (256, 256), mode='bilinear')) * 1./6
-            output4 += res(F.interpolate(ensemble_input_diversity(adv + pre_grad, 2), (256, 256), mode='bilinear')) * 1./6
-            output4 += res101(F.interpolate(ensemble_input_diversity(adv + pre_grad, 2), (256, 256), mode='bilinear')) * 1./6
-            output4 += dense169(F.interpolate(ensemble_input_diversity(adv + pre_grad, 2), (256, 256), mode='bilinear')) * 1./6
-            output4 += vgg(F.interpolate(ensemble_input_diversity(adv + pre_grad, 2), (256, 256), mode='bilinear')) * 1./6
-            output4 += eff(F.interpolate(ensemble_input_diversity(adv + pre_grad, 2), (256, 256), mode='bilinear')) * 1./6
-            # output4 += wide(F.interpolate(ensemble_input_diversity(adv + pre_grad, 3), (256, 256), mode='bilinear')) * 1./7
-            loss4 = F.cross_entropy(output4 * 1.5, gt, reduction="none")
-
-            output5 = 0
-            output5 += dense(F.interpolate(ensemble_input_diversity(adv + pre_grad, 3), (256, 256), mode='bilinear')) * 1./6
-            output5 += res(F.interpolate(ensemble_input_diversity(adv + pre_grad, 3), (256, 256), mode='bilinear')) * 1./6
-            output5 += res101(F.interpolate(ensemble_input_diversity(adv + pre_grad, 3), (256, 256), mode='bilinear')) * 1./6
-            output5 += dense169(F.interpolate(ensemble_input_diversity(adv + pre_grad, 3), (256, 256), mode='bilinear')) * 1./6
-            output5 += vgg(F.interpolate(ensemble_input_diversity(adv + pre_grad, 3), (256, 256), mode='bilinear')) * 1./6
-            output5 += eff(F.interpolate(ensemble_input_diversity(adv + pre_grad, 3), (256, 256), mode='bilinear')) * 1./6
-            # output5 += wide(F.interpolate(ensemble_input_diversity(adv + pre_grad, 4), (256, 256), mode='bilinear')) * 1./7
-            loss5 = F.cross_entropy(output5 * 1.5, gt, reduction="none")
-
-            loss = (loss1 + loss3 + loss4 + loss5) / 4.0
-            """
             loss = 0
-            for i in range(n_ensemble):
+            for image_resize in image_resizes:
                 output = 0
-                for model in models:
-                    output += model.forward(F.interpolate(ensemble_input_diversity(adv + pre_grad, i), (rescaled_dim, rescaled_dim), mode='bilinear')) * 1./6
-                loss += F.cross_entropy(output * 1.5, y, reduction="none")
-            loss  = loss/n_ensemble
+                for model_name in self.aux_models:
+                    model = self.aux_models[model_name]
+                    output += model.forward(F.interpolate(ensemble_input_diversity(adv + pre_grad, image_width, image_resize, prob=1.0, interpol_dim = interpol_dim), (interpol_dim, interpol_dim), mode='bilinear')) * 1./n_model_ensemble
+                    # output += model.forward(input_diversity(adv + pre_grad, image_width, image_resize)) * 1./n_model_ensemble
+                    loss += F.cross_entropy(output * 1.5, y, reduction="none") # TODO: this one should be amplification factor? cannot verity in the original implementation
+            loss  = loss/n_input_ensemble
             loss.mean().backward()
             noise = adv.grad.data
             pre_grad = adv.grad.data
@@ -156,12 +108,8 @@ class Staircase(Attacker):
             pert = (alpha_beta * torch_staircase_sign(noise, 1.5625) + 0.5 * projection) * 0.75
             # adv = adv + pert * (1-mask) * 1.2 + pert * mask * 0.8
             adv = adv + pert
-            # print(mask.max())
-            # print(mask.min())
-            # exit()
             # adv = adv + alpha * torch_staircase_sign(noise, 1.5625)
             adv = clip_by_tensor(adv, x_min, x_max)
             adv = V(adv, requires_grad = True)
-        
         stop_queries = 1
         return adv.detach(), stop_queries

@@ -8,15 +8,14 @@ from bbeval.models.core import GenericModelWrapper
 ATTACK_WRAPPER_MAPPING = {
     "square_attack": Square_Attack,
     "rays": RayS,
-    "staircase": Staircase,
+    "staircase_transfer": Staircase
 }
 
-
-def get_attack_wrapper(model: GenericModelWrapper, attack_config: AttackerConfig):
+def get_attack_wrapper(model: GenericModelWrapper, aux_models: dict, attack_config: AttackerConfig):
     """
         Create attack wrapper for given attakc-config
     """
     wrapper = ATTACK_WRAPPER_MAPPING.get(attack_config.name, None)
     if not wrapper:
         raise NotImplementedError(f"Attack {attack_config.name} not implemented")
-    return wrapper(model, attack_config)
+    return wrapper(model, aux_models, attack_config)

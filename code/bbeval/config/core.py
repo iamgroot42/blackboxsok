@@ -55,6 +55,18 @@ class ModelConfig(Serializable):
     use_pretrained: Optional[bool] = False
     "Use pre-trained model from library?"
 
+@dataclass
+class AuxModelConfig(Serializable):
+    # TODO: add more fields to this when necessary
+    """
+        Configuration for model
+    """
+    name: str
+    """Name of aux models in list"""
+    dataset: str
+    """Which dataset this model is for"""
+    use_pretrained: Optional[bool] = False
+    "Use pre-trained model from library?"
 
 @dataclass
 class MalwareModelConfig(ModelConfig):
@@ -81,6 +93,11 @@ class AttackerConfig(Serializable):
     """Config file for the dataset this attack will use"""
     adv_model_config: ModelConfig
     """Model config for adversary's model"""
+
+    # TODO: check if this is the right logic to do so
+    aux_model_config: AuxModelConfig
+    """Model config for adversary's leveraged auxiliary model"""
+
     access_level: str = field(choice(["only label", "top-k", "all"]))
     """What level of access does the attacker have?"""
     query_budget: Optional[int] = np.inf
@@ -93,7 +110,6 @@ class AttackerConfig(Serializable):
     """Loss type"""
     seed: Optional[int] = None
     """Seed for RNG"""
-
 
 
 @dataclass
