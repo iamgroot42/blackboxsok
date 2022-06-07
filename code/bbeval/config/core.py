@@ -48,8 +48,8 @@ class ModelConfig(Serializable):
     """
         Configuration for model
     """
-    name: str
-    """Name of model"""
+    name: Union[str, List[str]]
+    """Name(s) of model(s)"""
     dataset: str
     """Which dataset this model is for"""
     use_pretrained: Optional[bool] = False
@@ -62,7 +62,7 @@ class AuxModelConfig(ModelConfig):
     """
         Configuration for auxiliary model
     """
-    misc_dict = None
+    misc_dict: Optional[dict] = None
 
 
 @dataclass

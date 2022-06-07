@@ -28,7 +28,6 @@ if __name__ == "__main__":
     # Extract relevant configs
     attacker_config: AttackerConfig = args.attacker_config
     model_config = attacker_config.adv_model_config
-    # TODO: Implement getters that get the right model
     # Get a pretrained ImageNet model
     target_model = Inceptionv3(model_config)
     # target_model = get_model_wrapper(model_config)

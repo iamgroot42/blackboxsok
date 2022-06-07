@@ -1,6 +1,5 @@
 from bbeval.models.pytorch import image
 from bbeval.config import ModelConfig
-from bbeval.config import AuxModelConfig
 
 MODEL_WRAPPER_MAPPING = {
     "inceptionv3": image.Inceptionv3,    
@@ -9,27 +8,19 @@ MODEL_WRAPPER_MAPPING = {
 }
 
 
-# def get_model_wrapper(model_config: ModelConfig):
-def get_model_wrapper(model_config: None):
+def get_model_wrapper(model_config: ModelConfig):
     """
         Create model wrapper for given model-config
     """
-    # wrapper = MODEL_WRAPPER_MAPPING.get(model_config.name, None)
-    # if not wrapper:
-    #     raise NotImplementedError(
-    #         f"Model {model_config.name} not implemented")
-    # return wrapper(model_config)
-    if isinstance(model_config,ModelConfig):
-        wrapper = MODEL_WRAPPER_MAPPING.get(model_config.name, None)
+    def _get_model(name):
+        wrapper = MODEL_WRAPPER_MAPPING.get(name, None)
         if not wrapper:
             raise NotImplementedError(
                 f"Model {model_config.name} not implemented")
         return wrapper(model_config)
-    elif isinstance(model_config,AuxModelConfig):
-        # aux model names are given as lists
-        wrappers = {}
-        for _name in model_config.name:
-            wrappers[_name] = MODEL_WRAPPER_MAPPING.get(_name, None)(model_config)
+
+    if isinstance(model_config.name, list):
+        wrappers = {_name: _get_model(_name) for _name in model_config.name}
         return wrappers
     else:
-        raise NotImplementedError("Unsupported model configuration")
+        return _get_model(model_config.name)
