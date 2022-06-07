@@ -18,6 +18,9 @@ class GenericModelWrapper:
         # Make sure save-dir exists
         os.makedirs(self.save_dir, exist_ok=True)
         self.is_robust = False
+        self.access_level = "all"
+        if hasattr(model_config, 'access_level'):
+            self.access_level = model_config.access_level
     
     def cuda(self):
         raise NotImplementedError(
@@ -31,16 +34,18 @@ class GenericModelWrapper:
         raise NotImplementedError(
             "This method must be implemented by the child class")
 
-    def forward(self, x, detach: bool = False):
+    def forward(self, x, detach: bool = False, internal_call: bool = False):
         raise NotImplementedError(
             "This method must be implemented by the child class")
 
-    def get_top_k_probabilities(self, x, k) -> np.ndarray:
+    def get_top_k_probabilities(self, x, k: int, detach: bool = False, internal_call: bool = False) -> np.ndarray:
         raise NotImplementedError(
             "This method must be implemented by the child class")
 
-    def predict_proba(self, x) -> np.ndarray:
-        return self.get_top_k_probabilities(x, k=np.inf)
+    def predict_proba(self, x, internal_call: bool = False) -> np.ndarray:
+        if not internal_call and self.access_level not in ["all"]:
+            raise ValueError(f"Tried accessing probs, but access level is {self.access_level}")
+        return self.get_top_k_probabilities(x, k=np.inf, internal_call=True)
 
     def predict(self, x) -> int:
         raise NotImplementedError(

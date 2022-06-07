@@ -2,7 +2,7 @@ import numpy as np
 import torch as ch
 from bbeval.models.core import GenericModelWrapper
 from bbeval.attacker.core import Attacker
-from bbeval.config import AttackerConfig
+from bbeval.config import AttackerConfig, SquareAttackConfig
 from bbeval.loss import get_loss_fn
 
 
@@ -13,6 +13,8 @@ np.set_printoptions(precision=5, suppress=True)
 class Square_Attack(Attacker):
     def __init__(self, model: GenericModelWrapper, aux_model: dict, config: AttackerConfig):
         super().__init__(model, aux_model, config)
+        # Parse params dict into SquareAttackConfig
+        self.params = SquareAttackConfig(**self.params)
     
     def _workaround_choice(self, shape, eps=1.0):
         """
@@ -23,24 +25,17 @@ class Square_Attack(Attacker):
         y = ch.sign(y) * ch.abs(y) * eps
         return y
 
-    def attack(self, x, y, eps, **kwargs):
-        # Hard-coding for now, will handle extra args later
-        n_iters = 100
-        p_init = 0.2
-        # p_init = kwargs.get('p_init')
-        # n_iters = kwargs.get('n_iters')
-        if p_init is None:
-            raise ValueError("p_init must be specified")
-        if n_iters is None:
-            raise ValueError("n_iters must be specified")
+    def attack(self, x, y):
+        n_iters = self.params.n_iters
+        p_init = self.params.p_init
         # Don't need gradients for the attack, detach x if it has gradient collection on
         x_ = x.detach()
         if self.norm_type == np.inf:
             x_adv, num_queries = self.square_attack_l2(
-                x_, y, eps, n_iters, p_init)
+                x_, y, self.eps, n_iters, p_init)
         elif self.norm_type == 2:
             x_adv, num_queries = self.square_attack_linf(
-                x_, y, eps, n_iters, p_init)
+                x_, y, self.eps, n_iters, p_init)
         else:
             raise NotImplementedError("Unsupported Norm Type!")
         return x_adv, num_queries

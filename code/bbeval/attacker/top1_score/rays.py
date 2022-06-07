@@ -26,11 +26,12 @@ class RayS(Attacker):
         out = ch.clamp(out, lb, ub)
         return out
 
-    def attack(self, x, y, eps: float):
+    def attack(self, x, y):
         """
             Attack the original image and return adversarial example
             (x, y): original image
         """
+        eps = self.eps
         if self.norm_type in [2, np.inf]:
             ord = self.norm_type
         else:

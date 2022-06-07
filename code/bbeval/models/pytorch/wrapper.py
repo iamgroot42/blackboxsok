@@ -29,16 +29,23 @@ class PyTorchModelWrapper(GenericModelWrapper):
 
     def zero_grad(self):
         self.model.zero_grad()
+    
+    def _forward(self, x):
+        return self.model(x)
 
-    def forward(self, x, detach: bool = False):
+    def forward(self, x, detach: bool = False, internal_call: bool = False):
+        if not internal_call and self.access_level not in ["all"]:
+            raise ValueError(f"Tried accessing model logits, but access level is {self.access_level}")
         x_ = self.pre_process_fn(x)
-        output = self.post_process_fn(self.model(x_))
+        output = self.post_process_fn(self._forward(x_))
         if detach:
             return output.detach()
         return output
 
-    def get_top_k_probabilities(self, x, k, detach: bool = False) -> np.ndarray:
-        predictions = self.forward(x, detach)
+    def get_top_k_probabilities(self, x, k: int, detach: bool = False, internal_call: bool = False) -> np.ndarray:
+        if not internal_call and self.access_level not in ["all", "top-k"]:
+            raise ValueError(f"Tried accessing top-K probs, but access level is {self.access_level}")
+        predictions = self.forward(x, detach, internal_call=True)
         predictions = ch.softmax(predictions, dim=1)
         if k == np.inf:
             return predictions
@@ -46,7 +53,9 @@ class PyTorchModelWrapper(GenericModelWrapper):
         return top_k_probs
 
     def predict(self, x) -> int:
-        predictions = self.predict_proba(x)
+        if self.access_level == "none":
+            raise ValueError("Tried predicting, but access level is none")
+        predictions = self.predict_proba(x, internal_call=True)
         # return self.post_process_fn(ch.argmax(predictions, dim=1)[0])
         return ch.argmax(predictions, dim=1)
 

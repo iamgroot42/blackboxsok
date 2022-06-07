@@ -1,5 +1,5 @@
-from bbeval.attacker.full_score import Square_Attack
-from bbeval.attacker.top1_score import RayS
+from bbeval.attacker.full_score.square import Square_Attack
+from bbeval.attacker.top1_score.rays import RayS
 from bbeval.attacker.transfer_methods.staircase import Staircase
 from bbeval.config import AttackerConfig
 from bbeval.models.core import GenericModelWrapper

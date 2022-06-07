@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional
+from typing import Optional, List, Union
 import numpy as np
 from simple_parsing.helpers import Serializable, choice, field
 
@@ -55,18 +55,15 @@ class ModelConfig(Serializable):
     use_pretrained: Optional[bool] = False
     "Use pre-trained model from library?"
 
+
 @dataclass
-class AuxModelConfig(Serializable):
+class AuxModelConfig(ModelConfig):
     # TODO: add more fields to this when necessary
     """
-        Configuration for model
+        Configuration for auxiliary model
     """
-    name: str
-    """Name of aux models in list"""
-    dataset: str
-    """Which dataset this model is for"""
-    use_pretrained: Optional[bool] = False
-    "Use pre-trained model from library?"
+    misc_dict = None
+
 
 @dataclass
 class MalwareModelConfig(ModelConfig):
@@ -78,6 +75,36 @@ class MalwareModelConfig(ModelConfig):
     """Embedding value (if used)"""
     shift_values: Optional[bool] = False
     """Shift values (if used)"""
+
+
+@dataclass
+class StairCaseConfig(Serializable):
+    """
+        Configuration for Staircase attack
+    """
+    n_iters: int
+    """Number of iterations"""
+    image_resizes: List[int]
+    """List of image resizes to try"""
+    image_width: int = 299
+    """Width of image"""
+    amplification: float = 1.5
+    """Amplification factor"""
+    prob: float = 0.7
+    """TODO: Fill"""
+    interpol_dim: int = 256
+    """Interpolation dimension"""
+
+
+@dataclass
+class SquareAttackConfig(Serializable):
+    """
+        Configuration for Square attack
+    """
+    n_iters: int = 200
+    """TODO: Check"""
+    p_init = 0.2
+    """TODO: Check"""
 
 
 @dataclass
@@ -93,12 +120,17 @@ class AttackerConfig(Serializable):
     """Config file for the dataset this attack will use"""
     adv_model_config: ModelConfig
     """Model config for adversary's model"""
+    eps: float
+    """Perturbation budget (epsilon)"""
 
     # TODO: check if this is the right logic to do so
     aux_model_config: AuxModelConfig
     """Model config for adversary's leveraged auxiliary model"""
 
-    access_level: str = field(choice(["only label", "top-k", "all"]))
+    attack_params: Optional[dict] = None
+    """Additional attack-specific parameters"""
+
+    access_level: str = field(choice(["only label", "top-k", "all", "none"]))
     """What level of access does the attacker have?"""
     query_budget: Optional[int] = np.inf
     """Query budget"""
@@ -110,12 +142,3 @@ class AttackerConfig(Serializable):
     """Loss type"""
     seed: Optional[int] = None
     """Seed for RNG"""
-
-
-@dataclass
-class VictimConfig(Serializable):
-    """
-        Configuration for the victim
-    """
-    access_level: str = field(choice(["only label", "top-k", "all"]))
-    """What level of access does the victim provide?"""

@@ -4,7 +4,7 @@ import torch.nn.functional as F
 from torch.autograd import Variable as V
 
 from bbeval.attacker.core import Attacker
-from bbeval.config import AttackerConfig
+from bbeval.config import StairCaseConfig, AttackerConfig
 from bbeval.models.core import GenericModelWrapper
 from bbeval.attacker.transfer_methods._manipulate_gradient import torch_staircase_sign, project_noise, gkern, project_kern
 from bbeval.attacker.transfer_methods._manipulate_input import ensemble_input_diversity, input_diversity, clip_by_tensor
@@ -17,20 +17,23 @@ np.set_printoptions(precision=5, suppress=True)
 class Staircase(Attacker):
     def __init__(self, model: GenericModelWrapper, aux_models: dict, config: AttackerConfig):
         super().__init__(model, aux_models, config)
+        # Parse params dict into SquareAttackConfig
+        self.params = StairCaseConfig(**self.params)
         self.x_final = None
         self.queries = 1
 
-    def attack(self, x, y, eps, **kwargs):
+    def attack(self, x, y):
         """
             Attack the original image using combination of transfer methods and return adversarial example
             (x, y): original image
         """
-        image_resizes = kwargs.get('image_resizes')
-        image_width = kwargs.get('image_width')
-        prob = kwargs.get('prob')
-        amplification = kwargs.get('amplification')
-        n_iters = kwargs.get('n_iters')
-        interpol_dim = kwargs.get('interpol_dim') # Not sure why this thing is different
+        eps = self.eps
+        image_resizes = self.params.image_resizes
+        image_width = self.params.image_width
+        prob = self.params.prob
+        amplification = self.params.amplification
+        n_iters = self.params.n_iters
+        interpol_dim = self.params.interpol_dim # Not sure why this thing is different
 
         if not isinstance(self.aux_models, dict):
             raise ValueError("Expected a dictionary of auxiliary models, since we will be working with an ensemble")

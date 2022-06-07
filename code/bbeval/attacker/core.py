@@ -2,6 +2,7 @@ from bbeval.models.core import GenericModelWrapper
 from bbeval.config import AttackerConfig
 from bbeval.logger.core import Logger
 
+
 # TODO: figure out if this way of defining aux_model is correct or not
 class Attacker:
     def __init__(self,
@@ -15,13 +16,15 @@ class Attacker:
         self.name = self.config.name
         self.query_budget = self.config.query_budget
         self.norm_type = self.config.norm_type
+        self.eps = self.config.eps
         self.targeted = self.config.targeted
         self.loss_type = self.config.loss_type
         self.seed = self.config.seed
+        self.params = self.config.attack_params
         # Creat new logger (for debugging, etc.)
         self.logger = Logger(self.config)
 
-    def attack(self, x, y, eps: float, **kwargs):
+    def attack(self, x, y):
         pass
 
     def save_results(self):
