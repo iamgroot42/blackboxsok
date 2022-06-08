@@ -86,10 +86,6 @@ class CustomDatasetWrapper:
             return prefix
         return os.path.join(prefix, name)
 
-    def load_model(self, path: str, on_cpu: bool = False) -> GenericModelWrapper:
-        """Load model from a given path"""
-        raise NotImplementedError("Function to load model not implemented")
-
     def __str__(self):
         return f"{type(self).__name__}"
 

@@ -50,6 +50,9 @@ class GenericModelWrapper:
     def predict(self, x) -> int:
         raise NotImplementedError(
             "This method must be implemented by the child class")
+    
+    def predict_label(self, x) -> int:
+        return self.predict(x)
 
     def train(self, train_loader, val_loader, **kwargs):
         raise NotImplementedError(

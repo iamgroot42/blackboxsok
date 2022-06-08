@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from pathlib import Path
+from re import I
 from typing import Optional, List, Union
+from matplotlib.pyplot import ion
 import numpy as np
 from simple_parsing.helpers import Serializable, choice, field
 
@@ -104,6 +106,23 @@ class SquareAttackConfig(Serializable):
     n_iters: int = 200
     """TODO: Check"""
     p_init = 0.2
+    """TODO: Check"""
+
+
+@dataclass
+class SparseEvoConfig(Serializable):
+    """
+        Configuration for Sparse-EVO Attack
+    """
+    n_pix: int = 4
+    """TODO: Check"""
+    mu: float = 0.04
+    """TODO: Check"""
+    pop_size: int = 10
+    """TODO: Check"""
+    cr: float = 0.5
+    """TODO: Check"""
+    scale: List[int] = field(default_factory=lambda: [1, 2, 4, 8, 16])
     """TODO: Check"""
 
 
