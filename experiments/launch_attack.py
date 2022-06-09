@@ -42,11 +42,6 @@ if __name__ == "__main__":
     loss_function = get_loss_fn("ce")
     def acc_fn(predicted, true):
         return ch.mean(1. * (predicted == true))
-    
-    if False:
-        eval_loss, eval_acc = target_model.eval(test_loader, loss_function, acc_fn)
-        print("Clean accuracy: {:.2f}".format(eval_acc))
-        exit()
 
     # TODO: temporarily testing local mdoels, merge to get_wrapper_function later
     aux_models = {}
@@ -54,28 +49,11 @@ if __name__ == "__main__":
     local_model = ResNet18(local_model_config)
     local_model.cuda()
     aux_models['resnet18'] = local_model
-    if False:
-        eval_loss, eval_acc = local_model.eval(test_loader, loss_function, acc_fn)
-        print("Clean accuracy of {}: {:.2f}".format(local_model_config.name,eval_acc))
-        exit()
-
-    if False:
-        # attack that leverages local model information
-        local_model_config = attacker_config.aux_model_config
-        if len(local_model_config.name) > 0:
-            local_model_names = attacker_config.aux_model_config.name
-            aux_models = {}
-            for local_model_name in local_model_names:
-                aux_models[local_model_name] = MODEL_WRAPPER_MAPPING(local_model_name)(local_model_config)
-        else:
-            aux_models = {}
-        if False:
-            aux_models = get_model_wrapper(local_model_config)
-            print(aux_models)
-            sys.exit()
 
     x_sample, y_sample = next(iter(test_loader))
     x_sample, y_sample = x_sample.cuda(), y_sample.cuda()
     attacker = get_attack_wrapper(target_model, aux_models, attacker_config)
     x_sample_adv, queries_used = attacker.attack(x_sample, y_sample)
     attacker.save_results()
+    
+    print("attack completed")
