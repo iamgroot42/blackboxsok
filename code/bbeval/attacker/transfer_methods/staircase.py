@@ -6,10 +6,11 @@ from torch.autograd import Variable as V
 from bbeval.attacker.core import Attacker
 from bbeval.config import StairCaseConfig, AttackerConfig
 from bbeval.models.core import GenericModelWrapper
-from bbeval.attacker.transfer_methods._manipulate_gradient import torch_staircase_sign, project_noise, gkern, project_kern
+from bbeval.attacker.transfer_methods._manipulate_gradient import torch_staircase_sign, project_noise, gkern, \
+    project_kern
 from bbeval.attacker.transfer_methods._manipulate_input import ensemble_input_diversity, input_diversity, clip_by_tensor
 
-import torchvision.models as models #TODO: remove after test
+import torchvision.models as models  # TODO: remove after test
 
 np.set_printoptions(precision=5, suppress=True)
 
@@ -33,14 +34,14 @@ class Staircase(Attacker):
         prob = self.params.prob
         amplification = self.params.amplification
         n_iters = self.params.n_iters
-        interpol_dim = self.params.interpol_dim # Not sure why this thing is different
+        interpol_dim = self.params.interpol_dim  # Not sure why this thing is different
 
         if not isinstance(self.aux_models, dict):
             raise ValueError("Expected a dictionary of auxiliary models, since we will be working with an ensemble")
         # temporarily set these values for testing based on their original tf implementation
         n_iters = 3
-        amplification = 1.5 # amplification_factor: 10.0 for tensorflow implementation
-        x_min_val,x_max_val = 0.0,1.0
+        amplification = 1.5  # amplification_factor: 10.0 for tensorflow implementation
+        x_min_val, x_max_val = 0.0, 1.0
         image_width = 299
         image_resizes = [330]
         interpol_dim = 256
@@ -82,20 +83,24 @@ class Staircase(Attacker):
             if i == 0:
                 adv = F.conv2d(adv, gaussian_kernel, bias=None, stride=1, padding=(2, 2), groups=3)
                 adv = clip_by_tensor(adv, x_min, x_max)
-                adv = V(adv, requires_grad = True)
+                adv = V(adv, requires_grad=True)
             loss = 0
             for image_resize in image_resizes:
                 output = 0
                 for model_name in self.aux_models:
                     model = self.aux_models[model_name]
-                    output += model.forward(F.interpolate(ensemble_input_diversity(adv + pre_grad, image_width, image_resize, prob=1.0, interpol_dim = interpol_dim), (interpol_dim, interpol_dim), mode='bilinear')) * 1./n_model_ensemble
+                    output += model.forward(F.interpolate(
+                        ensemble_input_diversity(adv + pre_grad, image_width, image_resize, prob=1.0,
+                                                 interpol_dim=interpol_dim), (interpol_dim, interpol_dim),
+                        mode='bilinear')) * 1. / n_model_ensemble
                     # output += model.forward(input_diversity(adv + pre_grad, image_width, image_resize)) * 1./n_model_ensemble
-                    loss += F.cross_entropy(output * 1.5, y, reduction="none") # TODO: this one should be amplification factor? cannot verity in the original implementation
-            loss  = loss/n_input_ensemble
+                    loss += F.cross_entropy(output * 1.5, y,
+                                            reduction="none")  # TODO: this one should be amplification factor? cannot verity in the original implementation
+            loss = loss / n_input_ensemble
             loss.mean().backward()
             noise = adv.grad.data
             pre_grad = adv.grad.data
-            noise = F.conv2d(noise, gaussian_kernel, bias=None, stride=1, padding=(2,2), groups=3)
+            noise = F.conv2d(noise, gaussian_kernel, bias=None, stride=1, padding=(2, 2), groups=3)
 
             # MI-FGSM
             # noise = noise / torch.abs(noise).mean([1,2,3], keepdim=True)
@@ -113,6 +118,20 @@ class Staircase(Attacker):
             adv = adv + pert
             # adv = adv + alpha * torch_staircase_sign(noise, 1.5625)
             adv = clip_by_tensor(adv, x_min, x_max)
-            adv = V(adv, requires_grad = True)
+            adv = V(adv, requires_grad=True)
         stop_queries = 1
+
+        # outputs the transferability
+        # target_model_output=self.model.forward(x)
+        target_model_output = self.model.forward(adv)
+        target_model_prediction = ch.max(target_model_output, 1).indices
+        batch_size = len(y)
+        # print(target_model_prediction==y)
+        num_transfered = ch.count_nonzero(target_model_prediction != y)
+        transferability = float(num_transfered / batch_size) * 100
+        print("The transferbility of Staircase is %s %%" % str(transferability))
+        self.logger.add_result(n_iters, {
+            "transferability": str(transferability),
+        })
+
         return adv.detach(), stop_queries
