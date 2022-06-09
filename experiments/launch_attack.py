@@ -45,10 +45,11 @@ if __name__ == "__main__":
 
     # TODO: temporarily testing local mdoels, merge to get_wrapper_function later
     aux_models = {}
-    local_model_config = attacker_config.aux_model_config
-    local_model = ResNet18(local_model_config)
-    local_model.cuda()
-    aux_models['resnet18'] = local_model
+    local_model_configs = attacker_config.aux_model_configs
+    if local_model_configs:
+        local_model = ResNet18(local_model_configs[0])
+        local_model.cuda()
+        aux_models['resnet18'] = local_model
 
     x_sample, y_sample = next(iter(test_loader))
     x_sample, y_sample = x_sample.cuda(), y_sample.cuda()

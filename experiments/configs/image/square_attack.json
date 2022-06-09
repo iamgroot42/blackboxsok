@@ -13,11 +13,6 @@
         "name": "inceptionv3",
         "dataset": "imagenet"
     },
-    "aux_model_config": {
-        "use_pretrained:": true,
-        "name": [],
-        "dataset":"imagenet"
-    },
     "attack_params": {
         "n_iters": 200
     }

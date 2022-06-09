@@ -11,3 +11,4 @@ seaborn
 jsonargparse
 git+https://github.com/RobustBench/robustbench.git
 git+https://github.com/elastic/ember.git
+dacite

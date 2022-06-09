@@ -61,7 +61,11 @@ class AttackResult(Result):
         path = Path(os.path.join(save_path, dataset_name, attack_name))
         super().__init__(path, experiment_name)
         # Worthwhile to save the attack config
-        self.dic["attack_config"] = deepcopy(attack_config)
+        attack_config_copy = deepcopy(attack_config)
+        # Get rid of 'aux_model_configs' field, if present
+        if attack_config_copy.aux_model_configs is not None:
+            attack_config_copy.aux_model_configs = None
+        self.dic["attack_config"] = attack_config_copy
         self.convert_to_dict(self.dic)
     
     def add_result(self, queries_used: int, result: dict):

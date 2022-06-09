@@ -1,9 +1,8 @@
 from dataclasses import dataclass
 from pathlib import Path
-from re import I
-from typing import Optional, List, Union
-from matplotlib.pyplot import ion
+from typing import Optional, List
 import numpy as np
+from dacite import from_dict
 from simple_parsing.helpers import Serializable, choice, field
 
 
@@ -50,21 +49,14 @@ class ModelConfig(Serializable):
     """
         Configuration for model
     """
-    name: Union[str, List[str]]
+    name: str
     """Name(s) of model(s)"""
     dataset: str
     """Which dataset this model is for"""
     use_pretrained: Optional[bool] = False
     "Use pre-trained model from library?"
-
-
-@dataclass
-class AuxModelConfig(ModelConfig):
-    # TODO: add more fields to this when necessary
-    """
-        Configuration for auxiliary model
-    """
     misc_dict: Optional[dict] = None
+    """Extra parameters that may be used by the model"""
 
 
 @dataclass
@@ -142,9 +134,9 @@ class AttackerConfig(Serializable):
     eps: float
     """Perturbation budget (epsilon)"""
 
-    # TODO: check if this is the right logic to do so
-    aux_model_config: AuxModelConfig
-    """Model config for adversary's leveraged auxiliary model"""
+    aux_model_configs_dict: Optional[List[dict]] = None
+    """Model configs for adversary's leveraged auxiliary models"""
+    aux_model_configs: Optional[List] = None
 
     attack_params: Optional[dict] = None
     """Additional attack-specific parameters"""
@@ -161,3 +153,9 @@ class AttackerConfig(Serializable):
     """Loss type"""
     seed: Optional[int] = None
     """Seed for RNG"""
+
+    def __post_init__(self):
+        # Have to do this because SimpleParsing does not support list of dataclasses
+        data_class = type(self.adv_model_config)
+        if self.aux_model_configs_dict:
+            self.aux_model_configs = [from_dict(data_class=data_class, data=aux_dict) for aux_dict in self.aux_model_configs_dict]
