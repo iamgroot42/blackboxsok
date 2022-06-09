@@ -55,5 +55,5 @@ if __name__ == "__main__":
     attacker = get_attack_wrapper(target_model, aux_models, attacker_config)
     x_sample_adv, queries_used = attacker.attack(x_sample, y_sample)
     attacker.save_results()
-    
-    print("attack completed")
+
+    print("%s attack is completed" % attacker_config.name)
