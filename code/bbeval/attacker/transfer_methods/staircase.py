@@ -14,6 +14,8 @@ import torchvision.models as models  # TODO: remove after test
 
 np.set_printoptions(precision=5, suppress=True)
 
+# https://github.com/qilong-zhang/Staircase-sign-method/blob/main/attack_iter_SSM_EAT.py
+# https://github.com/qilong-zhang/CVPR2021-Competition-Unrestricted-Adversarial-Attacks-on-ImageNet/blob/main/run.py
 
 class Staircase(Attacker):
     def __init__(self, model: GenericModelWrapper, aux_models: dict, config: AttackerConfig):
@@ -28,7 +30,7 @@ class Staircase(Attacker):
             Attack the original image using combination of transfer methods and return adversarial example
             (x, y): original image
         """
-        eps = self.eps
+        eps = 2.0 * self.eps /255.0
         image_resizes = self.params.image_resizes
         image_width = self.params.image_width
         prob = self.params.prob
@@ -39,9 +41,8 @@ class Staircase(Attacker):
         if not isinstance(self.aux_models, dict):
             raise ValueError("Expected a dictionary of auxiliary models, since we will be working with an ensemble")
         # temporarily set these values for testing based on their original tf implementation
-        n_iters = 3
-        amplification = 1.5  # amplification_factor: 10.0 for tensorflow implementation
-        x_min_val, x_max_val = 0.0, 1.0
+        amplification = 10  # amplification_factor: 10.0 for tensorflow implementation
+        x_min_val, x_max_val = -1.0, 1.0
         image_width = 299
         image_resizes = [330]
         interpol_dim = 256
@@ -51,7 +52,7 @@ class Staircase(Attacker):
         n_input_ensemble = len(image_resizes)
         alpha = eps / n_iters
         alpha_beta = alpha * amplification
-        gamma = alpha_beta
+        gamma = alpha_beta * 0.8
 
         # initializes the advesarial example
         # x.requires_grad = True
@@ -110,13 +111,10 @@ class Staircase(Attacker):
             # PI-FGSM
             amplification += alpha_beta * torch_staircase_sign(noise, 1.5625)
             cut_noise = clip_by_tensor(abs(amplification) - eps, 0.0, 10000.0) * ch.sign(amplification)
-            projection = alpha * torch_staircase_sign(project_noise(cut_noise, stack_kern, kern_size), 1.5625)
+            projection = gamma * torch_staircase_sign(project_noise(cut_noise, stack_kern, kern_size), 1.5625)
 
             # staircase sign method (under review) can effectively boost the transferability of adversarial examples, and we will release our paper soon.
-            pert = (alpha_beta * torch_staircase_sign(noise, 1.5625) + 0.5 * projection) * 0.75
-            # adv = adv + pert * (1-mask) * 1.2 + pert * mask * 0.8
-            adv = adv + pert
-            # adv = adv + alpha * torch_staircase_sign(noise, 1.5625)
+            adv = adv - alpha_beta * torch_staircase_sign(noise, 1.5625) - projection
             adv = clip_by_tensor(adv, x_min, x_max)
             adv = V(adv, requires_grad=True)
         stop_queries = 1
@@ -133,5 +131,5 @@ class Staircase(Attacker):
         self.logger.add_result(n_iters, {
             "transferability": str(transferability),
         })
-
+        # print(adv.detach()-x)
         return adv.detach(), stop_queries
