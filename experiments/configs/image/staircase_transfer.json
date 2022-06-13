@@ -2,7 +2,7 @@
     "experiment_name": "staircase_transfer_imagenet",
     "name": "staircase_transfer",
     "access_level": "no",
-    "eps": 1.0,
+    "eps": 16,
     "query_budget": 1,
     "dataset_config": {
         "name": "imagenet",
@@ -26,7 +26,7 @@
         }
     ],
     "attack_params": {
-        "n_iters": 3,
+        "n_iters": 20,
         "image_resizes": [330]
     }
 }
