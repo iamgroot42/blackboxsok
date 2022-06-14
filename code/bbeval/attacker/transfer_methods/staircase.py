@@ -25,12 +25,13 @@ class Staircase(Attacker):
         self.x_final = None
         self.queries = 1
 
-    def attack(self, x, y):
+    def attack(self, x, x_label, Y_label, local_advy ):
         """
             Attack the original image using combination of transfer methods and return adversarial example
-            (x, y): original image
+            (x, x_label): original image
         """
-        eps = 2.0 * self.eps /255.0
+        eps = self.eps /255.0
+        targeted = self.targeted
         image_resizes = self.params.image_resizes
         image_width = self.params.image_width
         prob = self.params.prob
@@ -79,57 +80,62 @@ class Staircase(Attacker):
             model.set_eval()  # Make sure model is in eval model
             model.zero_grad()  # Make sure no leftover gradients
 
-        # start the main attack process: ensemble input diveristy as a demo
-        for i in range(n_iters):
-            if i == 0:
-                adv = F.conv2d(adv, gaussian_kernel, bias=None, stride=1, padding=(2, 2), groups=3)
+        if targeted==False:
+            # start the main attack process: ensemble input diveristy as a demo
+            for i in range(n_iters):
+                if i == 0:
+                    adv = F.conv2d(adv, gaussian_kernel, bias=None, stride=1, padding=(2, 2), groups=3)
+                    adv = clip_by_tensor(adv, x_min, x_max)
+                    adv = V(adv, requires_grad=True)
+                loss = 0
+                for image_resize in image_resizes:
+                    output = 0
+                    for model_name in self.aux_models:
+                        model = self.aux_models[model_name]
+                        output += model.forward(F.interpolate(
+                            ensemble_input_diversity(adv + pre_grad, image_width, image_resize, prob=1.0,
+                                                     interpol_dim=interpol_dim), (interpol_dim, interpol_dim),
+                            mode='bilinear')) * 1. / n_model_ensemble
+                        # output += model.forward(input_diversity(adv + pre_grad, image_width, image_resize)) * 1./n_model_ensemble
+                        loss += F.cross_entropy(output * 1.5, x_label,
+                                                reduction="none")  # TODO: this one should be amplification factor? cannot verity in the original implementation
+                loss = loss / n_input_ensemble
+                loss.mean().backward()
+                noise = adv.grad.data
+                pre_grad = adv.grad.data
+                noise = F.conv2d(noise, gaussian_kernel, bias=None, stride=1, padding=(2, 2), groups=3)
+
+                # MI-FGSM
+                # noise = noise / torch.abs(noise).mean([1,2,3], keepdim=True)
+                # noise = momentum * grad + noise
+                # grad = noise
+
+                # PI-FGSM
+                amplification += alpha_beta * torch_staircase_sign(noise, 1.5625)
+                cut_noise = clip_by_tensor(abs(amplification) - eps, 0.0, 10000.0) * ch.sign(amplification)
+                projection = gamma * torch_staircase_sign(project_noise(cut_noise, stack_kern, kern_size), 1.5625)
+
+                # staircase sign method (under review) can effectively boost the transferability of adversarial examples, and we will release our paper soon.
+                adv = adv - alpha_beta * torch_staircase_sign(noise, 1.5625) - projection
                 adv = clip_by_tensor(adv, x_min, x_max)
                 adv = V(adv, requires_grad=True)
-            loss = 0
-            for image_resize in image_resizes:
-                output = 0
-                for model_name in self.aux_models:
-                    model = self.aux_models[model_name]
-                    output += model.forward(F.interpolate(
-                        ensemble_input_diversity(adv + pre_grad, image_width, image_resize, prob=1.0,
-                                                 interpol_dim=interpol_dim), (interpol_dim, interpol_dim),
-                        mode='bilinear')) * 1. / n_model_ensemble
-                    # output += model.forward(input_diversity(adv + pre_grad, image_width, image_resize)) * 1./n_model_ensemble
-                    loss += F.cross_entropy(output * 1.5, y,
-                                            reduction="none")  # TODO: this one should be amplification factor? cannot verity in the original implementation
-            loss = loss / n_input_ensemble
-            loss.mean().backward()
-            noise = adv.grad.data
-            pre_grad = adv.grad.data
-            noise = F.conv2d(noise, gaussian_kernel, bias=None, stride=1, padding=(2, 2), groups=3)
+            stop_queries = 1
 
-            # MI-FGSM
-            # noise = noise / torch.abs(noise).mean([1,2,3], keepdim=True)
-            # noise = momentum * grad + noise
-            # grad = noise
+            # outputs the transferability
+            # target_model_output=self.model.forward(x)
+            target_model_output = self.model.forward(adv)
+            target_model_prediction = ch.max(target_model_output, 1).indices
+            batch_size = len(x_label)
+            # print(target_model_prediction==y)
+            num_transfered = ch.count_nonzero(target_model_prediction != x_label)
+            transferability = float(num_transfered / batch_size) * 100
 
-            # PI-FGSM
-            amplification += alpha_beta * torch_staircase_sign(noise, 1.5625)
-            cut_noise = clip_by_tensor(abs(amplification) - eps, 0.0, 10000.0) * ch.sign(amplification)
-            projection = gamma * torch_staircase_sign(project_noise(cut_noise, stack_kern, kern_size), 1.5625)
+        else:
+            pass
 
-            # staircase sign method (under review) can effectively boost the transferability of adversarial examples, and we will release our paper soon.
-            adv = adv - alpha_beta * torch_staircase_sign(noise, 1.5625) - projection
-            adv = clip_by_tensor(adv, x_min, x_max)
-            adv = V(adv, requires_grad=True)
-        stop_queries = 1
 
-        # outputs the transferability
-        # target_model_output=self.model.forward(x)
-        target_model_output = self.model.forward(adv)
-        target_model_prediction = ch.max(target_model_output, 1).indices
-        batch_size = len(y)
-        # print(target_model_prediction==y)
-        num_transfered = ch.count_nonzero(target_model_prediction != y)
-        transferability = float(num_transfered / batch_size) * 100
         print("The transferbility of Staircase is %s %%" % str(transferability))
         self.logger.add_result(n_iters, {
             "transferability": str(transferability),
         })
-        # print(adv.detach()-x)
         return adv.detach(), stop_queries

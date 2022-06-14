@@ -29,8 +29,8 @@ if __name__ == "__main__":
     attacker_config: AttackerConfig = args.attacker_config
     model_config = attacker_config.adv_model_config
     # Get a pretrained ImageNet model
-    # target_model = Inceptionv3(model_config)
-    target_model = get_model_wrapper(model_config)
+    target_model = Inceptionv3(model_config)
+    # target_model = get_model_wrapper(model_config)
     target_model.cuda()
 
     ds_config = attacker_config.dataset_config
@@ -43,18 +43,22 @@ if __name__ == "__main__":
     def acc_fn(predicted, true):
         return ch.mean(1. * (predicted == true))
 
+    # TODO: temporarily testing local mdoels, merge to get_wrapper_function later
     aux_models = {}
-    local_model_configs = attacker_config.aux_model_configs
-    if local_model_configs:
-        for local_model_config in local_model_configs:
-            local_model = get_model_wrapper(local_model_config)
-            local_model.cuda()
-            aux_models[local_model_config.name] = local_model
+    local_model_config = attacker_config.aux_model_config
+    local_model = ResNet18(local_model_config)
+    local_model.cuda()
+    aux_models['resnet18'] = local_model
 
-    x_sample, y_sample = next(iter(test_loader))
-    x_sample, y_sample = x_sample.cuda(), y_sample.cuda()
+    x_sample, x_label = next(iter(test_loader))
+    y_sample, y_label = next(iter(test_loader))
+    # print("x sample")
+    # print(x_sample)
+    x_sample, x_label, y_label = x_sample.cuda(), x_label.cuda(), y_label.cuda()
+    local_adv = x_sample
+
     attacker = get_attack_wrapper(target_model, aux_models, attacker_config)
-    x_sample_adv, queries_used = attacker.attack(x_sample, y_sample)
+    x_sample_adv, queries_used = attacker.attack(x_sample, x_label, y_label, local_adv)
     attacker.save_results()
 
     print("%s attack is completed" % attacker_config.name)
