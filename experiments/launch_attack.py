@@ -50,15 +50,15 @@ if __name__ == "__main__":
     local_model.cuda()
     aux_models['resnet18'] = local_model
 
-    x_sample, x_label = next(iter(test_loader))
-    y_sample, y_label = next(iter(test_loader))
+    x_orig, y_label = next(iter(test_loader))
+    y_sample, y_target = next(iter(test_loader))
     # print("x sample")
     # print(x_sample)
-    x_sample, x_label, y_label = x_sample.cuda(), x_label.cuda(), y_label.cuda()
-    local_adv = x_sample
+    x_orig, y_label, y_target = x_orig.cuda(), y_label.cuda(), y_target.cuda()
+    x_adv = x_orig
 
     attacker = get_attack_wrapper(target_model, aux_models, attacker_config)
-    x_sample_adv, queries_used = attacker.attack(x_sample, x_label, y_label, local_adv)
+    x_sample_adv, queries_used = attacker.attack(x_orig, y_label, y_target, x_adv)
     attacker.save_results()
 
     print("%s attack is completed" % attacker_config.name)

@@ -25,10 +25,10 @@ class Staircase(Attacker):
         self.x_final = None
         self.queries = 1
 
-    def attack(self, x, x_label, Y_label, local_advy ):
+    def attack(self, x, y_label, y_target, local_advy ):
         """
             Attack the original image using combination of transfer methods and return adversarial example
-            (x, x_label): original image
+            (x, y_label): original image
         """
         eps = self.eps /255.0
         targeted = self.targeted
@@ -97,7 +97,7 @@ class Staircase(Attacker):
                                                      interpol_dim=interpol_dim), (interpol_dim, interpol_dim),
                             mode='bilinear')) * 1. / n_model_ensemble
                         # output += model.forward(input_diversity(adv + pre_grad, image_width, image_resize)) * 1./n_model_ensemble
-                        loss += F.cross_entropy(output * 1.5, x_label,
+                        loss += F.cross_entropy(output * 1.5, y_label,
                                                 reduction="none")  # TODO: this one should be amplification factor? cannot verity in the original implementation
                 loss = loss / n_input_ensemble
                 loss.mean().backward()
@@ -125,9 +125,9 @@ class Staircase(Attacker):
             # target_model_output=self.model.forward(x)
             target_model_output = self.model.forward(adv)
             target_model_prediction = ch.max(target_model_output, 1).indices
-            batch_size = len(x_label)
+            batch_size = len(y_label)
             # print(target_model_prediction==y)
-            num_transfered = ch.count_nonzero(target_model_prediction != x_label)
+            num_transfered = ch.count_nonzero(target_model_prediction != y_label)
             transferability = float(num_transfered / batch_size) * 100
 
         else:
