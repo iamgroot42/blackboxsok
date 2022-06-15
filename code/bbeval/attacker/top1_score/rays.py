@@ -26,7 +26,7 @@ class RayS(Attacker):
         out = ch.clamp(out, lb, ub)
         return out
 
-    def attack(self, x, y):
+    def attack(self, x_orig, y_label, y_target=None, x_adv=None):
         """
             Attack the original image and return adversarial example
             (x, y): original image
@@ -36,21 +36,27 @@ class RayS(Attacker):
             ord = self.norm_type
         else:
             ord = 'fro'
+        
+        # Use appropriate labels for the attack
+        if self.targeted:
+            y_use = y_target
+        else:
+            y_use = y_label
 
-        shape = list(x.shape)
+        shape = list(x_orig.shape)
         dim = np.prod(shape[1:])
         if self.seed is not None:
             np.random.seed(self.seed)
 
         # init variables
-        self.queries = ch.zeros_like(y).cuda()
+        self.queries = ch.zeros_like(y_use).cuda()
         self.sgn_t = ch.sign(ch.ones(shape)).cuda()
-        self.d_t = ch.ones_like(y).float().fill_(float("Inf")).cuda()
+        self.d_t = ch.ones_like(y_use).float().fill_(float("Inf")).cuda()
         working_ind = (self.d_t > eps).nonzero().flatten()
 
         stop_queries = self.queries.clone()
         dist = self.d_t.clone()
-        self.x_final = self.get_xadv(x, self.sgn_t, self.d_t)
+        self.x_final = self.get_xadv(x_orig, self.sgn_t, self.d_t)
 
         block_level = 0
         block_ind = 0
@@ -66,14 +72,14 @@ class RayS(Attacker):
             attempt[valid_mask.nonzero().flatten(), start:end] *= -1.
             attempt = attempt.view(shape)
 
-            self.binary_search(x, y, attempt, valid_mask)
+            self.binary_search(x_orig, y_use, attempt, valid_mask)
 
             block_ind += 1
             if block_ind == 2 ** block_level or end == dim:
                 block_level += 1
                 block_ind = 0
 
-            dist = ch.norm((self.x_final - x).view(shape[0], -1), ord, 1)
+            dist = ch.norm((self.x_final - x_orig).view(shape[0], -1), ord, 1)
             stop_queries[working_ind] = self.queries[working_ind]
             working_ind = (dist > eps).nonzero().flatten()
 
@@ -82,7 +88,7 @@ class RayS(Attacker):
                 break
             query_string = f"Queries: {ch.min(self.queries.float())}/{self.query_budget}"
             info_string = 'd_t: %.4f | adbd: %.4f | queries: %.4f | rob acc: %.4f | iter: %d' % (ch.mean(
-                self.d_t), ch.mean(dist), ch.mean(self.queries.float()), len(working_ind) / len(x), i + 1)
+                self.d_t), ch.mean(dist), ch.mean(self.queries.float()), len(working_ind) / len(x_orig), i + 1)
             # Also log all of this information
             # TODO: Make sure right things are being logged
             self.logger.log(query_string + " | " + info_string)
@@ -90,7 +96,7 @@ class RayS(Attacker):
                 "d_t": ch.mean(self.d_t).item(),
                 "adbd": ch.mean(dist).item(),
                 "queries": ch.min(self.queries.float()).item(),
-                "rob acc": len(working_ind) / len(x),
+                "rob acc": len(working_ind) / len(x_orig),
             })
             iterator.set_description(query_string + " | " + info_string)
 

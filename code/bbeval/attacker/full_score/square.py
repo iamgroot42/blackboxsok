@@ -25,20 +25,28 @@ class Square_Attack(Attacker):
         y = ch.sign(y) * ch.abs(y) * eps
         return y
 
-    def attack(self, x, y):
+    def attack(self, x_orig, y_label, y_target=None, x_adv=None):
+        # TODO: Add support for x_adv
         n_iters = self.params.n_iters
         p_init = self.params.p_init
         # Don't need gradients for the attack, detach x if it has gradient collection on
-        x_ = x.detach()
+        x_orig_ = x_orig.detach()
+
+        # Use appropriate labels for the attack
+        if self.targeted:
+            y_use = y_target
+        else:
+            y_use = y_label
+
         if self.norm_type == np.inf:
-            x_adv, num_queries = self.square_attack_l2(
-                x_, y, self.eps, n_iters, p_init)
+            x_perturbed, num_queries = self.square_attack_l2(
+                x_orig_, y_use, n_iters, p_init)
         elif self.norm_type == 2:
-            x_adv, num_queries = self.square_attack_linf(
-                x_, y, self.eps, n_iters, p_init)
+            x_perturbed, num_queries = self.square_attack_linf(
+                x_orig_, y_use, n_iters, p_init)
         else:
             raise NotImplementedError("Unsupported Norm Type!")
-        return x_adv, num_queries
+        return x_perturbed, num_queries
 
     def p_selection(self, p_init, it, n_iters):
         """ Piece-wise constant schedule for p (the fraction of pixels changed on every iteration). """
@@ -107,11 +115,12 @@ class Square_Attack(Attacker):
 
         return delta
 
-    def square_attack_l2(self, x, y, eps, n_iters, p_init):
+    def square_attack_l2(self, x, y, n_iters, p_init):
         """ The L2 square attack """
         if self.seed is not None:
             ch.random.seed(self.seed)
 
+        eps = self.eps
         x_min, x_max = 0, 1
         c, h, w = x.shape[1:]
         n_features = c * h * w
@@ -262,8 +271,10 @@ class Square_Attack(Attacker):
 
         return n_queries, x_best
 
-    def square_attack_linf(self, x, y, eps, n_iters, p_init):
+    def square_attack_linf(self, x, y, n_iters, p_init):
         """ The Linf square attack """
+
+        eps = self.eps
         ch.random.seed(0)  # important to leave it here as well
         x_min, x_max = 0, 1 if x.max() <= 1 else 255
         c, h, w = x.shape[1:]

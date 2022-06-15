@@ -25,7 +25,7 @@ class Staircase(Attacker):
         self.x_final = None
         self.queries = 1
 
-    def attack(self, x, y_label, y_target, local_advy ):
+    def attack(self, x_orig, y_label, y_target=None, x_adv=None):
         """
             Attack the original image using combination of transfer methods and return adversarial example
             (x, y_label): original image
@@ -43,6 +43,7 @@ class Staircase(Attacker):
             raise ValueError("Expected a dictionary of auxiliary models, since we will be working with an ensemble")
         # temporarily set these values for testing based on their original tf implementation
         amplification = 10  # amplification_factor: 10.0 for tensorflow implementation
+        # TODO: Should be [-1, 1] for data clip?
         x_min_val, x_max_val = -1.0, 1.0
         image_width = 299
         image_resizes = [330]
@@ -57,14 +58,14 @@ class Staircase(Attacker):
 
         # initializes the advesarial example
         # x.requires_grad = True
-        adv = x.clone()
+        adv = x_orig.clone()
         adv = adv.cuda()
         adv.requires_grad = True
         # amplification = 0.0 # TODO: check what this is actually doing
         pre_grad = ch.zeros(adv.shape).cuda()
         # quite specific piece of code to staircase attack
-        x_min = clip_by_tensor(x - eps, x_min_val, x_max_val)
-        x_max = clip_by_tensor(x + eps, x_min_val, x_max_val)
+        x_min = clip_by_tensor(x_orig - eps, x_min_val, x_max_val)
+        x_max = clip_by_tensor(x_orig + eps, x_min_val, x_max_val)
 
         # Create Gaussian kernel
         kernel_size = 5
@@ -98,7 +99,7 @@ class Staircase(Attacker):
                             mode='bilinear')) * 1. / n_model_ensemble
                         # output += model.forward(input_diversity(adv + pre_grad, image_width, image_resize)) * 1./n_model_ensemble
                         loss += F.cross_entropy(output * 1.5, y_label,
-                                                reduction="none")  # TODO: this one should be amplification factor? cannot verity in the original implementation
+                                                reduction="none")  # TODO: this one should be amplification factor? cannot verify in the original implementation
                 loss = loss / n_input_ensemble
                 loss.mean().backward()
                 noise = adv.grad.data
@@ -131,8 +132,7 @@ class Staircase(Attacker):
             transferability = float(num_transfered / batch_size) * 100
 
         else:
-            pass
-
+            raise NotImplementedError("Targeted attack is not implemented yet")
 
         print("The transferbility of Staircase is %s %%" % str(transferability))
         self.logger.add_result(n_iters, {

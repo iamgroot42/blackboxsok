@@ -55,10 +55,9 @@ class AttackResult(Result):
                  attack_config: AttackerConfig):
         # Infer path from data_config inside attack_config
         dataset_name = attack_config.dataset_config.name
-        attack_name = attack_config.name
         experiment_name = attack_config.experiment_name 
         save_path = get_log_save_path()
-        path = Path(os.path.join(save_path, dataset_name, attack_name))
+        path = Path(os.path.join(save_path, dataset_name, experiment_name))
         super().__init__(path, experiment_name)
         # Worthwhile to save the attack config
         attack_config_copy = deepcopy(attack_config)
