@@ -8,19 +8,19 @@ MODEL_WRAPPER_MAPPING = {
 }
 
 
-def get_model_wrapper(model_config: ModelConfig):
+def get_model_wrapper(model_configs: ModelConfig):
     """
         Create model wrapper for given model-config
     """
-    def _get_model(name):
-        wrapper = MODEL_WRAPPER_MAPPING.get(name, None)
+    def _get_model(model_config):
+        wrapper = MODEL_WRAPPER_MAPPING.get(model_config.name, None)
         if not wrapper:
             raise NotImplementedError(
                 f"Model {model_config.name} not implemented")
         return wrapper(model_config)
 
-    if isinstance(model_config.name, list):
-        wrappers = {_name: _get_model(_name) for _name in model_config.name}
+    if isinstance(model_configs, list):
+        wrappers = {model_config.name: _get_model(model_config.name) for model_config in model_configs}
         return wrappers
     else:
-        return _get_model(model_config.name)
+        return _get_model(model_configs.name)
