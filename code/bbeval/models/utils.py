@@ -20,7 +20,7 @@ def get_model_wrapper(model_configs: ModelConfig):
         return wrapper(model_config)
 
     if isinstance(model_configs, list):
-        wrappers = {model_config.name: _get_model(model_config.name) for model_config in model_configs}
+        wrappers = {model_config.name: _get_model(model_config) for model_config in model_configs}
         return wrappers
     else:
-        return _get_model(model_configs.name)
+        return _get_model(model_configs)
