@@ -47,7 +47,7 @@ class RayS(Attacker):
         if self.targeted:
             y_use = y_target
         else:
-            y_use = y_label
+            y_use = y
 
         shape = list(x_orig.shape)
         dim = np.prod(shape[1:])
