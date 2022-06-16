@@ -80,7 +80,7 @@ if __name__ == "__main__":
         y_target = get_target_label(mode, x_orig, target_model1, num_class, y_label, batch_size)
         y_target = y_target.cuda()
         attacker1 = get_attack_wrapper(target_model1, aux_models1, attacker_config1)
-        x_sample_adv1, queries_used1 = attacker1.attack(x_orig, y_label, y_target, x_orig)
+        x_sample_adv1, queries_used1 = attacker1.attack(x_orig, x_orig, y_label, y_target )
         attacker1.save_results()
 
         print("%s attack is completed" % attacker_config1.name)
@@ -135,14 +135,15 @@ if __name__ == "__main__":
         # mode = "easiest"/"hardest"/"random"
         mode = "random"
         num_class = 1000
-        y_target = get_target_label(mode, x_orig, target_model1, num_class, y_label, batch_size)
+        y_target = get_target_label(mode, x_orig, target_model1, num_class, y_label, 32)
         y_target = y_target.cuda()
 
         attacker1 = get_attack_wrapper(target_model1, aux_models1, attacker_config1)
         attacker2 = get_attack_wrapper(target_model2, aux_models2, attacker_config2)
-        x_sample_adv1, queries_used1 = attacker1.attack(x_orig, y_label, y_target, x_orig)
+        x_sample_adv1, queries_used1 = attacker1.attack(x_orig, x_orig, y_label, y_target)
         attacker1.save_results()
-        x_sample_adv2, queries_used2 = attacker2.attack(x_orig, y_label, y_target, x_sample_adv1)
+        x_sample_adv2, queries_used2 = attacker2.attack(x_orig, x_sample_adv1, y_label, y_target)
         attacker2.save_results()
 
         print("%s attack and %s attack is completed" % (attacker_config1.name, attacker_config2.name))
+

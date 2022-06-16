@@ -1,0 +1,39 @@
+{
+    "name": "rays_imagenet",
+    "start time": "2022-06-16 17:56:33.073249",
+    "attack_config": {
+        "name": "rays",
+        "experiment_name": "rays_imagenet",
+        "dataset_config": {
+            "name": "imagenet",
+            "type": "image",
+            "augment": false,
+            "root": "/p/blackboxsok/datasets"
+        },
+        "adv_model_config": {
+            "name": "inceptionv3",
+            "dataset": "imagenet",
+            "use_pretrained": true,
+            "misc_dict": null
+        },
+        "eps": 0.05,
+        "aux_model_configs_dict": null,
+        "aux_model_configs": null,
+        "attack_params": null,
+        "access_level": "all",
+        "query_budget": 10000,
+        "norm_type": Infinity,
+        "targeted": false,
+        "loss_type": "ce",
+        "seed": null
+    },
+    "result": {
+        "1": {
+            "d_t": 0.0009877837728708982,
+            "adbd": 1.9073486328125e-06,
+            "queries": 20.0,
+            "rob acc": 0.0
+        }
+    },
+    "save time": "2022-06-16 17:56:34.488941"
+}
