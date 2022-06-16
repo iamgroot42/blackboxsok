@@ -1,0 +1,1835 @@
+{
+    "name": "square_attack_imagenet",
+    "start time": "2022-06-16 11:11:45.051167",
+    "attack_config": {
+        "name": "square_attack",
+        "experiment_name": "square_attack_imagenet",
+        "dataset_config": {
+            "name": "imagenet",
+            "type": "image",
+            "augment": false,
+            "root": "/p/blackboxsok/datasets"
+        },
+        "adv_model_config": {
+            "name": "inceptionv3",
+            "dataset": "imagenet",
+            "use_pretrained": true,
+            "misc_dict": null
+        },
+        "eps": 1.0,
+        "aux_model_configs_dict": null,
+        "aux_model_configs": null,
+        "attack_params": {
+            "n_iters": 200
+        },
+        "access_level": "all",
+        "query_budget": 5000,
+        "norm_type": Infinity,
+        "targeted": true,
+        "loss_type": "ce",
+        "seed": null
+    },
+    "result": {
+        "1": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 2.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 2.0,
+            "mean_margin_min": 975.7293701171875,
+            "time_total": 0.09195804595947266
+        },
+        "2": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 3.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 3.0,
+            "mean_margin_min": 975.752197265625,
+            "time_total": 0.17969012260437012
+        },
+        "3": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 4.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 4.0,
+            "mean_margin_min": 975.750244140625,
+            "time_total": 0.2663283348083496
+        },
+        "4": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 5.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 5.0,
+            "mean_margin_min": 990.7095947265625,
+            "time_total": 0.3525512218475342
+        },
+        "5": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 6.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 6.0,
+            "mean_margin_min": 990.70361328125,
+            "time_total": 0.4376096725463867
+        },
+        "6": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 7.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 7.0,
+            "mean_margin_min": 990.6976318359375,
+            "time_total": 0.5218322277069092
+        },
+        "7": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 8.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 8.0,
+            "mean_margin_min": 990.6907348632812,
+            "time_total": 0.6059980392456055
+        },
+        "8": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 9.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 9.0,
+            "mean_margin_min": 990.6920166015625,
+            "time_total": 0.690300464630127
+        },
+        "9": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 10.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 10.0,
+            "mean_margin_min": 990.6946411132812,
+            "time_total": 0.7743546962738037
+        },
+        "10": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 11.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 11.0,
+            "mean_margin_min": 990.6918334960938,
+            "time_total": 0.8586742877960205
+        },
+        "11": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 12.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 12.0,
+            "mean_margin_min": 990.6778564453125,
+            "time_total": 0.9430909156799316
+        },
+        "12": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 13.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 13.0,
+            "mean_margin_min": 990.6693115234375,
+            "time_total": 1.0267207622528076
+        },
+        "13": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 14.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 14.0,
+            "mean_margin_min": 990.640869140625,
+            "time_total": 1.1102335453033447
+        },
+        "14": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 15.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 15.0,
+            "mean_margin_min": 985.3602294921875,
+            "time_total": 1.1935703754425049
+        },
+        "15": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 16.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 16.0,
+            "mean_margin_min": 985.3614501953125,
+            "time_total": 1.2771763801574707
+        },
+        "16": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 17.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 17.0,
+            "mean_margin_min": 985.3612060546875,
+            "time_total": 1.3610713481903076
+        },
+        "17": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 18.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 18.0,
+            "mean_margin_min": 985.361083984375,
+            "time_total": 1.4452025890350342
+        },
+        "18": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 19.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 19.0,
+            "mean_margin_min": 985.3653564453125,
+            "time_total": 1.529261589050293
+        },
+        "19": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 20.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 20.0,
+            "mean_margin_min": 985.3641357421875,
+            "time_total": 1.611633539199829
+        },
+        "20": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 21.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 21.0,
+            "mean_margin_min": 985.3535766601562,
+            "time_total": 1.6956369876861572
+        },
+        "21": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 22.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 22.0,
+            "mean_margin_min": 985.3699951171875,
+            "time_total": 1.7782652378082275
+        },
+        "22": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 23.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 23.0,
+            "mean_margin_min": 985.3699951171875,
+            "time_total": 1.861656904220581
+        },
+        "23": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 24.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 24.0,
+            "mean_margin_min": 985.36083984375,
+            "time_total": 1.9441869258880615
+        },
+        "24": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 25.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 25.0,
+            "mean_margin_min": 985.3634033203125,
+            "time_total": 2.0275444984436035
+        },
+        "25": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 26.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 26.0,
+            "mean_margin_min": 985.3609008789062,
+            "time_total": 2.110269546508789
+        },
+        "26": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 27.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 27.0,
+            "mean_margin_min": 985.357177734375,
+            "time_total": 2.193514108657837
+        },
+        "27": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 28.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 28.0,
+            "mean_margin_min": 985.3556518554688,
+            "time_total": 2.276263475418091
+        },
+        "28": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 29.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 29.0,
+            "mean_margin_min": 985.3564453125,
+            "time_total": 2.359659194946289
+        },
+        "29": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 30.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 30.0,
+            "mean_margin_min": 985.344970703125,
+            "time_total": 2.442715644836426
+        },
+        "30": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 31.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 31.0,
+            "mean_margin_min": 985.344970703125,
+            "time_total": 2.525796890258789
+        },
+        "31": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 32.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 32.0,
+            "mean_margin_min": 985.342529296875,
+            "time_total": 2.60945725440979
+        },
+        "32": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 33.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 33.0,
+            "mean_margin_min": 985.34228515625,
+            "time_total": 2.6930906772613525
+        },
+        "33": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 34.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 34.0,
+            "mean_margin_min": 985.343017578125,
+            "time_total": 2.7762396335601807
+        },
+        "34": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 35.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 35.0,
+            "mean_margin_min": 985.343017578125,
+            "time_total": 2.859818458557129
+        },
+        "35": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 36.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 36.0,
+            "mean_margin_min": 985.3438720703125,
+            "time_total": 2.943159341812134
+        },
+        "36": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 37.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 37.0,
+            "mean_margin_min": 985.3411865234375,
+            "time_total": 3.026531219482422
+        },
+        "37": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 38.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 38.0,
+            "mean_margin_min": 985.3411865234375,
+            "time_total": 3.109947681427002
+        },
+        "38": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 39.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 39.0,
+            "mean_margin_min": 985.3388671875,
+            "time_total": 3.193512439727783
+        },
+        "39": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 40.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 40.0,
+            "mean_margin_min": 985.3388671875,
+            "time_total": 3.2768192291259766
+        },
+        "40": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 41.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 41.0,
+            "mean_margin_min": 985.34228515625,
+            "time_total": 3.3604161739349365
+        },
+        "41": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 42.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 42.0,
+            "mean_margin_min": 985.330810546875,
+            "time_total": 3.4438769817352295
+        },
+        "42": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 43.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 43.0,
+            "mean_margin_min": 985.3273315429688,
+            "time_total": 3.525761842727661
+        },
+        "43": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 44.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 44.0,
+            "mean_margin_min": 985.3273315429688,
+            "time_total": 3.6093199253082275
+        },
+        "44": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 45.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 45.0,
+            "mean_margin_min": 985.3273315429688,
+            "time_total": 3.6914546489715576
+        },
+        "45": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 46.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 46.0,
+            "mean_margin_min": 985.3146362304688,
+            "time_total": 3.7749834060668945
+        },
+        "46": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 47.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 47.0,
+            "mean_margin_min": 985.3173828125,
+            "time_total": 3.857224464416504
+        },
+        "47": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 48.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 48.0,
+            "mean_margin_min": 985.317138671875,
+            "time_total": 3.940767765045166
+        },
+        "48": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 49.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 49.0,
+            "mean_margin_min": 985.317138671875,
+            "time_total": 4.023102521896362
+        },
+        "49": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 50.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 50.0,
+            "mean_margin_min": 985.317138671875,
+            "time_total": 4.106234788894653
+        },
+        "50": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 51.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 51.0,
+            "mean_margin_min": 985.317138671875,
+            "time_total": 4.189212799072266
+        },
+        "51": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 52.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 52.0,
+            "mean_margin_min": 985.317138671875,
+            "time_total": 4.272096633911133
+        },
+        "52": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 53.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 53.0,
+            "mean_margin_min": 985.317138671875,
+            "time_total": 4.354875326156616
+        },
+        "53": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 54.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 54.0,
+            "mean_margin_min": 985.3181762695312,
+            "time_total": 4.437885761260986
+        },
+        "54": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 55.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 55.0,
+            "mean_margin_min": 985.3181762695312,
+            "time_total": 4.520484209060669
+        },
+        "55": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 56.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 56.0,
+            "mean_margin_min": 985.3181762695312,
+            "time_total": 4.6033408641815186
+        },
+        "56": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 57.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 57.0,
+            "mean_margin_min": 985.3181762695312,
+            "time_total": 4.686617374420166
+        },
+        "57": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 58.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 58.0,
+            "mean_margin_min": 985.3181762695312,
+            "time_total": 4.770279407501221
+        },
+        "58": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 59.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 59.0,
+            "mean_margin_min": 985.3181762695312,
+            "time_total": 4.853727340698242
+        },
+        "59": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 60.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 60.0,
+            "mean_margin_min": 985.3181762695312,
+            "time_total": 4.937060832977295
+        },
+        "60": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 61.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 61.0,
+            "mean_margin_min": 985.3181762695312,
+            "time_total": 5.020745754241943
+        },
+        "61": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 62.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 62.0,
+            "mean_margin_min": 985.3181762695312,
+            "time_total": 5.104134559631348
+        },
+        "62": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 63.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 63.0,
+            "mean_margin_min": 985.3173828125,
+            "time_total": 5.187947988510132
+        },
+        "63": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 64.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 64.0,
+            "mean_margin_min": 985.3173828125,
+            "time_total": 5.271560907363892
+        },
+        "64": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 65.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 65.0,
+            "mean_margin_min": 985.3173828125,
+            "time_total": 5.355139255523682
+        },
+        "65": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 66.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 66.0,
+            "mean_margin_min": 985.3046875,
+            "time_total": 5.438165187835693
+        },
+        "66": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 67.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 67.0,
+            "mean_margin_min": 985.3046875,
+            "time_total": 5.520908355712891
+        },
+        "67": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 68.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 68.0,
+            "mean_margin_min": 985.30419921875,
+            "time_total": 5.603670120239258
+        },
+        "68": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 69.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 69.0,
+            "mean_margin_min": 985.30419921875,
+            "time_total": 5.687317371368408
+        },
+        "69": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 70.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 70.0,
+            "mean_margin_min": 985.296875,
+            "time_total": 5.7705254554748535
+        },
+        "70": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 71.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 71.0,
+            "mean_margin_min": 985.296875,
+            "time_total": 5.854177951812744
+        },
+        "71": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 72.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 72.0,
+            "mean_margin_min": 985.296875,
+            "time_total": 5.935982942581177
+        },
+        "72": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 73.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 73.0,
+            "mean_margin_min": 985.2974853515625,
+            "time_total": 6.020256996154785
+        },
+        "73": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 74.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 74.0,
+            "mean_margin_min": 985.2974853515625,
+            "time_total": 6.102462530136108
+        },
+        "74": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 75.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 75.0,
+            "mean_margin_min": 985.2974853515625,
+            "time_total": 6.1857218742370605
+        },
+        "75": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 76.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 76.0,
+            "mean_margin_min": 985.2974853515625,
+            "time_total": 6.268049716949463
+        },
+        "76": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 77.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 77.0,
+            "mean_margin_min": 985.2974853515625,
+            "time_total": 6.350633859634399
+        },
+        "77": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 78.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 78.0,
+            "mean_margin_min": 985.2974853515625,
+            "time_total": 6.433048725128174
+        },
+        "78": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 79.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 79.0,
+            "mean_margin_min": 985.2974853515625,
+            "time_total": 6.515686988830566
+        },
+        "79": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 80.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 80.0,
+            "mean_margin_min": 985.2974853515625,
+            "time_total": 6.598755598068237
+        },
+        "80": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 81.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 81.0,
+            "mean_margin_min": 985.2974853515625,
+            "time_total": 6.681941270828247
+        },
+        "81": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 82.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 82.0,
+            "mean_margin_min": 991.0961303710938,
+            "time_total": 6.764700174331665
+        },
+        "82": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 83.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 83.0,
+            "mean_margin_min": 991.0961303710938,
+            "time_total": 6.847686529159546
+        },
+        "83": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 84.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 84.0,
+            "mean_margin_min": 991.0961303710938,
+            "time_total": 6.9308836460113525
+        },
+        "84": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 85.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 85.0,
+            "mean_margin_min": 991.0961303710938,
+            "time_total": 7.014517068862915
+        },
+        "85": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 86.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 86.0,
+            "mean_margin_min": 991.0966796875,
+            "time_total": 7.097966432571411
+        },
+        "86": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 87.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 87.0,
+            "mean_margin_min": 991.0966796875,
+            "time_total": 7.180727005004883
+        },
+        "87": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 88.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 88.0,
+            "mean_margin_min": 991.0966796875,
+            "time_total": 7.2632975578308105
+        },
+        "88": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 89.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 89.0,
+            "mean_margin_min": 991.090087890625,
+            "time_total": 7.345868825912476
+        },
+        "89": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 90.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 90.0,
+            "mean_margin_min": 991.102294921875,
+            "time_total": 7.429364204406738
+        },
+        "90": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 91.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 91.0,
+            "mean_margin_min": 991.1082763671875,
+            "time_total": 7.512929916381836
+        },
+        "91": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 92.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 92.0,
+            "mean_margin_min": 991.1082763671875,
+            "time_total": 7.59633731842041
+        },
+        "92": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 93.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 93.0,
+            "mean_margin_min": 991.1082763671875,
+            "time_total": 7.679659366607666
+        },
+        "93": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 94.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 94.0,
+            "mean_margin_min": 991.1082763671875,
+            "time_total": 7.763066291809082
+        },
+        "94": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 95.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 95.0,
+            "mean_margin_min": 991.1082763671875,
+            "time_total": 7.846325159072876
+        },
+        "95": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 96.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 96.0,
+            "mean_margin_min": 991.1082763671875,
+            "time_total": 7.92950701713562
+        },
+        "96": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 97.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 97.0,
+            "mean_margin_min": 991.1082763671875,
+            "time_total": 8.012313604354858
+        },
+        "97": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 98.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 98.0,
+            "mean_margin_min": 991.1082763671875,
+            "time_total": 8.095392942428589
+        },
+        "98": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 99.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 99.0,
+            "mean_margin_min": 991.1082763671875,
+            "time_total": 8.178391218185425
+        },
+        "99": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 100.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 100.0,
+            "mean_margin_min": 991.1082763671875,
+            "time_total": 8.261353254318237
+        },
+        "100": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 101.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 101.0,
+            "mean_margin_min": 991.1082763671875,
+            "time_total": 8.344245672225952
+        },
+        "101": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 102.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 102.0,
+            "mean_margin_min": 991.1082763671875,
+            "time_total": 8.427157640457153
+        },
+        "102": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 103.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 103.0,
+            "mean_margin_min": 991.1082763671875,
+            "time_total": 8.508960723876953
+        },
+        "103": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 104.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 104.0,
+            "mean_margin_min": 991.107666015625,
+            "time_total": 8.592330932617188
+        },
+        "104": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 105.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 105.0,
+            "mean_margin_min": 991.107666015625,
+            "time_total": 8.674542665481567
+        },
+        "105": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 106.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 106.0,
+            "mean_margin_min": 991.107666015625,
+            "time_total": 8.758045196533203
+        },
+        "106": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 107.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 107.0,
+            "mean_margin_min": 991.1070556640625,
+            "time_total": 8.840215921401978
+        },
+        "107": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 108.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 108.0,
+            "mean_margin_min": 991.1070556640625,
+            "time_total": 8.92197847366333
+        },
+        "108": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 109.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 109.0,
+            "mean_margin_min": 991.1092529296875,
+            "time_total": 9.004744052886963
+        },
+        "109": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 110.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 110.0,
+            "mean_margin_min": 991.1092529296875,
+            "time_total": 9.087636470794678
+        },
+        "110": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 111.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 111.0,
+            "mean_margin_min": 991.1092529296875,
+            "time_total": 9.170594453811646
+        },
+        "111": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 112.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 112.0,
+            "mean_margin_min": 991.1092529296875,
+            "time_total": 9.25377893447876
+        },
+        "112": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 113.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 113.0,
+            "mean_margin_min": 991.1096801757812,
+            "time_total": 9.336574792861938
+        },
+        "113": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 114.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 114.0,
+            "mean_margin_min": 991.1096801757812,
+            "time_total": 9.41954255104065
+        },
+        "114": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 115.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 115.0,
+            "mean_margin_min": 991.1096801757812,
+            "time_total": 9.502615451812744
+        },
+        "115": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 116.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 116.0,
+            "mean_margin_min": 991.1096801757812,
+            "time_total": 9.585683107376099
+        },
+        "116": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 117.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 117.0,
+            "mean_margin_min": 991.1075439453125,
+            "time_total": 9.668600797653198
+        },
+        "117": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 118.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 118.0,
+            "mean_margin_min": 991.1053466796875,
+            "time_total": 9.751585483551025
+        },
+        "118": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 119.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 119.0,
+            "mean_margin_min": 991.106689453125,
+            "time_total": 9.834448099136353
+        },
+        "119": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 120.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 120.0,
+            "mean_margin_min": 991.106689453125,
+            "time_total": 9.917320489883423
+        },
+        "120": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 121.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 121.0,
+            "mean_margin_min": 991.106689453125,
+            "time_total": 10.000518083572388
+        },
+        "121": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 122.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 122.0,
+            "mean_margin_min": 991.11572265625,
+            "time_total": 10.083425045013428
+        },
+        "122": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 123.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 123.0,
+            "mean_margin_min": 991.11572265625,
+            "time_total": 10.166375160217285
+        },
+        "123": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 124.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 124.0,
+            "mean_margin_min": 991.11572265625,
+            "time_total": 10.24979019165039
+        },
+        "124": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 125.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 125.0,
+            "mean_margin_min": 991.11572265625,
+            "time_total": 10.333131790161133
+        },
+        "125": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 126.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 126.0,
+            "mean_margin_min": 991.11572265625,
+            "time_total": 10.416419982910156
+        },
+        "126": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 127.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 127.0,
+            "mean_margin_min": 991.11572265625,
+            "time_total": 10.499791860580444
+        },
+        "127": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 128.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 128.0,
+            "mean_margin_min": 991.1199951171875,
+            "time_total": 10.5816650390625
+        },
+        "128": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 129.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 129.0,
+            "mean_margin_min": 991.1199951171875,
+            "time_total": 10.66487717628479
+        },
+        "129": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 130.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 130.0,
+            "mean_margin_min": 991.1199951171875,
+            "time_total": 10.746754169464111
+        },
+        "130": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 131.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 131.0,
+            "mean_margin_min": 991.119873046875,
+            "time_total": 10.830060482025146
+        },
+        "131": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 132.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 132.0,
+            "mean_margin_min": 991.119873046875,
+            "time_total": 10.912229537963867
+        },
+        "132": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 133.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 133.0,
+            "mean_margin_min": 991.119873046875,
+            "time_total": 10.995213508605957
+        },
+        "133": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 134.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 134.0,
+            "mean_margin_min": 991.119873046875,
+            "time_total": 11.07795524597168
+        },
+        "134": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 135.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 135.0,
+            "mean_margin_min": 991.119873046875,
+            "time_total": 11.160635232925415
+        },
+        "135": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 136.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 136.0,
+            "mean_margin_min": 991.119873046875,
+            "time_total": 11.243371963500977
+        },
+        "136": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 137.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 137.0,
+            "mean_margin_min": 991.119873046875,
+            "time_total": 11.326681137084961
+        },
+        "137": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 138.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 138.0,
+            "mean_margin_min": 991.119873046875,
+            "time_total": 11.409399509429932
+        },
+        "138": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 139.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 139.0,
+            "mean_margin_min": 991.119873046875,
+            "time_total": 11.49227237701416
+        },
+        "139": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 140.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 140.0,
+            "mean_margin_min": 991.119873046875,
+            "time_total": 11.57575798034668
+        },
+        "140": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 141.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 141.0,
+            "mean_margin_min": 991.119873046875,
+            "time_total": 11.658693552017212
+        },
+        "141": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 142.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 142.0,
+            "mean_margin_min": 991.119873046875,
+            "time_total": 11.741559982299805
+        },
+        "142": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 143.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 143.0,
+            "mean_margin_min": 991.1234130859375,
+            "time_total": 11.824878692626953
+        },
+        "143": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 144.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 144.0,
+            "mean_margin_min": 991.1234130859375,
+            "time_total": 11.908270597457886
+        },
+        "144": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 145.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 145.0,
+            "mean_margin_min": 991.1234130859375,
+            "time_total": 11.991618633270264
+        },
+        "145": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 146.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 146.0,
+            "mean_margin_min": 991.1234130859375,
+            "time_total": 12.074934720993042
+        },
+        "146": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 147.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 147.0,
+            "mean_margin_min": 991.1248779296875,
+            "time_total": 12.158283948898315
+        },
+        "147": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 148.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 148.0,
+            "mean_margin_min": 991.1248779296875,
+            "time_total": 12.241494417190552
+        },
+        "148": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 149.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 149.0,
+            "mean_margin_min": 991.1248779296875,
+            "time_total": 12.324349880218506
+        },
+        "149": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 150.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 150.0,
+            "mean_margin_min": 991.1248779296875,
+            "time_total": 12.407098531723022
+        },
+        "150": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 151.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 151.0,
+            "mean_margin_min": 991.1248779296875,
+            "time_total": 12.489896774291992
+        },
+        "151": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 152.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 152.0,
+            "mean_margin_min": 991.1248779296875,
+            "time_total": 12.573238134384155
+        },
+        "152": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 153.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 153.0,
+            "mean_margin_min": 991.1248779296875,
+            "time_total": 12.656551599502563
+        },
+        "153": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 154.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 154.0,
+            "mean_margin_min": 991.1248779296875,
+            "time_total": 12.739792585372925
+        },
+        "154": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 155.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 155.0,
+            "mean_margin_min": 991.1248779296875,
+            "time_total": 12.822818994522095
+        },
+        "155": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 156.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 156.0,
+            "mean_margin_min": 991.1233520507812,
+            "time_total": 12.905794143676758
+        },
+        "156": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 157.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 157.0,
+            "mean_margin_min": 991.1233520507812,
+            "time_total": 12.987504243850708
+        },
+        "157": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 158.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 158.0,
+            "mean_margin_min": 991.1233520507812,
+            "time_total": 13.070807218551636
+        },
+        "158": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 159.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 159.0,
+            "mean_margin_min": 991.1233520507812,
+            "time_total": 13.152649879455566
+        },
+        "159": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 160.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 160.0,
+            "mean_margin_min": 991.1233520507812,
+            "time_total": 13.235898494720459
+        },
+        "160": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 161.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 161.0,
+            "mean_margin_min": 991.1233520507812,
+            "time_total": 13.318068504333496
+        },
+        "161": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 162.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 162.0,
+            "mean_margin_min": 991.1233520507812,
+            "time_total": 13.400924682617188
+        },
+        "162": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 163.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 163.0,
+            "mean_margin_min": 991.1233520507812,
+            "time_total": 13.483529567718506
+        },
+        "163": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 164.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 164.0,
+            "mean_margin_min": 991.1233520507812,
+            "time_total": 13.56619143486023
+        },
+        "164": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 165.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 165.0,
+            "mean_margin_min": 991.1233520507812,
+            "time_total": 13.648843050003052
+        },
+        "165": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 166.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 166.0,
+            "mean_margin_min": 991.1233520507812,
+            "time_total": 13.731887578964233
+        },
+        "166": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 167.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 167.0,
+            "mean_margin_min": 991.1233520507812,
+            "time_total": 13.81452488899231
+        },
+        "167": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 168.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 168.0,
+            "mean_margin_min": 991.1233520507812,
+            "time_total": 13.897262573242188
+        },
+        "168": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 169.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 169.0,
+            "mean_margin_min": 991.1177368164062,
+            "time_total": 13.980202674865723
+        },
+        "169": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 170.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 170.0,
+            "mean_margin_min": 991.1177368164062,
+            "time_total": 14.06303071975708
+        },
+        "170": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 171.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 171.0,
+            "mean_margin_min": 991.1207275390625,
+            "time_total": 14.146332025527954
+        },
+        "171": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 172.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 172.0,
+            "mean_margin_min": 991.1207275390625,
+            "time_total": 14.229664325714111
+        },
+        "172": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 173.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 173.0,
+            "mean_margin_min": 991.1197509765625,
+            "time_total": 14.312974214553833
+        },
+        "173": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 174.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 174.0,
+            "mean_margin_min": 991.1197509765625,
+            "time_total": 14.396048784255981
+        },
+        "174": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 175.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 175.0,
+            "mean_margin_min": 991.1197509765625,
+            "time_total": 14.47870945930481
+        },
+        "175": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 176.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 176.0,
+            "mean_margin_min": 991.1197509765625,
+            "time_total": 14.561944961547852
+        },
+        "176": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 177.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 177.0,
+            "mean_margin_min": 991.1160888671875,
+            "time_total": 14.64533019065857
+        },
+        "177": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 178.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 178.0,
+            "mean_margin_min": 991.119140625,
+            "time_total": 14.72855830192566
+        },
+        "178": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 179.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 179.0,
+            "mean_margin_min": 991.119140625,
+            "time_total": 14.811732530593872
+        },
+        "179": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 180.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 180.0,
+            "mean_margin_min": 991.119140625,
+            "time_total": 14.895065546035767
+        },
+        "180": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 181.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 181.0,
+            "mean_margin_min": 991.119140625,
+            "time_total": 14.97832441329956
+        },
+        "181": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 182.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 182.0,
+            "mean_margin_min": 991.1221923828125,
+            "time_total": 15.060181617736816
+        },
+        "182": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 183.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 183.0,
+            "mean_margin_min": 991.1221923828125,
+            "time_total": 15.143187761306763
+        },
+        "183": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 184.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 184.0,
+            "mean_margin_min": 991.1221923828125,
+            "time_total": 15.224963188171387
+        },
+        "184": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 185.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 185.0,
+            "mean_margin_min": 991.1221923828125,
+            "time_total": 15.308212995529175
+        },
+        "185": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 186.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 186.0,
+            "mean_margin_min": 991.1221923828125,
+            "time_total": 15.39024567604065
+        },
+        "186": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 187.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 187.0,
+            "mean_margin_min": 991.1221923828125,
+            "time_total": 15.473657131195068
+        },
+        "187": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 188.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 188.0,
+            "mean_margin_min": 991.1221923828125,
+            "time_total": 15.556347131729126
+        },
+        "188": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 189.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 189.0,
+            "mean_margin_min": 991.1221923828125,
+            "time_total": 15.639279127120972
+        },
+        "189": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 190.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 190.0,
+            "mean_margin_min": 991.1214599609375,
+            "time_total": 15.722184896469116
+        },
+        "190": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 191.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 191.0,
+            "mean_margin_min": 991.1214599609375,
+            "time_total": 15.804887771606445
+        },
+        "191": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 192.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 192.0,
+            "mean_margin_min": 991.1214599609375,
+            "time_total": 15.88821005821228
+        },
+        "192": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 193.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 193.0,
+            "mean_margin_min": 991.1214599609375,
+            "time_total": 15.971496343612671
+        },
+        "193": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 194.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 194.0,
+            "mean_margin_min": 991.1214599609375,
+            "time_total": 16.054965019226074
+        },
+        "194": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 195.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 195.0,
+            "mean_margin_min": 991.1214599609375,
+            "time_total": 16.137959241867065
+        },
+        "195": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 196.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 196.0,
+            "mean_margin_min": 991.1214599609375,
+            "time_total": 16.220757722854614
+        },
+        "196": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 197.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 197.0,
+            "mean_margin_min": 991.1317749023438,
+            "time_total": 16.303584575653076
+        },
+        "197": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 198.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 198.0,
+            "mean_margin_min": 991.1317749023438,
+            "time_total": 16.386797428131104
+        },
+        "198": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 199.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 199.0,
+            "mean_margin_min": 991.1317749023438,
+            "time_total": 16.469757556915283
+        },
+        "199": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 200.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 200.0,
+            "mean_margin_min": 991.1317749023438,
+            "time_total": 16.552562475204468
+        },
+        "200": {
+            "acc": 1.0,
+            "acc_corr": 1.0,
+            "mean_nq": 201.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 201.0,
+            "mean_margin_min": 991.1317749023438,
+            "time_total": 16.635830879211426
+        }
+    },
+    "save time": "2022-06-16 11:12:02.231221"
+}
