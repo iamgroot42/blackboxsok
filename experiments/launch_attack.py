@@ -3,14 +3,13 @@ from simple_parsing import ArgumentParser
 from pathlib import Path
 import os
 
-from bbeval.models.pytorch.image import Inceptionv3, ResNet18, VGG16
-
 from bbeval.config import AttackerConfig
 from bbeval.datasets.utils import get_dataset_wrapper
 from bbeval.attacker.utils import get_attack_wrapper
 from bbeval.models.utils import MODEL_WRAPPER_MAPPING 
 from bbeval.models.utils import get_model_wrapper
 from bbeval.loss import get_loss_fn
+
 
 # os.environ['TORCH_HOME'] = '/p/blackboxsok/models/imagenet_torch' # download imagenet models to project directory
 if __name__ == "__main__":
@@ -48,6 +47,7 @@ if __name__ == "__main__":
             aux_models[_key].cuda()
     else:
         aux_models = {}
+
     # the original dataset is normalized into the range of [0,1]
     # specific attacks may have different ranges and should be handled case by case
     x_orig, y_label = next(iter(test_loader))

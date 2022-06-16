@@ -24,8 +24,11 @@ class Attacker:
         # Creat new logger (for debugging, etc.)
         self.logger = Logger(self.config)
 
-    def attack(self, x, y):
-        pass
+    def attack(self, x_orig, y_label, y_target=None, x_adv=None):
+        # TODO: Have sanity checks here (matching shape, presence of target if targeted, etc)
+        # Call a new self._attack() from here, and have child class
+        # Implement that function
+        raise NotImplementedError("Attack functionbality not implemented yet")
 
     def save_results(self):
         # Save logger

@@ -38,7 +38,7 @@ class Square_Attack(Attacker):
                 x_, x_adv_loc_, y, y_target, self.eps, n_iters, p_init)
         else:
             raise NotImplementedError("Unsupported Norm Type!")
-        return x_adv, num_queries
+        return x_perturbed, num_queries
 
     def p_selection(self, p_init, it, n_iters):
         """ Piece-wise constant schedule for p (the fraction of pixels changed on every iteration). """
@@ -107,12 +107,13 @@ class Square_Attack(Attacker):
 
         return delta
 
-    def square_attack_l2(self, x, y, eps, n_iters, p_init):
+    def square_attack_l2(self, x, y, n_iters, p_init):
         """ The L2 square attack """
         if self.seed is not None:
             ch.random.seed(self.seed)
 
-        x_min, x_max = 0, 1 # follows from the default range of image values in [0,1]
+        eps = self.eps
+        x_min, x_max = 0, 1
         c, h, w = x.shape[1:]
         n_features = c * h * w
         n_ex_total = x.shape[0]
@@ -264,10 +265,11 @@ class Square_Attack(Attacker):
 
         return n_queries, x_best
 
-    def square_attack_linf(self, x, x_adv_loc, y, y_target, eps, n_iters, p_init):
+    def square_attack_linf(self, x, y, n_iters, p_init):
         """ The Linf square attack """
-        # ch.random.seed(0)  # important to leave it here as well
-        ch.manual_seed(0)
+
+        eps = self.eps
+        ch.random.seed(0)  # important to leave it here as well
         x_min, x_max = 0, 1 if x.max() <= 1 else 255
         c, h, w = x.shape[1:]
         n_features = c*h*w
