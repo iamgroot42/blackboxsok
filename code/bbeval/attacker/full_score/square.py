@@ -25,17 +25,17 @@ class Square_Attack(Attacker):
         y = ch.sign(y) * ch.abs(y) * eps
         return y
 
-    def attack(self, x, y):
+    def attack(self, x, x_adv_loc, y, y_target):
         n_iters = self.params.n_iters
         p_init = self.params.p_init
         # Don't need gradients for the attack, detach x if it has gradient collection on
-        x_ = x.detach()
-        if self.norm_type == np.inf:
+        x_, x_adv_loc_ = x.detach(), x_adv_loc.detach()
+        if self.norm_type == 2:
             x_adv, num_queries = self.square_attack_l2(
                 x_, y, self.eps, n_iters, p_init)
-        elif self.norm_type == 2:
+        elif self.norm_type == np.inf:
             x_adv, num_queries = self.square_attack_linf(
-                x_, y, self.eps, n_iters, p_init)
+                x_, x_adv_loc_, y, y_target, self.eps, n_iters, p_init)
         else:
             raise NotImplementedError("Unsupported Norm Type!")
         return x_adv, num_queries
@@ -112,7 +112,7 @@ class Square_Attack(Attacker):
         if self.seed is not None:
             ch.random.seed(self.seed)
 
-        x_min, x_max = 0, 1
+        x_min, x_max = 0, 1 # follows from the default range of image values in [0,1]
         c, h, w = x.shape[1:]
         n_features = c * h * w
         n_ex_total = x.shape[0]
@@ -134,7 +134,7 @@ class Square_Attack(Attacker):
             center_h += s
 
         x_best = ch.clip(x + delta_init / ch.sqrt(ch.sum(delta_init **
-                         2, dim=(1, 2, 3), keepdim=True)) * eps, 0, 1)
+                         2, dim=(1, 2, 3), keepdim=True)) * eps, x_min, x_max)
 
         logits = self.model.forward(x_best, detach=True)
         probs = ch.softmax(logits, 1)
@@ -227,28 +227,30 @@ class Square_Attack(Attacker):
                 x_new + ~idx_improved * x_best_curr
             n_queries[idx_to_fool] += 1
 
-            acc = (margin_min > 0.0).sum() / n_ex_total
-            acc_corr = (1. * (margin_min > 0.0)).mean()
+            # measure attack success rate:
+            # acc = (margin_min > 0.0).sum() / n_ex_total
+            asr = (margin_min <= 0.0).sum() / n_ex_total
+            # acc_corr = (1. * (margin_min > 0.0)).mean()
+            asr_corr = (1. * (margin_min <= 0.0)).mean()
             mean_nq, mean_nq_ae, median_nq, median_nq_ae = ch.mean(n_queries), ch.mean(
                 n_queries[margin_min <= 0]), ch.median(n_queries), ch.median(n_queries[margin_min <= 0])
 
             time_total = time.time() - time_start
             self.logger.log(
-                '{}: acc={:.2%} acc_corr={:.2%} avg#q_ae={:.1f} med#q_ae={:.1f} {}, n_ex={}, {:.0f}s, loss={:.3f}, max_pert={:.1f}, impr={:.0f}'.
-                format(i_iter + 1, acc, acc_corr, mean_nq_ae, median_nq_ae, hps_str, x.shape[0], time_total,
+                '{}: asr={:.2%} asr_corr={:.2%} avg#q_ae={:.1f} med#q_ae={:.1f} {}, n_ex={}, {:.0f}s, loss={:.3f}, max_pert={:.1f}, impr={:.0f}'.
+                format(i_iter + 1, asr, asr_corr, mean_nq_ae, median_nq_ae, hps_str, x.shape[0], time_total,
                        ch.mean(margin_min), ch.amax(curr_norms_image), ch.sum(idx_improved)))
-            # if (i_iter <= 500 and i_iter % 500) or (i_iter > 100 and i_iter % 500) or i_iter + 1 == n_iters or acc == 0:
-            # TODO: Make sure right things are being logged
-            self.logger.add_result(i_iter + 1, {
-                "acc": acc.item(),
-                "acc_corr": acc_corr.item(),
-                "mean_nq": mean_nq.item(),
-                "mean_nq_ae": mean_nq_ae.item(),
-                "median_nq": median_nq.item(),
-                "mean_margin_min": margin_min.mean().item(),
-                "time_total": time_total,
-            })
-            if acc == 0:
+            if (i_iter <= 500 and i_iter % 500) or (i_iter > 100 and i_iter % 500) or i_iter + 1 == n_iters or asr_corr == 1:# acc == 0:
+                self.logger.add_result(i_iter + 1, {
+                    "asr": asr.item(),
+                    "asr_corr": asr_corr.item(),
+                    "mean_nq": mean_nq.item(),
+                    "mean_nq_ae": mean_nq_ae.item(),
+                    "median_nq": median_nq.item(),
+                    "mean_margin_min": margin_min.mean().item(),
+                    "time_total": time_total,
+                })
+            if asr_corr == 1: # if acc == 0:
                 curr_norms_image = ch.sqrt(
                     ch.sum((x_best - x) ** 2, dim=(1, 2, 3), keepdim=True))
                 self.logger.log('Maximal norm of the perturbations: {:.5f}'.format(
@@ -262,36 +264,45 @@ class Square_Attack(Attacker):
 
         return n_queries, x_best
 
-    def square_attack_linf(self, x, y, eps, n_iters, p_init):
+    def square_attack_linf(self, x, x_adv_loc, y, y_target, eps, n_iters, p_init):
         """ The Linf square attack """
-        ch.random.seed(0)  # important to leave it here as well
+        # ch.random.seed(0)  # important to leave it here as well
+        ch.manual_seed(0)
         x_min, x_max = 0, 1 if x.max() <= 1 else 255
         c, h, w = x.shape[1:]
         n_features = c*h*w
         n_ex_total = x.shape[0]
-        # x, y = x[corr_classified], y[corr_classified]
+        logits_clean = self.model.forward(x, detach=True)
+        corr_classified = ch.argmax(logits_clean,dim=1) == y
+        print('Clean accuracy of candidate samples: {:.2%}'.format(ch.mean(1.* corr_classified).item()))
+        x, x_adv_loc, y, y_target = x[corr_classified], x_adv_loc[corr_classified], y[corr_classified], y_target[corr_classified]
 
         # [c, 1, w], i.e. vertical stripes work best for untargeted attacks
         init_delta = self._workaround_choice([x.shape[0], c, 1, w], eps)
-        x_best = ch.clip(x + init_delta, x_min, x_max)
+        # further modified to work with x_adv
+        x_best = ch.clip(ch.clip(x_adv_loc + init_delta, x - eps, x + eps), x_min, x_max)
 
         logits = self.model.forward(x_best, detach=True)
         probs = ch.softmax(logits, 1)
-        loss_min = get_loss_fn(self.loss_type, 'none')(logits, y, self.targeted)
-        margin_min = get_loss_fn('margin', 'none')(probs, y, self.targeted)
+        loss_min = get_loss_fn(self.loss_type, 'none')(logits, y_target, self.targeted)
+        margin_min = get_loss_fn('margin', 'none')(probs, y_target, self.targeted)
         # ones because we have already used 1 query
         n_queries = ch.ones(x.shape[0]).cuda()
 
         time_start = time.time()
         for i_iter in range(n_iters - 1):
             idx_to_fool = margin_min > 0
-            x_curr, x_best_curr, y_curr = x[idx_to_fool], x_best[idx_to_fool], y[idx_to_fool]
+            x_curr, x_adv_loc_curr, x_best_curr, y_target_curr = x[idx_to_fool], x_adv_loc[idx_to_fool], x_best[idx_to_fool], y_target[idx_to_fool]
             loss_min_curr, margin_min_curr = loss_min[idx_to_fool], margin_min[idx_to_fool]
-            deltas = x_best_curr - x_curr
+            deltas = x_best_curr - x_adv_loc_curr
 
             p = self.p_selection(p_init, i_iter, n_iters)
             for i_img in range(x_best_curr.shape[0]):
-                s = int(round(ch.sqrt(p * n_features / c)))
+                
+                # do not understand why we are using ch here
+                # s = int(round(ch.sqrt(p * n_features / c)))
+                s = int(round(np.sqrt(p * n_features / c)))
+
                 # at least c x 1 x 1 window is taken and at most c x h-1 x h-1
                 s = min(max(s, 1), h-1)
                 center_h = np.random.randint(0, h - s)
@@ -299,19 +310,24 @@ class Square_Attack(Attacker):
 
                 x_curr_window = x_curr[i_img, :,
                                        center_h:center_h+s, center_w:center_w+s]
+                # further modified to work with x_adv
+                x_adv_loc_curr_window = x_adv_loc_curr[i_img, :,
+                                       center_h:center_h+s, center_w:center_w+s] 
                 x_best_curr_window = x_best_curr[i_img, :,
                                                  center_h:center_h+s, center_w:center_w+s]
                 # prevent trying out a delta if it doesn't change x_curr (e.g. an overlapping patch)
-                while ch.sum(ch.abs(ch.clip(x_curr_window + deltas[i_img, :, center_h:center_h+s, center_w:center_w+s], x_min, x_max) - x_best_curr_window) < 10**-7) == c*s*s:
+                # further modified to work with x_adv
+                while ch.sum(ch.abs(ch.clip(ch.clip(x_adv_loc_curr_window + deltas[i_img, :, center_h:center_h+s, center_w:center_w+s],x_curr_window-eps,x_curr_window+eps), x_min, x_max) - x_best_curr_window) < 10**-7) == c*s*s:
                     deltas[i_img, :, center_h:center_h+s, center_w:center_w +
                            s] = self._workaround_choice([c, 1, 1], eps)
-
-            x_new = ch.clip(x_curr + deltas, x_min, x_max)
+            
+            # further modified to work with x_adv
+            x_new = ch.clip(ch.clip(x_adv_loc_curr+deltas,x_curr-eps,x_curr+eps), x_min, x_max)
 
             logits = self.model.forward(x_new, detach=True)
             probs = ch.softmax(logits, 1)
-            loss = get_loss_fn(self.loss_type, 'none')(logits, y_curr, self.targeted)
-            margin = get_loss_fn('margin', 'none')(probs, y_curr, self.targeted)
+            loss = get_loss_fn(self.loss_type, 'none')(logits, y_target_curr, self.targeted)
+            margin = get_loss_fn('margin', 'none')(probs, y_target_curr, self.targeted)
 
             idx_improved = loss < loss_min_curr
             loss_min[idx_to_fool] = idx_improved * \
@@ -319,31 +335,31 @@ class Square_Attack(Attacker):
             margin_min[idx_to_fool] = idx_improved * \
                 margin + ~idx_improved * margin_min_curr
             idx_improved = ch.reshape(
-                idx_improved, [-1, *[1]*len(x.shape[:-1])])
+                idx_improved, [-1, *[1]*len(x_adv_loc.shape[:-1])])
             x_best[idx_to_fool] = idx_improved * \
                 x_new + ~idx_improved * x_best_curr
             n_queries[idx_to_fool] += 1
-
-            acc = (margin_min > 0.0).sum() / n_ex_total
-            acc_corr = (margin_min > 0.0).mean()
-            mean_nq, mean_nq_ae, median_nq_ae = ch.mean(n_queries), ch.mean(
-                n_queries[margin_min <= 0]), ch.median(n_queries[margin_min <= 0])
-            avg_margin_min = ch.mean(margin_min)
+            asr = 1.*(margin_min <= 0.0).sum().item() / n_ex_total
+            asr_corr = (1.*(margin_min <= 0.0)).mean().item()
+            mean_nq, mean_nq_ae, median_nq_ae = ch.mean(n_queries).item(), ch.mean(
+                n_queries[margin_min <= 0]).item(), ch.median(n_queries[margin_min <= 0]).item()
+            avg_margin_min = ch.mean(margin_min).item()
             time_total = time.time() - time_start
-            self.logger.log('{}: acc={:.2%} acc_corr={:.2%} avg#q_ae={:.2f} med#q={:.1f}, avg_margin={:.2f} (n_ex={}, eps={:.3f}, {:.2f}s)'.
-                  format(i_iter+1, acc, acc_corr, mean_nq_ae, median_nq_ae, avg_margin_min, x.shape[0], eps, time_total))
 
-            # if (i_iter <= 500 and i_iter % 500) or (i_iter > 100 and i_iter % 500) or i_iter + 1 == n_iters or acc == 0:
-            self.logger.add_result(i_iter + 1, {
-                "acc": acc,
-                "acc_corr": acc_corr,
-                "mean_nq": mean_nq,
-                "mean_nq_ae": mean_nq_ae,
-                "median_nq_ae": median_nq_ae,
-                "mean_margin_min": margin_min.mean(),
-                "time_total": time_total
-            })
-            if acc == 0:
+            self.logger.log('{}: asr={:.2%} asr_corr={:.2%} avg#q_ae={:.2f} med#q={:.1f}, avg_margin={:.2f} (n_ex={}, eps={:.3f}, {:.2f}s)'.
+                  format(i_iter+1, asr, asr_corr, mean_nq_ae, median_nq_ae, avg_margin_min, x.shape[0], eps, time_total))
+
+            if (i_iter <= 500 and i_iter % 500) or (i_iter > 100 and i_iter % 500) or i_iter + 1 == n_iters or asr_corr == 1:
+                self.logger.add_result(i_iter + 1, {
+                    "asr": asr,
+                    "asr_corr": asr_corr,
+                    "mean_nq": mean_nq,
+                    "mean_nq_ae": mean_nq_ae,
+                    "median_nq_ae": median_nq_ae,
+                    "mean_margin_min": margin_min.mean().item(),
+                    "time_total": time_total
+                })
+            if asr_corr == 1:
                 break
 
         return n_queries, x_best

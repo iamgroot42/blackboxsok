@@ -95,9 +95,10 @@ class SquareAttackConfig(Serializable):
     """
         Configuration for Square attack
     """
-    n_iters: int = 200
+    # these default values are for imagenet only
+    n_iters: int = 10000 # 100,000 for targeted attack 
     """TODO: Check"""
-    p_init = 0.2
+    p_init = 0.05
     """TODO: Check"""
 
 
@@ -147,7 +148,7 @@ class AttackerConfig(Serializable):
     """Query budget"""
     norm_type: Optional[float] = np.inf
     """Norm type (for bounding perturbations)"""
-    targeted: Optional[bool] = True
+    targeted: Optional[bool] = False
     """Is the attack targeted?"""
     loss_type: Optional[str] = "ce"
     """Loss type"""
