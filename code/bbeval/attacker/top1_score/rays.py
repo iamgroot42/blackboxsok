@@ -49,7 +49,7 @@ class RayS(Attacker):
         else:
             y_use = y
 
-        shape = list(x_orig.shape)
+        shape = list(x.shape)
         dim = np.prod(shape[1:])
         if self.seed is not None:
             np.random.seed(self.seed)
@@ -91,7 +91,7 @@ class RayS(Attacker):
                 block_level += 1
                 block_ind = 0
 
-            dist = ch.norm((self.x_final - x_orig).view(shape[0], -1), ord, 1)
+            dist = ch.norm((self.x_final - x).view(shape[0], -1), ord, 1)
             stop_queries[working_ind] = self.queries[working_ind]
             working_ind = (dist > eps).nonzero().flatten()
 
@@ -100,7 +100,7 @@ class RayS(Attacker):
                 break
             query_string = f"Queries: {ch.min(self.queries.float())}/{self.query_budget}"
             info_string = 'd_t: %.4f | adbd: %.4f | queries: %.4f | rob acc: %.4f | iter: %d' % (ch.mean(
-                self.d_t), ch.mean(dist), ch.mean(self.queries.float()), len(working_ind) / len(x_orig), i + 1)
+                self.d_t), ch.mean(dist), ch.mean(self.queries.float()), len(working_ind) / len(x), i + 1)
             # Also log all of this information
             # TODO: Make sure right things are being logged
             self.logger.log(query_string + " | " + info_string)
@@ -108,7 +108,7 @@ class RayS(Attacker):
                 "d_t": ch.mean(self.d_t).item(),
                 "adbd": ch.mean(dist).item(),
                 "queries": ch.min(self.queries.float()).item(),
-                "rob acc": len(working_ind) / len(x_orig),
+                "rob acc": len(working_ind) / len(x),
             })
             iterator.set_description(query_string + " | " + info_string)
             # no need to run till exhaustion for practical bbox attack scenario 
