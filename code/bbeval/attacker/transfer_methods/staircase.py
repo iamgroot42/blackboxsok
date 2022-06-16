@@ -25,7 +25,7 @@ class Staircase(Attacker):
         self.x_final = None
         self.queries = 1
 
-    def attack(self, x_orig, x_adv=None, y_label, y_target=None, ):
+    def attack(self, x_orig, x_adv=None, y_label=None, y_target=None):
         """
             Attack the original image using combination of transfer methods and return adversarial example
             (x, y_label): original image
