@@ -21,8 +21,10 @@ class MarginLossWrapper(Loss):
             label_ = nn.functional.one_hot(label, preds.shape[1])
         else:
             label_ = label
-        return self.loss_obj(preds, label_)
-
+        if is_targeted:
+            return -self.loss_obj(preds, label_)
+        else:
+            return self.loss_obj(preds, label_)
 
 class CrossEntropyLossWrapper(Loss):
     def __init__(self, reduction='mean'):
@@ -30,8 +32,10 @@ class CrossEntropyLossWrapper(Loss):
         self.loss_obj = nn.CrossEntropyLoss(reduction=reduction)
     
     def __call__(self, preds, label, is_targeted=False, **kwargs):
-        return self.loss_obj(preds, label)
-
+        if is_targeted:
+            return self.loss_obj(preds, label)
+        else:
+            return -self.loss_obj(preds, label)
 
 class BCEWithLogitsLossWrapper(Loss):
     def __init__(self, reduction='mean'):
@@ -39,8 +43,10 @@ class BCEWithLogitsLossWrapper(Loss):
         self.loss_obj = nn.BCEWithLogitsLoss(reduction=reduction)
     
     def __call__(self, preds, label, is_targeted=False, **kwargs):
-        return self.loss_obj(preds, label)
-
+        if is_targeted:
+            return self.loss_obj(preds, label)
+        else:
+            return -self.loss_obj(preds, label)
 
 _LOSS_FUNCTION_MAPPING = {
     "margin": MarginLossWrapper,

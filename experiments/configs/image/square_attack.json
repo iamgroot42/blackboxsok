@@ -2,8 +2,9 @@
     "experiment_name": "square_attack_imagenet",
     "name": "square_attack",
     "access_level": "all",
-    "eps": 1.0,
-    "query_budget": 5000,
+    "eps": 0.05,
+    "targeted": false,
+    "query_budget": 10000,
     "dataset_config": {
         "name": "imagenet",
         "type": "image"
@@ -14,6 +15,6 @@
         "dataset": "imagenet"
     },
     "attack_params": {
-        "n_iters": 200
+        "n_iters": 10000
     }
 }

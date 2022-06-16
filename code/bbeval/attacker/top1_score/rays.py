@@ -22,15 +22,21 @@ class RayS(Attacker):
     def get_xadv(self, x, v, d, lb=0., ub=1.):
         if isinstance(d, int):
             d = ch.tensor(d).repeat(len(x)).cuda()
+        # no modification is needed here because the AE in decision based attacks
+        # are initially all require large perturbation
         out = x + d.view(len(x), 1, 1, 1) * v
         out = ch.clamp(out, lb, ub)
         return out
 
-    def attack(self, x_orig, y_label, y_target=None, x_adv=None):
+    def attack(self, x, x_adv_loc, y, y_target):
         """
             Attack the original image and return adversarial example
-            (x, y): original image
+            (x, y): original image and label
+            x_adv_loc: the starting point for the attack 
+            y_target: the target label for the attack, y_target=y for untargeted attacks
         """
+        #TODO: implement a version of rays that works for targeted attack, the approach is to 
+        # use an image from target class as a guiding direction
         eps = self.eps
         if self.norm_type in [2, np.inf]:
             ord = self.norm_type
@@ -49,14 +55,18 @@ class RayS(Attacker):
             np.random.seed(self.seed)
 
         # init variables
-        self.queries = ch.zeros_like(y_use).cuda()
+        self.queries = ch.zeros_like(y).cuda()
+        # sgn_t is the ray search direction
         self.sgn_t = ch.sign(ch.ones(shape)).cuda()
-        self.d_t = ch.ones_like(y_use).float().fill_(float("Inf")).cuda()
+        # d_t is the best decision boundary function given a search direction sgn_t
+        self.d_t = ch.ones_like(y).float().fill_(float("Inf")).cuda()
         working_ind = (self.d_t > eps).nonzero().flatten()
 
         stop_queries = self.queries.clone()
         dist = self.d_t.clone()
-        self.x_final = self.get_xadv(x_orig, self.sgn_t, self.d_t)
+        # further modified to work with a_adv_loc
+        self.x_final = self.get_xadv(x_adv_loc, self.sgn_t, self.d_t)
+        # self.x_final = self.get_xadv(x, self.sgn_t, self.d_t)
 
         block_level = 0
         block_ind = 0
@@ -72,7 +82,9 @@ class RayS(Attacker):
             attempt[valid_mask.nonzero().flatten(), start:end] *= -1.
             attempt = attempt.view(shape)
 
-            self.binary_search(x_orig, y_use, attempt, valid_mask)
+            # further modified to work with x_adv_loc
+            self.binary_search(x_adv_loc, y_target, attempt, valid_mask)
+            # self.binary_search(x, y, attempt, valid_mask)
 
             block_ind += 1
             if block_ind == 2 ** block_level or end == dim:
@@ -99,7 +111,11 @@ class RayS(Attacker):
                 "rob acc": len(working_ind) / len(x_orig),
             })
             iterator.set_description(query_string + " | " + info_string)
-
+            # no need to run till exhaustion for practical bbox attack scenario 
+            # so stop early if all AEs are found
+            if len(working_ind) / len(x) == 0:
+                print("Early stopping due to attack success!")
+                break 
         stop_queries = ch.clamp(stop_queries, 0, self.query_budget)
         return self.x_final, stop_queries
 
@@ -112,22 +128,28 @@ class RayS(Attacker):
             return self.model.predict(x[mask]) != y[mask]
 
     # binary search for decision boundary along sgn direction
-    def binary_search(self, x, y, sgn, valid_mask, tol=1e-3):
-        sgn_norm = ch.norm(sgn.view(len(x), -1), 2, 1)
-        sgn_unit = sgn / sgn_norm.view(len(x), 1, 1, 1)
+    # further modified to work with x_adv_loc
+    def binary_search(self, x_adv_loc, y, sgn, valid_mask, tol=1e-3):
+        sgn_norm = ch.norm(sgn.view(len(x_adv_loc), -1), 2, 1)
+        sgn_unit = sgn / sgn_norm.view(len(x_adv_loc), 1, 1, 1)
 
         d_start = ch.zeros_like(y).float().cuda()
         d_end = self.d_t.clone()
 
         initial_succ_mask = self.search_succ(self.get_xadv(
-            x, sgn_unit, self.d_t), y, valid_mask)
+            x_adv_loc, sgn_unit, self.d_t), y, valid_mask)
+        # initial_succ_mask = self.search_succ(self.get_xadv(
+        #     x, sgn_unit, self.d_t), y, valid_mask)
         to_search_ind = valid_mask.nonzero().flatten()[initial_succ_mask]
         d_end[to_search_ind] = ch.min(self.d_t, sgn_norm)[to_search_ind]
 
         while len(to_search_ind) > 0:
             d_mid = (d_start + d_end) / 2.0
+            # further modified to work with x_adv_loc
             search_succ_mask = self.search_succ(self.get_xadv(
-                x, sgn_unit, d_mid), y, to_search_ind)
+                x_adv_loc, sgn_unit, d_mid), y, to_search_ind)
+            # search_succ_mask = self.search_succ(self.get_xadv(
+            #     x, sgn_unit, d_mid), y, to_search_ind)
             d_end[to_search_ind[search_succ_mask]
                   ] = d_mid[to_search_ind[search_succ_mask]]
             d_start[to_search_ind[~search_succ_mask]
@@ -138,6 +160,9 @@ class RayS(Attacker):
         to_update_ind = (d_end < self.d_t).nonzero().flatten()
         if len(to_update_ind) > 0:
             self.d_t[to_update_ind] = d_end[to_update_ind]
+            # further modified to work with x_adv_loc
             self.x_final[to_update_ind] = self.get_xadv(
-                x, sgn_unit, d_end)[to_update_ind]
+                x_adv_loc, sgn_unit, d_end)[to_update_ind]
+            # self.x_final[to_update_ind] = self.get_xadv(
+            #     x, sgn_unit, d_end)[to_update_ind]
             self.sgn_t[to_update_ind] = sgn[to_update_ind]

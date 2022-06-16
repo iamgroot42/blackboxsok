@@ -75,7 +75,7 @@ if __name__ == "__main__":
         x_orig, y_label = next(iter(test_loader))
         x_orig, y_label = x_orig.cuda(), y_label.cuda()
         # mode = "easiest"/"hardest"/"random"
-        mode = "random"
+        mode = "hardest"
         num_class = 1000
         y_target = get_target_label(mode, x_orig, target_model1, num_class, y_label, batch_size)
         y_target = y_target.cuda()

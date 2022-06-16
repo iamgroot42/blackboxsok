@@ -1,6 +1,6 @@
 {
     "name": "untargeted_staircase_transfer_imagenet",
-    "start time": "2022-06-16 12:43:52.738674",
+    "start time": "2022-06-16 17:24:19.141467",
     "attack_config": {
         "name": "staircase_transfer",
         "experiment_name": "untargeted_staircase_transfer_imagenet",
@@ -48,5 +48,5 @@
             "transferability": "43.75"
         }
     },
-    "save time": "2022-06-16 12:44:11.103866"
+    "save time": "2022-06-16 17:24:37.257421"
 }
