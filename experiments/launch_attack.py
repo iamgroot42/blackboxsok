@@ -2,6 +2,7 @@ import torch as ch
 from simple_parsing import ArgumentParser
 from pathlib import Path
 import os
+import random
 
 from bbeval.config import AttackerConfig
 from bbeval.datasets.utils import get_dataset_wrapper
@@ -12,6 +13,27 @@ from bbeval.loss import get_loss_fn
 
 # os.environ['TORCH_HOME'] = '/p/blackboxsok/models/imagenet_torch' # download imagenet models to project directory
 if __name__ == "__main__":
+    def rand_int_gen_exclu(num_min, num_max, num_exclu, res_len):
+        tmp = []
+        for j in range(res_len):
+            tmp.append(random.choice([i for i in range(num_min, num_max) if i != num_exclu[j]]))
+        tmp = ch.tensor(tmp)
+        return tmp
+
+
+    # test through colab and put to the right place
+    def get_target_label(mode, x_orig, model, num_class, y_label, batch_size):
+        if mode == "easiest":
+            target_model_output = model.forward(x_orig)
+            target_label = ch.kthvalue(target_model_output, num_class).indices
+        if mode == "hardest":
+            target_model_output = model.forward(x_orig)
+            target_label = ch.min(target_model_output, 1).indices
+        if mode == "random":
+            target_label = rand_int_gen_exclu(0, num_class - 1, y_label, batch_size)
+        return target_label
+
+
     parser = ArgumentParser(add_help=False)
     parser.add_argument(
         "--config1", help="Specify config file", type=Path)
@@ -33,10 +55,11 @@ if __name__ == "__main__":
         target_model1 = get_model_wrapper(model_config1)
         target_model1.cuda()
 
+        batch_size = 32
         ds_config = attacker_config1.dataset_config
         # Get data-loader, make sure it works
         ds = get_dataset_wrapper(ds_config)
-        _, _, test_loader = ds.get_loaders(batch_size=32, eval_shuffle=True)
+        _, _, test_loader = ds.get_loaders(batch_size=batch_size, eval_shuffle=True)
         # Compute clean accuracy
         loss_function = get_loss_fn("ce")
 
@@ -47,10 +70,15 @@ if __name__ == "__main__":
         else:
             aux_models1 = {}
 
+        # the original dataset is normalized into the range of [0,1]
+        # specific attacks may have different ranges and should be handled case by case
         x_orig, y_label = next(iter(test_loader))
-        y_sample, y_target = next(iter(test_loader))
-        x_orig, y_label, y_target = x_orig.cuda(), y_label.cuda(), y_target.cuda()
-
+        x_orig, y_label = x_orig.cuda(), y_label.cuda()
+        # mode = "easiest"/"hardest"/"random"
+        mode = "random"
+        num_class = 1000
+        y_target = get_target_label(mode, x_orig, target_model1, num_class, y_label, batch_size)
+        y_target = y_target.cuda()
         attacker1 = get_attack_wrapper(target_model1, aux_models1, attacker_config1)
         x_sample_adv1, queries_used1 = attacker1.attack(x_orig, y_label, y_target, x_orig)
         attacker1.save_results()
@@ -103,9 +131,13 @@ if __name__ == "__main__":
         # the original dataset is normalized into the range of [0,1]
         # specific attacks may have different ranges and should be handled case by case
         x_orig, y_label = next(iter(test_loader))
-        y_sample, y_target = next(iter(test_loader))
-        x_orig, y_label, y_target = x_orig.cuda(), y_label.cuda(), y_target.cuda()
-        #
+        x_orig, y_label = x_orig.cuda(), y_label.cuda()
+        # mode = "easiest"/"hardest"/"random"
+        mode = "random"
+        num_class = 1000
+        y_target = get_target_label(mode, x_orig, target_model1, num_class, y_label, batch_size)
+        y_target = y_target.cuda()
+
         attacker1 = get_attack_wrapper(target_model1, aux_models1, attacker_config1)
         attacker2 = get_attack_wrapper(target_model2, aux_models2, attacker_config2)
         x_sample_adv1, queries_used1 = attacker1.attack(x_orig, y_label, y_target, x_orig)
