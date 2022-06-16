@@ -1,6 +1,6 @@
 {
     "name": "rays_imagenet",
-    "start time": "2022-06-16 17:56:33.073249",
+    "start time": "2022-06-16 18:24:26.028556",
     "attack_config": {
         "name": "rays",
         "experiment_name": "rays_imagenet",
@@ -35,5 +35,5 @@
             "rob acc": 0.0
         }
     },
-    "save time": "2022-06-16 17:56:34.488941"
+    "save time": "2022-06-16 18:24:27.443871"
 }

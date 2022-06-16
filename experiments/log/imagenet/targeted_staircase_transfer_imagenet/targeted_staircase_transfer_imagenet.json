@@ -1,9 +1,9 @@
 {
-    "name": "untargeted_staircase_transfer_imagenet",
-    "start time": "2022-06-16 19:29:58.195597",
+    "name": "targeted_staircase_transfer_imagenet",
+    "start time": "2022-06-16 19:24:12.048743",
     "attack_config": {
         "name": "staircase_transfer",
-        "experiment_name": "untargeted_staircase_transfer_imagenet",
+        "experiment_name": "targeted_staircase_transfer_imagenet",
         "dataset_config": {
             "name": "imagenet",
             "type": "image",
@@ -22,11 +22,6 @@
                 "use_pretrained:": true,
                 "name": "resnet18",
                 "dataset": "imagenet"
-            },
-            {
-                "use_pretrained:": true,
-                "name": "vgg16",
-                "dataset": "imagenet"
             }
         ],
         "aux_model_configs": null,
@@ -39,14 +34,14 @@
         "access_level": "no",
         "query_budget": 1,
         "norm_type": Infinity,
-        "targeted": false,
+        "targeted": true,
         "loss_type": "ce",
         "seed": null
     },
     "result": {
         "20": {
-            "transferability": "28.125"
+            "transferability": "0.0"
         }
     },
-    "save time": "2022-06-16 19:30:12.404810"
+    "save time": "2022-06-16 19:24:27.459100"
 }
