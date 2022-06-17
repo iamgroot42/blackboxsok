@@ -31,6 +31,10 @@ if __name__ == "__main__":
             target_label = ch.min(target_model_output, 1).indices
         if mode == "random":
             target_label = rand_int_gen_exclu(0, num_class - 1, y_label, batch_size)
+        if mode == "user":
+            target_class = int(input('Enter your target class from %s to %s:'%(0, num_class - 1)))
+            target_label = [target_class] * batch_size
+            target_label = ch.tensor(target_label)
         return target_label
 
 
@@ -75,12 +79,17 @@ if __name__ == "__main__":
         x_orig, y_label = next(iter(test_loader))
         x_orig, y_label = x_orig.cuda(), y_label.cuda()
         # mode = "easiest"/"hardest"/"random"
-        mode = "hardest"
+
         num_class = 1000
-        y_target = get_target_label(mode, x_orig, target_model1, num_class, y_label, batch_size)
-        y_target = y_target.cuda()
+        if attacker_config1.targeted:
+            # mode = "easiest"/"hardest"/"random"/"user"
+            mode = "user"
+            y_target = get_target_label(mode, x_orig, target_model1, num_class, y_label, 32)
+            y_target = y_target.cuda()
+        else:
+            y_target = y_label
         attacker1 = get_attack_wrapper(target_model1, aux_models1, attacker_config1)
-        x_sample_adv1, queries_used1 = attacker1.attack(x_orig, x_orig, y_label, y_target )
+        x_sample_adv1, queries_used1 = attacker1.attack(x_orig, x_orig, y_label, y_label)
         attacker1.save_results()
 
         print("%s attack is completed" % attacker_config1.name)
@@ -132,11 +141,16 @@ if __name__ == "__main__":
         # specific attacks may have different ranges and should be handled case by case
         x_orig, y_label = next(iter(test_loader))
         x_orig, y_label = x_orig.cuda(), y_label.cuda()
-        # mode = "easiest"/"hardest"/"random"
-        mode = "random"
         num_class = 1000
-        y_target = get_target_label(mode, x_orig, target_model1, num_class, y_label, 32)
-        y_target = y_target.cuda()
+
+        print(attacker_config1.targeted)
+        if attacker_config1.targeted:
+            # mode = "easiest"/"hardest"/"random"/"user"
+            mode = "user"
+            y_target = get_target_label(mode, x_orig, target_model1, num_class, y_label, 32)
+            y_target = y_target.cuda()
+        else:
+            y_target = y_label
 
         attacker1 = get_attack_wrapper(target_model1, aux_models1, attacker_config1)
         attacker2 = get_attack_wrapper(target_model2, aux_models2, attacker_config2)
@@ -146,4 +160,3 @@ if __name__ == "__main__":
         attacker2.save_results()
 
         print("%s attack and %s attack is completed" % (attacker_config1.name, attacker_config2.name))
-
