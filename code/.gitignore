@@ -27,3 +27,6 @@ var/
 # Mac-specific stuff
 */.DS_Store
 */._*.py
+
+# Repo-specific stuff
+fenil_codes/*
