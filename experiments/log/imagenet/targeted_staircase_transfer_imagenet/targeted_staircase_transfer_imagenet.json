@@ -1,0 +1,47 @@
+{
+    "name": "targeted_staircase_transfer_imagenet",
+    "start time": "2022-06-16 19:24:12.048743",
+    "attack_config": {
+        "name": "staircase_transfer",
+        "experiment_name": "targeted_staircase_transfer_imagenet",
+        "dataset_config": {
+            "name": "imagenet",
+            "type": "image",
+            "augment": false,
+            "root": "/p/blackboxsok/datasets"
+        },
+        "adv_model_config": {
+            "name": "inceptionv3",
+            "dataset": "imagenet",
+            "use_pretrained": true,
+            "misc_dict": null
+        },
+        "eps": 16.0,
+        "aux_model_configs_dict": [
+            {
+                "use_pretrained:": true,
+                "name": "resnet18",
+                "dataset": "imagenet"
+            }
+        ],
+        "aux_model_configs": null,
+        "attack_params": {
+            "n_iters": 20,
+            "image_resizes": [
+                330
+            ]
+        },
+        "access_level": "no",
+        "query_budget": 1,
+        "norm_type": Infinity,
+        "targeted": true,
+        "loss_type": "ce",
+        "seed": null
+    },
+    "result": {
+        "20": {
+            "transferability": "0.0"
+        }
+    },
+    "save time": "2022-06-16 19:24:27.459100"
+}

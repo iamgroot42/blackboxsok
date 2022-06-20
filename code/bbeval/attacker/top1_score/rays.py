@@ -43,11 +43,11 @@ class RayS(Attacker):
         else:
             ord = 'fro'
         
-        # # Use appropriate labels for the attack
-        # if self.targeted:
-        #     y_use = y_target
-        # else:
-        #     y_use = y_label
+        # Use appropriate labels for the attack
+        if self.targeted:
+            y_use = y_target
+        else:
+            y_use = y
 
         shape = list(x.shape)
         dim = np.prod(shape[1:])
