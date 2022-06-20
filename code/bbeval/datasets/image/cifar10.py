@@ -7,7 +7,7 @@ from bbeval.config import DatasetConfig
 
 class CIFAR10Wrapper(CustomDatasetWrapper):
     def __init__(self, data_config: DatasetConfig):
-        super().__init__(data_config)
+        super().__init__(data_config, num_classes=10)
         self.train_transforms = transforms.Compose([
             transforms.ToTensor()])
         self.test_transforms = self.train_transforms

@@ -27,7 +27,7 @@ class SparseEvo(Attacker):
                                       seed=self.seed,
                                       flag=self.targeted)
 
-    def attack(self, x, y):
+    def _attack(self, x, y):
         if self.targeted:
             # TODO: Handle this ID_set, testset etc.
             # t = ID_set[i,3] #tID, 3 is index acrross dataset - 4 is sample index in a class (not accross dataset)

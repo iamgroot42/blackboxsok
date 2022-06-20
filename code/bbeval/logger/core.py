@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import List
 from datetime import datetime
 from copy import deepcopy
+from bbeval.config.core import ExperimentConfig
 from simple_parsing.helpers import Serializable
 
 from bbeval.config import AttackerConfig
@@ -52,20 +53,21 @@ class Result:
 
 class AttackResult(Result):
     def __init__(self,
-                 attack_config: AttackerConfig):
+                 attack_config: AttackerConfig,
+                 experiment_config: ExperimentConfig):
         # Infer path from data_config inside attack_config
-        dataset_name = attack_config.dataset_config.name
-        experiment_name = attack_config.experiment_name 
+        experiment_name = experiment_config.experiment_name
         save_path = get_log_save_path()
-        path = Path(os.path.join(save_path, dataset_name, experiment_name))
+        path = Path(os.path.join(
+            save_path, experiment_config.dataset_config.name, experiment_config.experiment_name))
         super().__init__(path, experiment_name)
         # Worthwhile to save the attack config
-        attack_config_copy = deepcopy(attack_config)
+        # attack_config_copy = deepcopy(attack_config)
         # Get rid of 'aux_model_configs' field, if present
-        if attack_config_copy.aux_model_configs is not None:
-            attack_config_copy.aux_model_configs = None
-        self.dic["attack_config"] = attack_config_copy
-        self.convert_to_dict(self.dic)
+        # if attack_config_copy.aux_model_configs is not None:
+            # attack_config_copy.aux_model_configs = None
+        # self.dic["attack_config"] = attack_config_copy
+        # self.convert_to_dict(self.dic)
     
     def add_result(self, queries_used: int, result: dict):
         """
@@ -76,9 +78,9 @@ class AttackResult(Result):
 
 
 class Logger:
-    def __init__(self, attack_config: AttackerConfig):
+    def __init__(self, attack_config: AttackerConfig, experiment_config: ExperimentConfig):
         self.formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-        self.logger = logging.getLogger(attack_config.experiment_name)
+        self.logger = logging.getLogger(experiment_config.experiment_name + "_" + attack_config.name)
         path = get_log_save_path()
         self.fileHandler = logging.FileHandler(f"{path}.log")
         # Print to log file
@@ -89,7 +91,7 @@ class Logger:
         consoleHandler.setFormatter(self.formatter)
         self.logger.addHandler(consoleHandler)
         # Also create a tracker for query-wise results
-        self.result_logger = AttackResult(attack_config)
+        self.result_logger = AttackResult(attack_config, experiment_config)
         
     def log(self, msg: str, level: int = logging.INFO):
         self.logger.log(level, msg)

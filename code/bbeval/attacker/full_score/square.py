@@ -2,7 +2,7 @@ import numpy as np
 import torch as ch
 from bbeval.models.core import GenericModelWrapper
 from bbeval.attacker.core import Attacker
-from bbeval.config import AttackerConfig, SquareAttackConfig
+from bbeval.config import AttackerConfig, SquareAttackConfig, ExperimentConfig
 from bbeval.loss import get_loss_fn
 
 
@@ -11,8 +11,8 @@ np.set_printoptions(precision=5, suppress=True)
 
 
 class Square_Attack(Attacker):
-    def __init__(self, model: GenericModelWrapper, aux_model: dict, config: AttackerConfig):
-        super().__init__(model, aux_model, config)
+    def __init__(self, model: GenericModelWrapper, aux_model: dict, config: AttackerConfig, experiment_config: ExperimentConfig):
+        super().__init__(model, aux_model, config, experiment_config)
         # Parse params dict into SquareAttackConfig
         self.params = SquareAttackConfig(**self.params)
     
@@ -25,20 +25,20 @@ class Square_Attack(Attacker):
         y = ch.sign(y) * ch.abs(y) * eps
         return y
 
-    def attack(self, x, x_adv_loc, y, y_target):
+    def _attack(self, x, x_adv_loc, y, y_target):
         n_iters = self.params.n_iters
         p_init = self.params.p_init
         # Don't need gradients for the attack, detach x if it has gradient collection on
         x_, x_adv_loc_ = x.detach(), x_adv_loc.detach()
         if self.norm_type == 2:
             x_adv, num_queries = self.square_attack_l2(
-                x_, y, self.eps, n_iters, p_init)
+                x_, x_adv_loc_, y, y_target, n_iters, p_init)
         elif self.norm_type == np.inf:
             x_adv, num_queries = self.square_attack_linf(
-                x_, x_adv_loc_, y, y_target, self.eps, n_iters, p_init)
+                x_, x_adv_loc_, y, y_target, n_iters, p_init)
         else:
             raise NotImplementedError("Unsupported Norm Type!")
-        return x_perturbed, num_queries
+        return x_adv, num_queries
 
     def p_selection(self, p_init, it, n_iters):
         """ Piece-wise constant schedule for p (the fraction of pixels changed on every iteration). """
@@ -107,10 +107,10 @@ class Square_Attack(Attacker):
 
         return delta
 
-    def square_attack_l2(self, x, y, n_iters, p_init):
+    def square_attack_l2(self, x, x_adv_loc_, y, y_target, n_iters, p_init):
         """ The L2 square attack """
         if self.seed is not None:
-            ch.random.seed(self.seed)
+            ch.random.manual_seed(self.seed)
 
         eps = self.eps
         x_min, x_max = 0, 1
@@ -265,11 +265,11 @@ class Square_Attack(Attacker):
 
         return n_queries, x_best
 
-    def square_attack_linf(self, x, y, n_iters, p_init):
+    def square_attack_linf(self, x, x_adv_loc, y, y_target, n_iters, p_init):
         """ The Linf square attack """
 
         eps = self.eps
-        ch.random.seed(0)  # important to leave it here as well
+        ch.random.manual_seed(0)  # important to leave it here as well
         x_min, x_max = 0, 1 if x.max() <= 1 else 255
         c, h, w = x.shape[1:]
         n_features = c*h*w

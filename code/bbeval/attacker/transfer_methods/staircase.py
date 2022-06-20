@@ -4,7 +4,7 @@ import torch.nn.functional as F
 from torch.autograd import Variable as V
 
 from bbeval.attacker.core import Attacker
-from bbeval.config import StairCaseConfig, AttackerConfig
+from bbeval.config import StairCaseConfig, AttackerConfig, ExperimentConfig
 from bbeval.models.core import GenericModelWrapper
 from bbeval.attacker.transfer_methods._manipulate_gradient import torch_staircase_sign, project_noise, gkern, \
     project_kern
@@ -18,14 +18,14 @@ np.set_printoptions(precision=5, suppress=True)
 # https://github.com/qilong-zhang/CVPR2021-Competition-Unrestricted-Adversarial-Attacks-on-ImageNet/blob/main/run.py
 
 class Staircase(Attacker):
-    def __init__(self, model: GenericModelWrapper, aux_models: dict, config: AttackerConfig):
-        super().__init__(model, aux_models, config)
+    def __init__(self, model: GenericModelWrapper, aux_models: dict, config: AttackerConfig, experiment_config: ExperimentConfig):
+        super().__init__(model, aux_models, config, experiment_config)
         # Parse params dict into SquareAttackConfig
         self.params = StairCaseConfig(**self.params)
         self.x_final = None
         self.queries = 1
 
-    def attack(self, x_orig, x_adv=None, y_label=None, y_target=None):
+    def _attack(self, x_orig, x_adv=None, y_label=None, y_target=None):
         """
             Attack the original image using combination of transfer methods and return adversarial example
             (x, y_label): original image

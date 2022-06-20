@@ -3,15 +3,15 @@ import logging
 import numpy as np
 import torch as ch
 from bbeval.attacker.core import Attacker
-from bbeval.config import AttackerConfig
+from bbeval.config import AttackerConfig, ExperimentConfig
 from bbeval.models.core import GenericModelWrapper
 
 np.set_printoptions(precision=5, suppress=True)
 
 
 class RayS(Attacker):
-    def __init__(self, model: GenericModelWrapper, aux_models: dict, config: AttackerConfig):
-        super().__init__(model, aux_models, config)
+    def __init__(self, model: GenericModelWrapper, aux_models: dict, config: AttackerConfig, experiment_config: ExperimentConfig):
+        super().__init__(model, aux_models, config, experiment_config)
         self.sgn_t = None
         self.d_t = None
         self.x_final = None
@@ -28,7 +28,7 @@ class RayS(Attacker):
         out = ch.clamp(out, lb, ub)
         return out
 
-    def attack(self, x, x_adv_loc, y, y_target):
+    def _attack(self, x, x_adv_loc, y, y_target):
         """
             Attack the original image and return adversarial example
             (x, y): original image and label

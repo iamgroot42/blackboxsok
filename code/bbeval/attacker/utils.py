@@ -11,11 +11,11 @@ ATTACK_WRAPPER_MAPPING = {
     "staircase_transfer": Staircase
 }
 
-def get_attack_wrapper(model: GenericModelWrapper, aux_models: dict, attack_config: AttackerConfig):
+def get_attack_wrapper(model: GenericModelWrapper, aux_models: dict, attack_config: AttackerConfig, experiment_name: str):
     """
         Create attack wrapper for given attakc-config
     """
     wrapper = ATTACK_WRAPPER_MAPPING.get(attack_config.name, None)
     if not wrapper:
         raise NotImplementedError(f"Attack {attack_config.name} not implemented")
-    return wrapper(model, aux_models, attack_config)
+    return wrapper(model, aux_models, attack_config, experiment_name)

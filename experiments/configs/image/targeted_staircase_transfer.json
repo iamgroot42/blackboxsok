@@ -1,30 +1,34 @@
 {
     "experiment_name": "targeted_staircase_transfer_imagenet",
-    "name": "staircase_transfer",
-    "access_level": "no",
-    "targeted": true,
-    "eps": 16,
-    "query_budget": 1,
     "dataset_config": {
         "name": "imagenet",
         "type": "image"
     },
-    "adv_model_config": {
-        "use_pretrained": true,
-        "name": "inceptionv3",
-        "dataset": "imagenet"
-    },
-    "aux_model_configs_dict": [
+    "attack_configs_dict": [
         {
-            "use_pretrained:": true,
-            "name": "resnet18",
-            "dataset": "imagenet"
+            "name": "staircase_transfer",
+            "access_level": "no",
+            "targeted": true,
+            "eps": 16,
+            "query_budget": 1,
+            "adv_model_config": {
+                "use_pretrained": true,
+                "name": "inceptionv3",
+                "dataset": "imagenet"
+            },
+            "aux_model_configs_dict": [
+                {
+                    "use_pretrained:": true,
+                    "name": "resnet18",
+                    "dataset": "imagenet"
+                }
+            ],
+            "attack_params": {
+                "n_iters": 20,
+                "image_resizes": [
+                    330
+                ]
+            }
         }
-    ],
-    "attack_params": {
-        "n_iters": 20,
-        "image_resizes": [
-            330
-        ]
-    }
+    ]
 }
