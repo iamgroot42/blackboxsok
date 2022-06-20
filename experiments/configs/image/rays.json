@@ -2,8 +2,9 @@
     "experiment_name": "rays_imagenet",
     "name": "rays",
     "access_level": "all",
-    "eps": 1.0,
-    "query_budget": 2000,
+    "eps": 0.05,
+    "targeted":false,
+    "query_budget": 10000,
     "dataset_config": {
         "name": "imagenet",
         "type": "image"

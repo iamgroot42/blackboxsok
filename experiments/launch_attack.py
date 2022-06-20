@@ -51,13 +51,16 @@ if __name__ == "__main__":
     # the original dataset is normalized into the range of [0,1]
     # specific attacks may have different ranges and should be handled case by case
     x_orig, y_label = next(iter(test_loader))
-    y_sample, y_target = next(iter(test_loader))
+    x_orig = x_orig.cuda()
+    y_label = y_label.cuda()
+    # y_sample, y_target = next(iter(test_loader))
 
-    x_orig, y_label, y_target = x_orig.cuda(), y_label.cuda(), y_target.cuda()
-    x_adv = x_orig
+    # x_orig, y_label, y_target = x_orig.cuda(), y_label.cuda(), y_target.cuda()
+    x_adv_loc = x_orig
+    y_target = y_label
 
     attacker = get_attack_wrapper(target_model, aux_models, attacker_config)
-    x_sample_adv, queries_used = attacker.attack(x_orig, y_label, y_target, x_adv)
+    x_sample_adv, queries_used = attacker.attack(x_orig, x_adv_loc, y_label, y_target)
     attacker.save_results()
 
     print("%s attack is completed" % attacker_config.name)
