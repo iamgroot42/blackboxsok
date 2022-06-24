@@ -26,7 +26,7 @@ def get_dataset_wrapper(data_config: DatasetConfig):
     return wrapper(data_config)
 
 
-def rand_int_gen_exclu(self, num_min, num_max, num_exclu, res_len):
+def rand_int_gen_exclu(num_min, num_max, num_exclu, res_len):
     tmp = []
     for j in range(res_len):
         tmp.append(random.choice(

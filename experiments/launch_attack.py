@@ -66,7 +66,7 @@ if __name__ == "__main__":
     if attacker_config_1.targeted:
         # mode = "easiest"/"hardest"/"random"/"user"
         # mode = attacker_config_1.target_label_selection_mode
-        mode = "user"
+        mode = "random"
         y_target = get_target_label(
             mode, x_orig, target_model_1, num_class, y_label, 32)
         y_target = y_target.cuda()
