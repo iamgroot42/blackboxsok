@@ -14,13 +14,10 @@ class Inceptionv3(PyTorchModelWrapper):
     
     def pre_process_fn(self, x):
         # imagenet inputs need to be normalized
-        mean=[0.485, 0.456, 0.406],
+        mean=[0.485, 0.456, 0.406]
         std=[0.229, 0.224, 0.225]
-        return x
-        # TODO: Fix below to remove shape-based errors
-        transform_norm = transforms.Compose([
-            transforms.Normalize(mean, std)
-        ]) 
+        transform_norm = transforms.Normalize(mean=mean,
+                                        std=std)
         return transform_norm(x)
 
     # def post_process_fn(self, tensor):
@@ -36,11 +33,8 @@ class ResNet18(PyTorchModelWrapper):
         # imagenet inputs need to be normalized
         mean=[0.485, 0.456, 0.406],
         std=[0.229, 0.224, 0.225]
-        return x
-        # TODO: Fix below to remove shape-based errors
-        transform_norm = transforms.Compose([
-            transforms.Normalize(mean, std)
-        ]) 
+        transform_norm = transforms.Normalize(mean=mean,
+                                        std=std)
         return transform_norm(x)
     
 class VGG16(PyTorchModelWrapper):
@@ -53,11 +47,8 @@ class VGG16(PyTorchModelWrapper):
         # imagenet inputs need to be normalized
         mean=[0.485, 0.456, 0.406],
         std=[0.229, 0.224, 0.225]
-        return x
-        # TODO: Fix below to remove shape-based errors
-        transform_norm = transforms.Compose([
-            transforms.Normalize(mean, std)
-        ]) 
+        transform_norm = transforms.Normalize(mean=mean,
+                                        std=std)
         return transform_norm(x)
 
 class RobustBenchModel(PyTorchModelWrapper):

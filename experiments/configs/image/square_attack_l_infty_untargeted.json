@@ -1,5 +1,5 @@
 {
-    "experiment_name": "square_attack_imagenet",
+    "experiment_name": "square_attack_imagenet_l_infty_untargeted",
     "name": "square_attack",
     "access_level": "all",
     "eps": 0.05,
@@ -15,6 +15,6 @@
         "dataset": "imagenet"
     },
     "attack_params": {
-        "n_iters": 10000
+        "n_iters": 100
     }
 }

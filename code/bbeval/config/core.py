@@ -98,7 +98,7 @@ class SquareAttackConfig(Serializable):
     # these default values are for imagenet only
     n_iters: int = 10000 # 100,000 for targeted attack 
     """TODO: Check"""
-    p_init = 0.05
+    p_init: float = 0.05
     """TODO: Check"""
 
 

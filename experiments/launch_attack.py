@@ -56,7 +56,7 @@ if __name__ == "__main__":
     # y_sample, y_target = next(iter(test_loader))
 
     # x_orig, y_label, y_target = x_orig.cuda(), y_label.cuda(), y_target.cuda()
-    x_adv_loc = x_orig
+    x_adv_loc = x_orig.clone().detach()
     y_target = y_label
 
     attacker = get_attack_wrapper(target_model, aux_models, attacker_config)
