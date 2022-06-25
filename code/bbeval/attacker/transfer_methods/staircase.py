@@ -32,6 +32,7 @@ class Staircase(Attacker):
             Attack the original image using combination of transfer methods and return adversarial example
             (x, y_label): original image
         """
+        # pytorch version: n_iter=40, eps=20/255
         eps = self.eps / 255.0
         targeted = self.targeted
         image_resizes = self.params.image_resizes
@@ -119,7 +120,8 @@ class Staircase(Attacker):
                 projection = gamma * torch_staircase_sign(project_noise(cut_noise, stack_kern, kern_size), 1.5625)
 
                 # staircase sign method (under review) can effectively boost the transferability of adversarial examples, and we will release our paper soon.
-                adv = adv - alpha_beta * torch_staircase_sign(noise, 1.5625) - projection
+                pert = (alpha_beta * torch_staircase_sign(noise, 1.5625) + 0.5 * projection) * 0.75
+                adv = adv + pert
                 adv = clip_by_tensor(adv, x_min, x_max)
                 adv = V(adv, requires_grad=True)
             stop_queries = 1
@@ -130,7 +132,7 @@ class Staircase(Attacker):
             target_model_prediction = ch.max(target_model_output, 1).indices
             batch_size = len(y_target)
             # print(target_model_prediction==y)
-            num_transfered = ch.count_nonzero(target_model_prediction == y_target)
+            num_transfered = ch.count_nonzero(target_model_prediction != y_target)
             transferability = float(num_transfered / batch_size) * 100
 
         else:
@@ -150,7 +152,7 @@ class Staircase(Attacker):
                                                      image_resize), (interpol_dim, interpol_dim),
                             mode='bilinear')) * 1. / n_model_ensemble
                         # output += model.forward(input_diversity(adv + pre_grad, image_width, image_resize)) * 1./n_model_ensemble
-                        loss += F.cross_entropy(output, y_target,
+                        loss += F.cross_entropy(output * 1.5, y_target,
                                                 reduction="none")  # TODO: this one should be amplification factor? cannot verify in the original implementation
                 loss = loss / n_input_ensemble
                 loss.mean().backward()
