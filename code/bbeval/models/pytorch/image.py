@@ -31,7 +31,7 @@ class ResNet18(PyTorchModelWrapper):
     
     def pre_process_fn(self, x):
         # imagenet inputs need to be normalized
-        mean=[0.485, 0.456, 0.406],
+        mean=[0.485, 0.456, 0.406]
         std=[0.229, 0.224, 0.225]
         transform_norm = transforms.Normalize(mean=mean,
                                         std=std)
@@ -45,7 +45,7 @@ class VGG16(PyTorchModelWrapper):
     
     def pre_process_fn(self, x):
         # imagenet inputs need to be normalized
-        mean=[0.485, 0.456, 0.406],
+        mean=[0.485, 0.456, 0.406]
         std=[0.229, 0.224, 0.225]
         transform_norm = transforms.Normalize(mean=mean,
                                         std=std)

@@ -30,7 +30,11 @@ class Staircase(Attacker):
         self.norm = None
         self.targeted = None
 
+
     def _attack(self, x_orig, x_adv=None, y_label=None, y_target=None):
+        # for model_name in self.aux_models:
+        #     model = self.aux_models[model_name]
+        #     print(model.forward(x_orig))
         """
             Attack the original image using combination of transfer methods and return adversarial example
             (x, y_label): original image
@@ -99,14 +103,11 @@ class Staircase(Attacker):
                     output = 0
                     for model_name in self.aux_models:
                         model = self.aux_models[model_name]
-                        # output += model.forward(F.interpolate(
-                        #     ensemble_input_diversity(adv + pre_grad, list(self.aux_models.keys()).index(model_name),
-                        #                              image_resize), (interpol_dim, interpol_dim),
-                        #     mode='bilinear')) * 1. / n_model_ensemble
                         output += model.forward(F.interpolate(
-                            ensemble_input_diversity(adv + pre_grad, image_width, image_resize, prob=1.0,
-                                                     interpol_dim=interpol_dim), (interpol_dim, interpol_dim),
+                            ensemble_input_diversity(adv + pre_grad, list(self.aux_models.keys()).index(model_name),
+                                                     image_resize), (interpol_dim, interpol_dim),
                             mode='bilinear')) * 1. / n_model_ensemble
+                        # output += model.forward(input_diversity(adv + pre_grad, image_width, image_resize)) * 1./n_model_ensemble
                         loss += F.cross_entropy(output * 1.5, y_target,
                                                 reduction="none")  # TODO: this one should be amplification factor? cannot verify in the original implementation
                 loss = loss / n_input_ensemble
@@ -153,20 +154,11 @@ class Staircase(Attacker):
                     output = 0
                     for model_name in self.aux_models:
                         model = self.aux_models[model_name]
-                        # output += model.forward(F.interpolate(
-                        #     ensemble_input_diversity(adv + pre_grad, list(self.aux_models.keys()).index(model_name),
-                        #                              image_resize), (interpol_dim, interpol_dim),
-                        #     mode='bilinear')) * 1. / n_model_ensemble
-                        print("hello")
-                        print(image_width)
-                        print(image_resize)
-                        print(interpol_dim)
-                        print(n_model_ensemble)
                         output += model.forward(F.interpolate(
-                            ensemble_input_diversityensemble_input_diversity(adv + pre_grad, image_width, image_resize, prob=1.0,
-                                                     interpol_dim=interpol_dim), (interpol_dim, interpol_dim),
+                            ensemble_input_diversity(adv + pre_grad, list(self.aux_models.keys()).index(model_name),
+                                                     image_resize), (interpol_dim, interpol_dim),
                             mode='bilinear')) * 1. / n_model_ensemble
-
+                        # output += model.forward(input_diversity(adv + pre_grad, image_width, image_resize)) * 1./n_model_ensemble
                         loss += F.cross_entropy(output * 1.5, y_target,
                                                 reduction="none")  # TODO: this one should be amplification factor? cannot verify in the original implementation
                 loss = loss / n_input_ensemble
