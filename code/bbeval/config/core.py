@@ -126,10 +126,6 @@ class AttackerConfig(Serializable):
     """
     name: str
     """Which attack is this?"""
-    experiment_name: str
-    """Name for experiment"""
-    dataset_config: DatasetConfig
-    """Config file for the dataset this attack will use"""
     adv_model_config: ModelConfig
     """Model config for adversary's model"""
     eps: float
@@ -150,6 +146,10 @@ class AttackerConfig(Serializable):
     """Norm type (for bounding perturbations)"""
     targeted: Optional[bool] = False
     """Is the attack targeted?"""
+    target_label_selection_mode: Optional[str] = field(choice(["easiest", "hardest", "random", "user"]))
+    """How to select target label (for targeted attack)?"""
+    target_label: Optional[int] = None
+    """Target label to use (if 'user' mode is used)"""
     loss_type: Optional[str] = "ce"
     """Loss type"""
     seed: Optional[int] = None
@@ -160,3 +160,34 @@ class AttackerConfig(Serializable):
         data_class = type(self.adv_model_config)
         if self.aux_model_configs_dict:
             self.aux_model_configs = [from_dict(data_class=data_class, data=aux_dict) for aux_dict in self.aux_model_configs_dict]
+
+
+@dataclass
+class ExperimentConfig(Serializable):
+    """
+        Configuration for an experiment
+    """
+    experiment_name: str
+    """Name for experiment"""
+    dataset_config: DatasetConfig
+    """Config file for the dataset this attack will use"""
+    attack_configs_dict: List[dict]
+    """Config ficts (converted to dataclasses later) for each attack in order"""
+    attack_configs: Optional[List] = None
+    """Config ficts (converted to dataclasses later) for each attack in order"""
+    batch_size: Optional[int] = 32
+    """Batch size for executing attacks"""
+
+    def first_attack_config(self):
+        return self.attack_configs[0]
+    
+    def second_attack_config(self):
+        return self.attack_configs[1] if len(self.attack_configs) > 1 else None
+
+    def __post_init__(self):
+        # For now, we support only 2 attack configs
+        if len(self.attack_configs_dict) > 2:
+            raise ValueError("Only 2 attack configs supported")
+        # Have to do this because SimpleParsing does not support list of dataclasses
+        self.attack_configs = [from_dict(
+            data_class=AttackerConfig, data=config_dict) for config_dict in self.attack_configs_dict]

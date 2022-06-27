@@ -1,3 +1,4 @@
+from bbeval.config.core import ExperimentConfig
 from bbeval.models.core import GenericModelWrapper
 from bbeval.config import AttackerConfig
 from bbeval.logger.core import Logger
@@ -8,7 +9,8 @@ class Attacker:
     def __init__(self,
                  model: GenericModelWrapper,
                  aux_models: dict,
-                 config: AttackerConfig):
+                 config: AttackerConfig,
+                 experiment_config: ExperimentConfig):
         self.model = model
         self.aux_models = aux_models
         self.config = config
@@ -22,13 +24,25 @@ class Attacker:
         self.seed = self.config.seed
         self.params = self.config.attack_params
         # Creat new logger (for debugging, etc.)
-        self.logger = Logger(self.config)
-
-    def attack(self, x_orig, y_label, y_target=None, x_adv=None):
-        # TODO: Have sanity checks here (matching shape, presence of target if targeted, etc)
-        # Call a new self._attack() from here, and have child class
-        # Implement that function
+        self.logger = Logger(self.config, experiment_config)
+    
+    def _attack(self, x_orig, x_adv, y_label, y_target=None):
         raise NotImplementedError("Attack functionbality not implemented yet")
+
+    def attack(self, x_orig, x_adv, y_label, y_target=None):
+        # if x_adv is None, use x_orig
+        if x_adv is None:
+            x_adv = x_orig
+
+        # Basic asserts and checks
+        if len(x_orig) != len(y_label):
+            raise ValueError("x_orig and y_label must have the same length")
+        if self.targeted and y_target is None:
+            raise ValueError("Target label must be provided for targeted attack")
+        if len(x_adv) != len(x_orig):
+            raise ValueError("x_adv and x_orig must have the same length")
+
+        return self._attack(x_orig, x_adv, y_label, y_target)
 
     def save_results(self):
         # Save logger

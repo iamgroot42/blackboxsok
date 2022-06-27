@@ -7,7 +7,7 @@ from bbeval.models.core import GenericModelWrapper
 
 
 class CustomDatasetWrapper:
-    def __init__(self, data_config: DatasetConfig):
+    def __init__(self, data_config: DatasetConfig, num_classes: int):
         """
             self.ds_train and self.ds_test should be set to
             datasets to be used to train and evaluate.
@@ -16,6 +16,7 @@ class CustomDatasetWrapper:
         self.root = os.path.join(data_config.root, data_config.name)
         self.train_transforms = None
         self.test_transforms = None
+        self.num_classes = num_classes
         self.ds_train = None
         self.ds_val = None
         self.ds_test = None

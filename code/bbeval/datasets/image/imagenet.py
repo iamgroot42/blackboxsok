@@ -7,7 +7,7 @@ from bbeval.config import DatasetConfig
 
 class ImageNetWrapper(CustomDatasetWrapper):
     def __init__(self, data_config: DatasetConfig):
-        super().__init__(data_config)
+        super().__init__(data_config, num_classes=1000)
         self.train_transforms = transforms.Compose([
             # Maybe consider making these sizes configurable
             transforms.Resize(299),
