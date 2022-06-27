@@ -1,0 +1,898 @@
+{
+    "name": "square_attack_imagenet_l2_untargeted",
+    "start time": "2022-06-27 11:44:29.199600",
+    "result": {
+        "2": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 3.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 3.0,
+            "mean_margin_min": 4.572912693023682,
+            "time_total": 0.14153051376342773
+        },
+        "3": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 4.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 4.0,
+            "mean_margin_min": 4.4997735023498535,
+            "time_total": 0.21024656295776367
+        },
+        "4": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 5.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 5.0,
+            "mean_margin_min": 4.490692138671875,
+            "time_total": 0.2785661220550537
+        },
+        "5": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 6.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 6.0,
+            "mean_margin_min": 4.482694625854492,
+            "time_total": 0.3466145992279053
+        },
+        "6": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 7.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 7.0,
+            "mean_margin_min": 4.445891857147217,
+            "time_total": 0.4151597023010254
+        },
+        "7": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 8.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 8.0,
+            "mean_margin_min": 4.442627906799316,
+            "time_total": 0.4834887981414795
+        },
+        "8": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 9.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 9.0,
+            "mean_margin_min": 4.432411193847656,
+            "time_total": 0.5512678623199463
+        },
+        "9": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 10.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 10.0,
+            "mean_margin_min": 4.425075054168701,
+            "time_total": 0.6189634799957275
+        },
+        "10": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 11.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 11.0,
+            "mean_margin_min": 4.418979167938232,
+            "time_total": 0.6871683597564697
+        },
+        "11": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 12.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 12.0,
+            "mean_margin_min": 4.41023063659668,
+            "time_total": 0.7550737857818604
+        },
+        "12": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 13.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 13.0,
+            "mean_margin_min": 4.406250953674316,
+            "time_total": 0.8230204582214355
+        },
+        "13": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 14.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 14.0,
+            "mean_margin_min": 4.4054460525512695,
+            "time_total": 0.8909368515014648
+        },
+        "14": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 15.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 15.0,
+            "mean_margin_min": 4.402309417724609,
+            "time_total": 0.9587819576263428
+        },
+        "15": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 16.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 16.0,
+            "mean_margin_min": 4.400454521179199,
+            "time_total": 1.0263926982879639
+        },
+        "16": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 17.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 17.0,
+            "mean_margin_min": 4.397540092468262,
+            "time_total": 1.0941760540008545
+        },
+        "17": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 18.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 18.0,
+            "mean_margin_min": 4.352062225341797,
+            "time_total": 1.1615936756134033
+        },
+        "18": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 19.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 19.0,
+            "mean_margin_min": 4.347141265869141,
+            "time_total": 1.2293503284454346
+        },
+        "19": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 20.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 20.0,
+            "mean_margin_min": 4.297714710235596,
+            "time_total": 1.2968230247497559
+        },
+        "20": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 21.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 21.0,
+            "mean_margin_min": 4.277778148651123,
+            "time_total": 1.3649780750274658
+        },
+        "21": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 22.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 22.0,
+            "mean_margin_min": 4.276547431945801,
+            "time_total": 1.4325933456420898
+        },
+        "22": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 23.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 23.0,
+            "mean_margin_min": 4.265590667724609,
+            "time_total": 1.500211477279663
+        },
+        "23": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 24.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 24.0,
+            "mean_margin_min": 4.241754055023193,
+            "time_total": 1.5676045417785645
+        },
+        "24": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 25.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 25.0,
+            "mean_margin_min": 4.230352878570557,
+            "time_total": 1.6347999572753906
+        },
+        "25": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 26.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 26.0,
+            "mean_margin_min": 4.222841262817383,
+            "time_total": 1.7022345066070557
+        },
+        "26": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 27.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 27.0,
+            "mean_margin_min": 4.2214131355285645,
+            "time_total": 1.7701363563537598
+        },
+        "27": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 28.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 28.0,
+            "mean_margin_min": 4.192590713500977,
+            "time_total": 1.8380653858184814
+        },
+        "28": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 29.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 29.0,
+            "mean_margin_min": 4.192392826080322,
+            "time_total": 1.9058387279510498
+        },
+        "29": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 30.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 30.0,
+            "mean_margin_min": 4.190021991729736,
+            "time_total": 1.9738357067108154
+        },
+        "30": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 31.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 31.0,
+            "mean_margin_min": 4.183718204498291,
+            "time_total": 2.0414018630981445
+        },
+        "31": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 32.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 32.0,
+            "mean_margin_min": 4.181002616882324,
+            "time_total": 2.1084582805633545
+        },
+        "32": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 33.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 33.0,
+            "mean_margin_min": 4.178560256958008,
+            "time_total": 2.175961494445801
+        },
+        "33": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 34.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 34.0,
+            "mean_margin_min": 4.177981376647949,
+            "time_total": 2.243543863296509
+        },
+        "34": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 35.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 35.0,
+            "mean_margin_min": 4.17681884765625,
+            "time_total": 2.311180353164673
+        },
+        "35": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 36.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 36.0,
+            "mean_margin_min": 4.17294979095459,
+            "time_total": 2.3790178298950195
+        },
+        "36": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 37.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 37.0,
+            "mean_margin_min": 4.162918567657471,
+            "time_total": 2.4465224742889404
+        },
+        "37": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 38.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 38.0,
+            "mean_margin_min": 4.1568145751953125,
+            "time_total": 2.5138261318206787
+        },
+        "38": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 39.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 39.0,
+            "mean_margin_min": 4.135636329650879,
+            "time_total": 2.5816054344177246
+        },
+        "39": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 40.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 40.0,
+            "mean_margin_min": 4.134593486785889,
+            "time_total": 2.6494674682617188
+        },
+        "40": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 41.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 41.0,
+            "mean_margin_min": 4.1307291984558105,
+            "time_total": 2.717207670211792
+        },
+        "41": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 42.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 42.0,
+            "mean_margin_min": 4.128278732299805,
+            "time_total": 2.7848479747772217
+        },
+        "42": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 43.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 43.0,
+            "mean_margin_min": 4.1181559562683105,
+            "time_total": 2.852285385131836
+        },
+        "43": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 44.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 44.0,
+            "mean_margin_min": 4.116961479187012,
+            "time_total": 2.92018723487854
+        },
+        "44": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 45.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 45.0,
+            "mean_margin_min": 4.11435604095459,
+            "time_total": 2.9874374866485596
+        },
+        "45": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 46.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 46.0,
+            "mean_margin_min": 4.113804817199707,
+            "time_total": 3.055199146270752
+        },
+        "46": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 47.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 47.0,
+            "mean_margin_min": 4.113512992858887,
+            "time_total": 3.1230835914611816
+        },
+        "47": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 48.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 48.0,
+            "mean_margin_min": 4.112832069396973,
+            "time_total": 3.190554141998291
+        },
+        "48": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 49.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 49.0,
+            "mean_margin_min": 4.112603187561035,
+            "time_total": 3.2581217288970947
+        },
+        "49": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 50.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 50.0,
+            "mean_margin_min": 4.108357906341553,
+            "time_total": 3.3251383304595947
+        },
+        "50": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 51.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 51.0,
+            "mean_margin_min": 4.107973575592041,
+            "time_total": 3.392775297164917
+        },
+        "51": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 52.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 52.0,
+            "mean_margin_min": 4.092939853668213,
+            "time_total": 3.461108684539795
+        },
+        "52": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 53.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 53.0,
+            "mean_margin_min": 4.0910491943359375,
+            "time_total": 3.5286786556243896
+        },
+        "53": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 54.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 54.0,
+            "mean_margin_min": 4.088952541351318,
+            "time_total": 3.596172571182251
+        },
+        "54": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 55.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 55.0,
+            "mean_margin_min": 4.088331699371338,
+            "time_total": 3.663027048110962
+        },
+        "55": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 56.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 56.0,
+            "mean_margin_min": 4.087643623352051,
+            "time_total": 3.729827642440796
+        },
+        "56": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 57.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 57.0,
+            "mean_margin_min": 4.086724758148193,
+            "time_total": 3.7973556518554688
+        },
+        "57": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 58.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 58.0,
+            "mean_margin_min": 4.079897403717041,
+            "time_total": 3.8648107051849365
+        },
+        "58": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 59.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 59.0,
+            "mean_margin_min": 4.079461574554443,
+            "time_total": 3.932529926300049
+        },
+        "59": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 60.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 60.0,
+            "mean_margin_min": 4.079084873199463,
+            "time_total": 4.000161170959473
+        },
+        "60": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 61.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 61.0,
+            "mean_margin_min": 4.078792095184326,
+            "time_total": 4.067823886871338
+        },
+        "61": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 62.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 62.0,
+            "mean_margin_min": 4.0764875411987305,
+            "time_total": 4.135105133056641
+        },
+        "62": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 63.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 63.0,
+            "mean_margin_min": 4.070374488830566,
+            "time_total": 4.202499151229858
+        },
+        "63": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 64.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 64.0,
+            "mean_margin_min": 4.0676422119140625,
+            "time_total": 4.270326137542725
+        },
+        "64": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 65.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 65.0,
+            "mean_margin_min": 4.064833164215088,
+            "time_total": 4.338013172149658
+        },
+        "65": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 66.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 66.0,
+            "mean_margin_min": 4.064247131347656,
+            "time_total": 4.405508518218994
+        },
+        "66": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 67.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 67.0,
+            "mean_margin_min": 4.063730239868164,
+            "time_total": 4.473162412643433
+        },
+        "67": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 68.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 68.0,
+            "mean_margin_min": 4.061395168304443,
+            "time_total": 4.540141344070435
+        },
+        "68": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 69.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 69.0,
+            "mean_margin_min": 4.0601115226745605,
+            "time_total": 4.606996297836304
+        },
+        "69": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 70.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 70.0,
+            "mean_margin_min": 4.059818744659424,
+            "time_total": 4.67430567741394
+        },
+        "70": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 71.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 71.0,
+            "mean_margin_min": 4.059587001800537,
+            "time_total": 4.741287469863892
+        },
+        "71": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 72.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 72.0,
+            "mean_margin_min": 4.057211399078369,
+            "time_total": 4.808919191360474
+        },
+        "72": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 73.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 73.0,
+            "mean_margin_min": 4.0557661056518555,
+            "time_total": 4.8762571811676025
+        },
+        "73": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 74.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 74.0,
+            "mean_margin_min": 4.0551981925964355,
+            "time_total": 4.943692684173584
+        },
+        "74": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 75.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 75.0,
+            "mean_margin_min": 4.053645610809326,
+            "time_total": 5.0112464427948
+        },
+        "75": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 76.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 76.0,
+            "mean_margin_min": 4.049499034881592,
+            "time_total": 5.078715562820435
+        },
+        "76": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 77.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 77.0,
+            "mean_margin_min": 4.046126365661621,
+            "time_total": 5.146204948425293
+        },
+        "77": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 78.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 78.0,
+            "mean_margin_min": 4.044026851654053,
+            "time_total": 5.213217258453369
+        },
+        "78": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 79.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 79.0,
+            "mean_margin_min": 4.0426435470581055,
+            "time_total": 5.280080795288086
+        },
+        "79": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 80.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 80.0,
+            "mean_margin_min": 4.042315483093262,
+            "time_total": 5.347354888916016
+        },
+        "80": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 81.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 81.0,
+            "mean_margin_min": 4.038162708282471,
+            "time_total": 5.41412878036499
+        },
+        "81": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 82.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 82.0,
+            "mean_margin_min": 4.02885627746582,
+            "time_total": 5.481896638870239
+        },
+        "82": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 83.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 83.0,
+            "mean_margin_min": 4.023690223693848,
+            "time_total": 5.549505233764648
+        },
+        "83": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 84.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 84.0,
+            "mean_margin_min": 4.022667407989502,
+            "time_total": 5.616977691650391
+        },
+        "84": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 85.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 85.0,
+            "mean_margin_min": 4.022192478179932,
+            "time_total": 5.684649705886841
+        },
+        "85": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 86.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 86.0,
+            "mean_margin_min": 4.0162739753723145,
+            "time_total": 5.75183367729187
+        },
+        "86": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 87.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 87.0,
+            "mean_margin_min": 4.015818119049072,
+            "time_total": 5.818984270095825
+        },
+        "87": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 88.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 88.0,
+            "mean_margin_min": 4.015137672424316,
+            "time_total": 5.886430740356445
+        },
+        "88": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 89.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 89.0,
+            "mean_margin_min": 4.013628959655762,
+            "time_total": 5.953935384750366
+        },
+        "89": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 90.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 90.0,
+            "mean_margin_min": 4.012016296386719,
+            "time_total": 6.021896600723267
+        },
+        "90": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 91.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 91.0,
+            "mean_margin_min": 4.00937557220459,
+            "time_total": 6.0890748500823975
+        },
+        "91": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 92.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 92.0,
+            "mean_margin_min": 4.008607864379883,
+            "time_total": 6.155674695968628
+        },
+        "92": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 93.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 93.0,
+            "mean_margin_min": 4.008501052856445,
+            "time_total": 6.223205327987671
+        },
+        "93": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 94.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 94.0,
+            "mean_margin_min": 4.005876541137695,
+            "time_total": 6.290654897689819
+        },
+        "94": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 95.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 95.0,
+            "mean_margin_min": 3.9992921352386475,
+            "time_total": 6.358338356018066
+        },
+        "95": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 96.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 96.0,
+            "mean_margin_min": 3.9988925457000732,
+            "time_total": 6.425991058349609
+        },
+        "96": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 97.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 97.0,
+            "mean_margin_min": 3.998389482498169,
+            "time_total": 6.493349075317383
+        },
+        "97": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 98.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 98.0,
+            "mean_margin_min": 3.995971918106079,
+            "time_total": 6.560680866241455
+        },
+        "98": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 99.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 99.0,
+            "mean_margin_min": 3.9865806102752686,
+            "time_total": 6.628370046615601
+        },
+        "99": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 100.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 100.0,
+            "mean_margin_min": 3.9851527214050293,
+            "time_total": 6.696016073226929
+        },
+        "100": {
+            "asr": 0.78125,
+            "asr_corr": 1.0,
+            "mean_nq": 101.0,
+            "mean_nq_ae": NaN,
+            "median_nq": 101.0,
+            "mean_margin_min": 3.9841976165771484,
+            "time_total": 6.7634971141815186
+        }
+    },
+    "save time": "2022-06-27 11:44:36.388250"
+}

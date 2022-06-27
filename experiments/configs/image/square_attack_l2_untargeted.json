@@ -1,22 +1,27 @@
 {
     "experiment_name": "square_attack_imagenet_l2_untargeted",
-    "norm_type": 2,
-    "name": "square_attack",
-    "access_level": "all",
-    "eps": 5.0,
-    "targeted": false,
-    "query_budget": 10000,
+
     "dataset_config": {
         "name": "imagenet",
         "type": "image"
     },
-    "adv_model_config": {
-        "use_pretrained": true,
-        "name": "inceptionv3",
-        "dataset": "imagenet"
-    },
-    "attack_params": {
-        "n_iters": 100,
-        "p_init": 0.1
-    }
+    "attack_configs_dict": [
+        {
+            "norm_type": 2,
+            "name": "square_attack",
+            "access_level": "all",
+            "eps": 5.0,
+            "targeted": false,
+            "query_budget": 10000,
+            "adv_model_config": {
+                "use_pretrained": true,
+                "name": "inceptionv3",
+                "dataset": "imagenet"
+            },
+            "attack_params": {
+                "n_iters": 100,
+                "p_init": 0.1
+            }
+        }
+    ]
 }

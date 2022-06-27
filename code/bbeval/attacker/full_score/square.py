@@ -2,8 +2,9 @@ import numpy as np
 import torch as ch
 from bbeval.models.core import GenericModelWrapper
 from bbeval.attacker.core import Attacker
-from bbeval.config import AttackerConfig, SquareAttackConfig
+from bbeval.config import AttackerConfig, SquareAttackConfig, ExperimentConfig
 from bbeval.loss import get_loss_fn
+
 
 
 import time
@@ -11,8 +12,8 @@ np.set_printoptions(precision=5, suppress=True)
 
 
 class Square_Attack(Attacker):
-    def __init__(self, model: GenericModelWrapper, aux_model: dict, config: AttackerConfig):
-        super().__init__(model, aux_model, config)
+    def __init__(self, model: GenericModelWrapper, aux_models: dict, config: AttackerConfig, experiment_config: ExperimentConfig):
+        super().__init__(model, aux_models, config, experiment_config)
         # Parse params dict into SquareAttackConfig
         self.params = SquareAttackConfig(**self.params)
     

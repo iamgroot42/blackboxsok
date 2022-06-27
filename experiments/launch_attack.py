@@ -25,8 +25,7 @@ def get_model_and_aux_models(attacker_config: AttackerConfig):
 
 
 def single_attack(target_model, aux_models, x_orig, x_sample_adv, y_label, y_target, attacker_config: AttackerConfig, experiment_config: ExperimentConfig):
-    attacker = get_attack_wrapper(
-        target_model, aux_models, attacker_config, experiment_config)
+    attacker = get_attack_wrapper( target_model, aux_models, attacker_config, experiment_config)
     x_sample_adv, queries_used = attacker.attack(x_orig, x_sample_adv, y_label, y_target)
     return (x_sample_adv, queries_used), attacker
 
@@ -78,7 +77,7 @@ if __name__ == "__main__":
     (x_sample_adv, queries_used_1), attacker_1 = single_attack(target_model_1,
                   aux_models=aux_models_1,
                   x_orig=x_orig,
-                  x_sample_adv=None,
+                  x_sample_adv=x_orig,
                   y_label=y_label,
                   y_target=y_target,
                   attacker_config=attacker_config_1,
