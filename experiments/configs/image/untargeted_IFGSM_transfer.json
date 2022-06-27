@@ -1,14 +1,14 @@
 {
-    "experiment_name": "targeted_staircase_transfer_imagenet",
+    "experiment_name": "targeted_IFGSM_transfer_imagenet",
     "dataset_config": {
         "name": "imagenet",
         "type": "image"
     },
     "attack_configs_dict": [
         {
-            "name": "staircase_transfer",
+            "name": "IFGSM_transfer",
             "access_level": "no",
-            "targeted": true,
+            "targeted": false,
             "eps": 16,
             "query_budget": 1,
             "adv_model_config": {

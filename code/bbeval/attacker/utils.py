@@ -1,6 +1,8 @@
 from bbeval.attacker.full_score.square import Square_Attack
 from bbeval.attacker.top1_score.rays import RayS
 from bbeval.attacker.transfer_methods.staircase import Staircase
+from bbeval.attacker.transfer_methods.IFGSM import IFGSM
+
 from bbeval.config import AttackerConfig, ExperimentConfig
 from bbeval.models.core import GenericModelWrapper
 
@@ -8,7 +10,8 @@ from bbeval.models.core import GenericModelWrapper
 ATTACK_WRAPPER_MAPPING = {
     "square_attack": Square_Attack,
     "rays": RayS,
-    "staircase_transfer": Staircase
+    "staircase_transfer": Staircase,
+    "IFGSM_transfer": IFGSM
 }
 
 def get_attack_wrapper(model: GenericModelWrapper, aux_models: dict, attack_config: AttackerConfig, experiment_config: ExperimentConfig):

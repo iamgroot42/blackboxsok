@@ -28,8 +28,6 @@ class Staircase(Attacker):
         self.queries = 1
         self.criterion = None
         self.norm = None
-        self.targeted = None
-
 
     def _attack(self, x_orig, x_adv=None, y_label=None, y_target=None):
         # for model_name in self.aux_models:
@@ -62,7 +60,7 @@ class Staircase(Attacker):
 
         n_model_ensemble = len(self.aux_models)
         n_input_ensemble = len(image_resizes)
-        alpha = self.eps / n_iters
+        alpha = eps / n_iters
         alpha_beta = alpha * amplification
         gamma = alpha_beta * 0.8
 
