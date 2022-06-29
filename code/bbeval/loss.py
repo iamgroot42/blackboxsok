@@ -50,6 +50,18 @@ class CrossEntropyLossWrapper(Loss):
         else:
             return -self.loss_obj(preds, label)
 
+# need to be edited
+class LogitLossWrapper(Loss):
+    def __init__(self, reduction='mean'):
+        super().__init__("logit_loss", reduction)
+        self.loss_obj = nn.CrossEntropyLoss(reduction=reduction)
+
+    def __call__(self, preds, label, is_targeted=False, **kwargs):
+        if is_targeted:
+            return self.loss_obj(preds, label)
+        else:
+            return -self.loss_obj(preds, label)
+
 class BCEWithLogitsLossWrapper(Loss):
     def __init__(self, reduction='mean'):
         super().__init__("bce_with_logits_loss", reduction)

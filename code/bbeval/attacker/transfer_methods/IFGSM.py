@@ -60,7 +60,6 @@ class IFGSM(Attacker):
         adv = x_orig.clone()
         adv = adv.cuda()
         adv.requires_grad = True
-        # amplification = 0.0 # TODO: check what this is actually doing
         pre_grad = ch.zeros(adv.shape).cuda()
         # quite specific piece of code to staircase attack
         x_min = clip_by_tensor(x_orig - eps, x_min_val, x_max_val)
@@ -76,25 +75,24 @@ class IFGSM(Attacker):
                 adv = clip_by_tensor(adv, x_min, x_max)
                 adv = V(adv, requires_grad=True)
             loss = 0
+            output = 0
             for image_resize in image_resizes:
-                output = 0
                 for model_name in self.aux_models:
                     model = self.aux_models[model_name]
                     output += model.forward(adv) / n_model_ensemble
                     # output += model.forward(input_diversity(adv + pre_grad, image_width, image_resize)) * 1./n_model_ensemble
                     output1=output.clone()
                     if targeted:
-                        loss += F.cross_entropy(output1 , y_target,
-                                                reduction="none")
+                        loss -= F.cross_entropy(output1, y_target)
                     else:
-                        loss -= F.cross_entropy(output1 , y_target,
-                                                reduction="none")
-            if adv.grad is not None:
-                adv.grad.data.fill_(0)
-            loss = loss / n_input_ensemble
-            loss.mean().backward()
+                        loss += F.cross_entropy(output1, y_target)
 
-            adv = adv - alpha*adv.grad.data
+            loss = loss / n_input_ensemble
+            print(loss)
+            loss.backward()
+
+            gradient_sign = adv.grad.data.sign()
+            adv = adv + alpha*gradient_sign
             adv = clip_by_tensor(adv, x_min, x_max)
             adv = V(adv, requires_grad=True)
 
@@ -102,11 +100,16 @@ class IFGSM(Attacker):
 
         # outputs the transferability
         # target_model_output=self.model.forward(x)
-        target_model_output = self.model.forward(adv)
+        for model_name in self.aux_models:
+            model = self.aux_models[model_name]
+        target_model_output = self.model.forward(x_orig)
         target_model_prediction = ch.max(target_model_output, 1).indices
         batch_size = len(y_target)
         # print(target_model_prediction==y)
-        num_transfered = ch.count_nonzero(target_model_prediction == y_target)
+        if targeted:
+            num_transfered = ch.count_nonzero(target_model_prediction == y_label)
+        else:
+            num_transfered = ch.count_nonzero(target_model_prediction != y_target)
         transferability = float(num_transfered / batch_size) * 100
 
         print("The transferbility of IFGSM is %s %%" % str(transferability))

@@ -1,10 +1,10 @@
 {
     "name": "untargeted_staircase_transfer_imagenet",
-    "start time": "2022-06-27 18:31:40.822498",
+    "start time": "2022-06-29 12:38:47.432513",
     "result": {
         "20": {
-            "transferability": "21.875"
+            "transferability": "56.25"
         }
     },
-    "save time": "2022-06-27 18:31:50.140880"
+    "save time": "2022-06-29 12:38:56.771475"
 }
