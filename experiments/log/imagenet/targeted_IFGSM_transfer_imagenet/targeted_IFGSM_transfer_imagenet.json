@@ -1,10 +1,10 @@
 {
     "name": "targeted_IFGSM_transfer_imagenet",
-    "start time": "2022-06-29 12:40:34.873699",
+    "start time": "2022-06-30 12:19:44.780873",
     "result": {
         "20": {
-            "transferability": "68.75"
+            "transferability": "9.375"
         }
     },
-    "save time": "2022-06-29 12:40:37.244487"
+    "save time": "2022-06-30 12:19:59.084371"
 }

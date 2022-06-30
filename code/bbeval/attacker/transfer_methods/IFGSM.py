@@ -6,6 +6,7 @@ from torch.autograd import Variable as V
 from bbeval.attacker.core import Attacker
 from bbeval.config import StairCaseConfig, AttackerConfig, ExperimentConfig
 from bbeval.models.core import GenericModelWrapper
+from bbeval.loss import get_loss_fn
 from bbeval.attacker.transfer_methods._manipulate_gradient import torch_staircase_sign, project_noise, gkern, \
     project_kern
 from bbeval.attacker.transfer_methods._manipulate_input import ensemble_input_diversity, input_diversity, clip_by_tensor
@@ -23,19 +24,16 @@ class IFGSM(Attacker):
         self.params = StairCaseConfig(**self.params)
         self.x_final = None
         self.queries = 1
-        self.criterion = None
+        self.criterion = get_loss_fn("logit")
         self.norm = None
 
 
     def _attack(self, x_orig, x_adv=None, y_label=None, y_target=None):
-        # for model_name in self.aux_models:
-        #     model = self.aux_models[model_name]
-        #     print(model.forward(x_orig))
+        print(self.criterion)
         """
             Attack the original image using combination of transfer methods and return adversarial example
             (x, y_label): original image
         """
-        # pytorch version: n_iter=40, eps=20/255
         eps = self.eps / 255.0
         targeted = self.targeted
         image_resizes = self.params.image_resizes
@@ -69,27 +67,26 @@ class IFGSM(Attacker):
             model = self.aux_models[model_name]
             model.set_eval()  # Make sure model is in eval model
             model.zero_grad()  # Make sure no leftover gradients
+            # logits_clean = model.forward(x_orig, detach=True)
+            # corr_classified = ch.argmax(logits_clean, dim=1) == y_label
+            # print('Clean accuracy of candidate samples: {:.2%}'.format(ch.mean(1. * corr_classified).item()))
 
         for i in range(n_iters):
             if i == 0:
                 adv = clip_by_tensor(adv, x_min, x_max)
                 adv = V(adv, requires_grad=True)
-            loss = 0
-            output = 0
-            for image_resize in image_resizes:
-                for model_name in self.aux_models:
-                    model = self.aux_models[model_name]
-                    output += model.forward(adv) / n_model_ensemble
-                    # output += model.forward(input_diversity(adv + pre_grad, image_width, image_resize)) * 1./n_model_ensemble
-                    output1=output.clone()
-                    if targeted:
-                        loss -= F.cross_entropy(output1, y_target)
-                    else:
-                        loss += F.cross_entropy(output1, y_target)
 
-            loss = loss / n_input_ensemble
-            print(loss)
+            output = 0
+            for model_name in self.aux_models:
+                model = self.aux_models[model_name]
+                output += model.forward(adv) / n_model_ensemble
+
+            output_clone = output.clone()
+            loss = self.criterion(output_clone, y_target, targeted)
             loss.backward()
+
+            print(i)
+            print(loss)
 
             gradient_sign = adv.grad.data.sign()
             adv = adv + alpha*gradient_sign
@@ -99,19 +96,16 @@ class IFGSM(Attacker):
         stop_queries = 1
 
         # outputs the transferability
-        # target_model_output=self.model.forward(x)
-        for model_name in self.aux_models:
-            model = self.aux_models[model_name]
-        target_model_output = self.model.forward(x_orig)
+        self.model.set_eval()  # Make sure model is in eval model
+        self.model.zero_grad()  # Make sure no leftover gradients
+        target_model_output = self.model.forward(adv)
         target_model_prediction = ch.max(target_model_output, 1).indices
         batch_size = len(y_target)
-        # print(target_model_prediction==y)
         if targeted:
-            num_transfered = ch.count_nonzero(target_model_prediction == y_label)
+            num_transfered = ch.count_nonzero(target_model_prediction == y_target)
         else:
             num_transfered = ch.count_nonzero(target_model_prediction != y_target)
         transferability = float(num_transfered / batch_size) * 100
-
         print("The transferbility of IFGSM is %s %%" % str(transferability))
         self.logger.add_result(n_iters, {
             "transferability": str(transferability),

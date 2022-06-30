@@ -21,10 +21,15 @@
                     "use_pretrained": true,
                     "name": "resnet18",
                     "dataset": "imagenet"
+                },
+                {
+                    "use_pretrained": true,
+                    "name": "vgg16",
+                    "dataset": "imagenet"
                 }
             ],
             "attack_params": {
-                "n_iters": 20,
+                "n_iters": 60,
                 "image_resizes": [
                     330
                 ]
