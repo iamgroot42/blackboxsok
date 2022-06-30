@@ -56,10 +56,38 @@ class LogitLossWrapper(Loss):
         super().__init__("logit_loss", reduction)
 
     def __call__(self, preds, label, is_targeted=False, **kwargs):
-        print("hello")
         real = preds.gather(1, label.unsqueeze(1)).squeeze(1)
         logit_dists = (1 * real)
         loss = logit_dists.sum()
+        if is_targeted:
+            return -loss
+        else:
+            return loss
+
+class PoTripLossWrapper(Loss):
+    def __init__(self, reduction='mean'):
+        super().__init__("po_trip_loss", reduction)
+
+    def Poincare_dis(self, a, b):
+        L2_a = ch.sum(ch.square(a), 1)
+        L2_b = ch.sum(ch.square(b), 1)
+
+        theta = 2 * ch.sum(ch.square(a - b), 1) / ((1 - L2_a) * (1 - L2_b))
+        distance = ch.mean(ch.acosh(1.0 + theta))
+        return distance
+
+    def Cos_dis(self, a, b):
+        a_b = ch.abs(ch.sum(ch.multiply(a, b), 1))
+        L2_a = ch.sum(ch.square(a), 1)
+        L2_b = ch.sum(ch.square(b), 1)
+        distance = ch.mean(a_b / ch.sqrt(L2_a * L2_b))
+        return distance
+
+    def __call__(self, preds, label, is_targeted=False, **kwargs):
+        labels_ = nn.functional.one_hot(label, preds.shape[1])
+        loss_po = self.Poincare_dis((preds / ch.sum(ch.abs(preds), 1, keepdim=True)),ch.clamp((labels_ - 0.00001), 0.0, 1.0))
+        loss_cos = ch.clamp(self.Cos_dis(labels_, preds) - self.Cos_dis(labels_, preds) + 0.007, 0.0, 2.1)
+        loss=loss_po + 0.01 * loss_cos
         if is_targeted:
             return -loss
         else:
@@ -72,6 +100,7 @@ class BCEWithLogitsLossWrapper(Loss):
     
     def __call__(self, preds, label, is_targeted=False, **kwargs):
         labels_ = nn.functional.one_hot(label, preds.shape[1])
+        print(labels_true_onehot==labels_)
         if is_targeted:
             return -self.loss_obj(preds, labels_.float())
         else:
@@ -81,8 +110,8 @@ _LOSS_FUNCTION_MAPPING = {
     "margin": MarginLossWrapper,
     "ce": CrossEntropyLossWrapper,
     "bce": BCEWithLogitsLossWrapper,
-    "logit": LogitLossWrapper
-
+    "logit": LogitLossWrapper,
+    "potrip":PoTripLossWrapper
 }
 
 

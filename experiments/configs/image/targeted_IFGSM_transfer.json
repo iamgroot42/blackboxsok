@@ -29,7 +29,7 @@
                 }
             ],
             "attack_params": {
-                "n_iters": 60,
+                "n_iters": 100,
                 "image_resizes": [
                     330
                 ]
