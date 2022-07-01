@@ -24,12 +24,11 @@ class IFGSM(Attacker):
         self.params = StairCaseConfig(**self.params)
         self.x_final = None
         self.queries = 1
-        self.criterion = get_loss_fn("bce")
+        self.criterion = get_loss_fn("ce")
         self.norm = None
 
 
     def _attack(self, x_orig, x_adv=None, y_label=None, y_target=None):
-        print(self.criterion)
         """
             Attack the original image using combination of transfer methods and return adversarial example
             (x, y_label): original image
@@ -83,13 +82,14 @@ class IFGSM(Attacker):
 
             output_clone = output.clone()
             loss = self.criterion(output_clone, y_target, targeted)
-            loss.backward()
-
             print(i)
             print(loss)
-
+            loss.backward()
             gradient_sign = adv.grad.data.sign()
-            adv = adv + alpha*gradient_sign
+            if targeted==True:
+                adv = adv - alpha*gradient_sign
+            else:
+                adv = adv + alpha*gradient_sign
             adv = clip_by_tensor(adv, x_min, x_max)
             adv = V(adv, requires_grad=True)
 

@@ -52,7 +52,6 @@ if __name__ == "__main__":
     # specific attacks may have different ranges and should be handled case by case
     x_orig, y_label = next(iter(test_loader))
     x_orig, y_label = x_orig.cuda(), y_label.cuda()
-    # mode = "easiest"/"hardest"/"random/user"
 
     # Extract configs
     attacker_config_1: AttackerConfig = config.first_attack_config()
