@@ -1,0 +1,10 @@
+{
+    "name": "targeted_MIFGSM_transfer_imagenet",
+    "start time": "2022-07-04 10:50:02.224418",
+    "result": {
+        "100": {
+            "transferability": "0.0"
+        }
+    },
+    "save time": "2022-07-04 10:50:28.059228"
+}

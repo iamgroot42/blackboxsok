@@ -92,7 +92,7 @@ class StairCaseConfig(Serializable):
 @dataclass
 class IFGSM(Serializable):
     """
-        Configuration for Staircase attack
+        Configuration for IFGSM attack
     """
     n_iters: int
     """Number of iterations"""
@@ -103,6 +103,19 @@ class IFGSM(Serializable):
     interpol_dim: int = 256
     """Interpolation dimension"""
 
+@dataclass
+class MIFGSM(Serializable):
+    """
+        Configuration for MIFGSM attack
+    """
+    n_iters: int
+    """Number of iterations"""
+    image_resizes: List[int]
+    """List of image resizes to try"""
+    image_width: int = 299
+    """Width of image"""
+    interpol_dim: int = 256
+    """Interpolation dimension"""
 
 @dataclass
 class SquareAttackConfig(Serializable):
