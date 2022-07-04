@@ -1,12 +1,12 @@
 {
-    "experiment_name": "untargeted_MIFGSM_transfer_imagenet",
+    "experiment_name": "untargeted_NIFGSM_transfer_imagenet",
     "dataset_config": {
         "name": "imagenet",
         "type": "image"
     },
     "attack_configs_dict": [
         {
-            "name": "MIFGSM_transfer",
+            "name": "NIFGSM_transfer",
             "access_level": "no",
             "targeted": false,
             "eps": 16,
@@ -29,7 +29,7 @@
                 }
             ],
             "attack_params": {
-                "n_iters": 100,
+                "n_iters": 20,
                 "image_resizes": [
                     330
                 ]

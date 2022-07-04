@@ -1,5 +1,5 @@
 {
-    "experiment_name": "targeted_IFGSM_transfer_imagenet",
+    "experiment_name": "untargeted_IFGSM_transfer_imagenet",
     "dataset_config": {
         "name": "imagenet",
         "type": "image"
@@ -29,7 +29,7 @@
                 }
             ],
             "attack_params": {
-                "n_iters": 100,
+                "n_iters": 20,
                 "image_resizes": [
                     330
                 ]
