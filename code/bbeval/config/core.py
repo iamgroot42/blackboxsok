@@ -90,6 +90,20 @@ class StairCaseConfig(Serializable):
     """Interpolation dimension"""
 
 @dataclass
+class FGSM(Serializable):
+    """
+        Configuration for IFGSM attack
+    """
+    n_iters: int
+    """Number of iterations"""
+    image_resizes: List[int]
+    """List of image resizes to try"""
+    image_width: int = 299
+    """Width of image"""
+    interpol_dim: int = 256
+    """Interpolation dimension"""
+
+@dataclass
 class IFGSM(Serializable):
     """
         Configuration for IFGSM attack
@@ -132,6 +146,34 @@ class NIFGSM(Serializable):
     """Interpolation dimension"""
 
 @dataclass
+class VMIFGSM(Serializable):
+    """
+        Configuration for MIFGSM attack
+    """
+    n_iters: int
+    """Number of iterations"""
+    image_resizes: List[int]
+    """List of image resizes to try"""
+    image_width: int = 299
+    """Width of image"""
+    interpol_dim: int = 256
+    """Interpolation dimension"""
+
+@dataclass
+class VNIFGSM(Serializable):
+    """
+        Configuration for MIFGSM attack
+    """
+    n_iters: int
+    """Number of iterations"""
+    image_resizes: List[int]
+    """List of image resizes to try"""
+    image_width: int = 299
+    """Width of image"""
+    interpol_dim: int = 256
+    """Interpolation dimension"""
+
+@dataclass
 class SquareAttackConfig(Serializable):
     """
         Configuration for Square attack
@@ -141,7 +183,6 @@ class SquareAttackConfig(Serializable):
     """TODO: Check"""
     p_init: float = 0.05
     """TODO: Check"""
-
 
 @dataclass
 class SparseEvoConfig(Serializable):

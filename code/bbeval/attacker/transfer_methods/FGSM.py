@@ -16,7 +16,7 @@ import torchvision.models as models  # TODO: remove after test
 np.set_printoptions(precision=5, suppress=True)
 
 
-class MIFGSM(Attacker):
+class FGSM(Attacker):
     def __init__(self, model: GenericModelWrapper, aux_models: dict, config: AttackerConfig,
                  experiment_config: ExperimentConfig):
         super().__init__(model, aux_models, config, experiment_config)
@@ -27,6 +27,7 @@ class MIFGSM(Attacker):
         self.criterion = get_loss_fn("ce")
         self.norm = None
 
+
     def _attack(self, x_orig, x_adv=None, y_label=None, y_target=None):
         """
             Attack the original image using combination of transfer methods and return adversarial example
@@ -36,7 +37,7 @@ class MIFGSM(Attacker):
         targeted = self.targeted
         image_resizes = self.params.image_resizes
         image_width = self.params.image_width
-        n_iters = self.params.n_iters
+        n_iters = 1
         interpol_dim = self.params.interpol_dim  # Not sure why this thing is different
 
         if not isinstance(self.aux_models, dict):
@@ -50,9 +51,6 @@ class MIFGSM(Attacker):
         n_model_ensemble = len(self.aux_models)
         n_input_ensemble = len(image_resizes)
         alpha = eps / n_iters
-        decay = 1.0
-        grad = 0
-        momentum=0
 
         # initializes the advesarial example
         # x.requires_grad = True
@@ -87,14 +85,11 @@ class MIFGSM(Attacker):
             print(i)
             print(loss)
             loss.backward()
-            grad=adv.grad.data
-            grad = momentum * decay + grad / ch.mean(ch.abs(grad), dim=(1,2,3), keepdim=True)
-            momentum = grad
-
-            if targeted == True:
-                adv = adv - alpha * ch.sign(grad)
+            gradient_sign = adv.grad.data.sign()
+            if targeted==True:
+                adv = adv - alpha*gradient_sign
             else:
-                adv = adv + alpha * ch.sign(grad)
+                adv = adv + alpha*gradient_sign
             adv = clip_by_tensor(adv, x_min, x_max)
             adv = V(adv, requires_grad=True)
 
@@ -111,7 +106,7 @@ class MIFGSM(Attacker):
         else:
             num_transfered = ch.count_nonzero(target_model_prediction != y_target)
         transferability = float(num_transfered / batch_size) * 100
-        print("The transferbility of MIFGSM is %s %%" % str(transferability))
+        print("The transferbility of FGSM is %s %%" % str(transferability))
         self.logger.add_result(n_iters, {
             "transferability": str(transferability),
         })

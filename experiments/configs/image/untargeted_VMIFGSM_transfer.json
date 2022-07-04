@@ -1,12 +1,12 @@
 {
-    "experiment_name": "untargeted_IFGSM_transfer_imagenet",
+    "experiment_name": "untargeted_VMIFGSM_transfer_imagenet",
     "dataset_config": {
         "name": "imagenet",
         "type": "image"
     },
     "attack_configs_dict": [
         {
-            "name": "IFGSM_transfer",
+            "name": "VMIFGSM_transfer",
             "access_level": "no",
             "targeted": false,
             "eps": 16,

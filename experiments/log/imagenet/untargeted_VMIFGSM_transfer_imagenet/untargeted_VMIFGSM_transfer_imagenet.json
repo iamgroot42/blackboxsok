@@ -1,0 +1,10 @@
+{
+    "name": "untargeted_VMIFGSM_transfer_imagenet",
+    "start time": "2022-07-04 18:20:28.936486",
+    "result": {
+        "20": {
+            "transferability": "84.375"
+        }
+    },
+    "save time": "2022-07-04 18:25:25.751514"
+}

@@ -50,8 +50,9 @@ class NIFGSM(Attacker):
         n_model_ensemble = len(self.aux_models)
         n_input_ensemble = len(image_resizes)
         alpha = eps / n_iters
-        momentum = 1.0
-        g = 0
+        decay = 1.0
+        grad = 0
+        momentum=0
 
         # initializes the advesarial example
         # x.requires_grad = True
@@ -77,7 +78,7 @@ class NIFGSM(Attacker):
                 adv = V(adv, requires_grad=True)
 
             output = 0
-            x_nes = adv + momentum * alpha * g
+            x_nes = adv + decay * alpha * momentum
             for model_name in self.aux_models:
                 model = self.aux_models[model_name]
                 output += model.forward(x_nes) / n_model_ensemble
@@ -87,12 +88,13 @@ class NIFGSM(Attacker):
             print(i)
             print(loss)
             loss.backward()
-
-            g = momentum * g + adv.grad.data / ch.norm(adv.grad.data, p=1)
+            grad=adv.grad.data
+            grad = momentum * decay + grad / ch.mean(ch.abs(grad), dim=(1,2,3), keepdim=True)
+            momentum = grad
             if targeted:
-                adv = adv - alpha * ch.sign(g)
+                adv = adv - alpha * ch.sign(grad)
             else:
-                adv = adv + alpha * ch.sign(g)
+                adv = adv + alpha * ch.sign(grad)
             adv = clip_by_tensor(adv, x_min, x_max)
             adv = V(adv, requires_grad=True)
 

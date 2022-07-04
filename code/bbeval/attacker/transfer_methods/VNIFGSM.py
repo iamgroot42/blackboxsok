@@ -16,7 +16,7 @@ import torchvision.models as models  # TODO: remove after test
 np.set_printoptions(precision=5, suppress=True)
 
 
-class MIFGSM(Attacker):
+class VNIFGSM(Attacker):
     def __init__(self, model: GenericModelWrapper, aux_models: dict, config: AttackerConfig,
                  experiment_config: ExperimentConfig):
         super().__init__(model, aux_models, config, experiment_config)
@@ -50,9 +50,15 @@ class MIFGSM(Attacker):
         n_model_ensemble = len(self.aux_models)
         n_input_ensemble = len(image_resizes)
         alpha = eps / n_iters
+        # decay (float): momentum factor. (Default: 1.0)
+        # N (int): the number of sampled examples in the neighborhood. (Default: 20)
+        # beta (float): the upper bound of neighborhood. (Default: 3/2)
         decay = 1.0
         grad = 0
-        momentum=0
+        v=0
+        momentum = 0
+        N = 20
+        beta = 3 / 2
 
         # initializes the advesarial example
         # x.requires_grad = True
@@ -78,20 +84,42 @@ class MIFGSM(Attacker):
                 adv = V(adv, requires_grad=True)
 
             output = 0
+            x_nes = adv + decay * alpha * momentum
             for model_name in self.aux_models:
                 model = self.aux_models[model_name]
-                output += model.forward(adv) / n_model_ensemble
+                output += model.forward(x_nes) / n_model_ensemble
 
             output_clone = output.clone()
             loss = self.criterion(output_clone, y_target, targeted)
             print(i)
             print(loss)
             loss.backward()
-            grad=adv.grad.data
-            grad = momentum * decay + grad / ch.mean(ch.abs(grad), dim=(1,2,3), keepdim=True)
+            adv_grad = adv.grad.data
+            grad = momentum * decay + (adv_grad+v) / ch.mean(ch.abs(adv_grad+v), dim=(1, 2, 3), keepdim=True)
             momentum = grad
 
-            if targeted == True:
+            # Calculate Gradient Variance
+            GV_grad = 0
+            for _ in range(N):
+                neighbor_images = adv.detach() + ch.randn_like(x_orig).uniform_(-eps*beta, eps*beta)
+                neighbor_images.requires_grad = True
+                output = 0
+                for model_name in self.aux_models:
+                    model = self.aux_models[model_name]
+                    output += model.forward(neighbor_images) / n_model_ensemble
+
+                output_clone = output.clone()
+                # Calculate loss
+                if targeted:
+                    cost = -self.criterion(output_clone, y_target, targeted)
+                else:
+                    cost = self.criterion(output_clone, y_target, targeted)
+                cost.backward()
+                GV_grad += neighbor_images.grad.data
+            # obtaining the gradient variance
+            v = GV_grad / N - adv_grad
+
+            if targeted:
                 adv = adv - alpha * ch.sign(grad)
             else:
                 adv = adv + alpha * ch.sign(grad)
@@ -111,7 +139,7 @@ class MIFGSM(Attacker):
         else:
             num_transfered = ch.count_nonzero(target_model_prediction != y_target)
         transferability = float(num_transfered / batch_size) * 100
-        print("The transferbility of MIFGSM is %s %%" % str(transferability))
+        print("The transferbility of VNIFGSM is %s %%" % str(transferability))
         self.logger.add_result(n_iters, {
             "transferability": str(transferability),
         })
