@@ -1,0 +1,10 @@
+{
+    "name": "untargeted_TIFGSM_transfer_imagenet",
+    "start time": "2022-07-06 17:00:02.140834",
+    "result": {
+        "20": {
+            "transferability": "53.125"
+        }
+    },
+    "save time": "2022-07-06 17:00:17.029984"
+}
