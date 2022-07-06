@@ -12,8 +12,6 @@ from bbeval.attacker.transfer_methods.MIDIFGSM import MIDIFGSM
 from bbeval.attacker.transfer_methods.TIFGSM import TIFGSM
 from bbeval.attacker.transfer_methods.TIDIMIFGSM import TIDIMIFGSM
 
-
-
 from bbeval.config import AttackerConfig, ExperimentConfig
 from bbeval.models.core import GenericModelWrapper
 
@@ -30,8 +28,7 @@ ATTACK_WRAPPER_MAPPING = {
     "DIFGSM_transfer": DIFGSM,
     "MIDIFGSM_transfer": MIDIFGSM,
     "TIFGSM_transfer": TIFGSM,
-    "TIDIMIFGSM_transfer": TIDIMIFGSM_transfer,
-
+    "TIDIMIFGSM_transfer": TIDIMIFGSM
 }
 
 def get_attack_wrapper(model: GenericModelWrapper, aux_models: dict, attack_config: AttackerConfig, experiment_config: ExperimentConfig):

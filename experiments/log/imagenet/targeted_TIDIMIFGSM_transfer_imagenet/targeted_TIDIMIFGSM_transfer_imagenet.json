@@ -1,0 +1,10 @@
+{
+    "name": "targeted_TIDIMIFGSM_transfer_imagenet",
+    "start time": "2022-07-06 17:29:25.119928",
+    "result": {
+        "100": {
+            "transferability": "0.0"
+        }
+    },
+    "save time": "2022-07-06 17:29:55.930719"
+}

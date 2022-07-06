@@ -16,7 +16,7 @@ import torchvision.models as models  # TODO: remove after test
 np.set_printoptions(precision=5, suppress=True)
 
 
-class TIMIDIFGSM(Attacker):
+class TIFGSM(Attacker):
     def __init__(self, model: GenericModelWrapper, aux_models: dict, config: AttackerConfig,
                  experiment_config: ExperimentConfig):
         super().__init__(model, aux_models, config, experiment_config)
@@ -30,7 +30,6 @@ class TIMIDIFGSM(Attacker):
     def input_diversity(self, x,img_resize):
         diversity_prob = 0.5
         img_size = x.shape[-1]
-        print(img_size)
 
         rnd = ch.randint(low=img_size, high=img_resize, size=(1,), dtype=ch.int32)
         rescaled = F.interpolate(x, size=[rnd, rnd], mode='bilinear', align_corners=False)
