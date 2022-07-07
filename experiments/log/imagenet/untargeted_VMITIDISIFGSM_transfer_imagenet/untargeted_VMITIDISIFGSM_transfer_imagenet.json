@@ -1,0 +1,10 @@
+{
+    "name": "untargeted_VMITIDISIFGSM_transfer_imagenet",
+    "start time": "2022-07-07 17:55:54.564317",
+    "result": {
+        "20": {
+            "transferability": "93.75"
+        }
+    },
+    "save time": "2022-07-07 18:01:46.856567"
+}

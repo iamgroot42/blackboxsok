@@ -244,7 +244,49 @@ class MITIDISIFGSM(Serializable):
     """Interpolation dimension"""
 
 @dataclass
+class VMITIDISIFGSM(Serializable):
+    """
+        Configuration for MIFGSM attack
+    """
+    n_iters: int
+    """Number of iterations"""
+    image_resizes: List[int]
+    """List of image resizes to try"""
+    image_width: int = 299
+    """Width of image"""
+    interpol_dim: int = 256
+    """Interpolation dimension"""
+
+@dataclass
+class NITIDISIFGSM(Serializable):
+    """
+        Configuration for MIFGSM attack
+    """
+    n_iters: int
+    """Number of iterations"""
+    image_resizes: List[int]
+    """List of image resizes to try"""
+    image_width: int = 299
+    """Width of image"""
+    interpol_dim: int = 256
+    """Interpolation dimension"""
+
+@dataclass
 class VNIFGSM(Serializable):
+    """
+        Configuration for MIFGSM attack
+    """
+    n_iters: int
+    """Number of iterations"""
+    image_resizes: List[int]
+    """List of image resizes to try"""
+    image_width: int = 299
+    """Width of image"""
+    interpol_dim: int = 256
+    """Interpolation dimension"""
+
+@dataclass
+class VNITIDISIFGSM(Serializable):
     """
         Configuration for MIFGSM attack
     """

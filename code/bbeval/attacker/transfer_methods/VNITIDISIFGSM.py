@@ -16,7 +16,9 @@ import torchvision.models as models  # TODO: remove after test
 np.set_printoptions(precision=5, suppress=True)
 
 
-class DIFGSM(Attacker):
+# https://arxiv.org/pdf/2103.15571.pdf
+
+class VNITIDISIFGSM(Attacker):
     def __init__(self, model: GenericModelWrapper, aux_models: dict, config: AttackerConfig,
                  experiment_config: ExperimentConfig):
         super().__init__(model, aux_models, config, experiment_config)
@@ -27,10 +29,9 @@ class DIFGSM(Attacker):
         self.criterion = get_loss_fn("ce")
         self.norm = None
 
-    def input_diversity(self, x,img_resize):
+    def input_diversity(self, x, img_resize):
         diversity_prob = 0.5
         img_size = x.shape[-1]
-        # print(img_size)
 
         rnd = ch.randint(low=img_size, high=img_resize, size=(1,), dtype=ch.int32)
         rescaled = F.interpolate(x, size=[rnd, rnd], mode='bilinear', align_corners=False)
@@ -68,6 +69,13 @@ class DIFGSM(Attacker):
         n_model_ensemble = len(self.aux_models)
         n_input_ensemble = len(image_resizes)
         alpha = eps / n_iters
+        decay = 1.0
+        grad = 0
+        momentum = 0
+        v = 0
+        m = 5
+        N = 20
+        beta = 3 / 2
 
         # initializes the advesarial example
         # x.requires_grad = True
@@ -78,6 +86,13 @@ class DIFGSM(Attacker):
         # quite specific piece of code to staircase attack
         x_min = clip_by_tensor(x_orig - eps, x_min_val, x_max_val)
         x_max = clip_by_tensor(x_orig + eps, x_min_val, x_max_val)
+
+        # kernel_size = 15 or 21
+        kernel_size = 7
+        kernel = gkern(kernel_size, 3).astype(np.float32)
+        gaussian_kernel = np.stack([kernel, kernel, kernel])
+        gaussian_kernel = np.expand_dims(gaussian_kernel, 1)
+        gaussian_kernel = ch.from_numpy(gaussian_kernel).cuda()
 
         for model_name in self.aux_models:
             model = self.aux_models[model_name]
@@ -91,22 +106,53 @@ class DIFGSM(Attacker):
             if i == 0:
                 adv = clip_by_tensor(adv, x_min, x_max)
                 adv = V(adv, requires_grad=True)
-
-            output = 0
-            for model_name in self.aux_models:
-                model = self.aux_models[model_name]
-                output += model.forward(self.input_diversity(adv,image_resizes[0])) / n_model_ensemble
-
-            output_clone = output.clone()
-            loss = self.criterion(output_clone, y_target, targeted)
+            grad = 0
             print(i)
-            print(loss)
-            loss.backward()
-            gradient_sign = adv.grad.data.sign()
-            if targeted:
-                adv = adv - alpha * gradient_sign
+            x_nes = adv + decay * alpha * momentum
+            for j in ch.arange(m):
+                x_nes = x_nes / ch.pow(2, j)
+                x_nes = V(x_nes, requires_grad=True)
+                output = 0
+                for model_name in self.aux_models:
+                    model = self.aux_models[model_name]
+                    output += model.forward(self.input_diversity(x_nes, image_resizes[0])) / n_model_ensemble
+
+                output_clone = output.clone()
+                loss = self.criterion(output_clone, y_target, targeted)
+                print(loss)
+                loss.backward()
+                grad += x_nes.grad.data
+
+            adv_grad = grad
+            grad = F.conv2d(grad + v, gaussian_kernel, stride=1, padding='same', groups=3)
+            grad = momentum * decay + grad / ch.mean(ch.abs(grad), dim=(1, 2, 3), keepdim=True)
+            momentum = grad
+
+            # Calculate Gradient Variance
+            GV_grad = 0
+            for _ in range(N):
+                neighbor_images = adv.detach() + ch.randn_like(x_orig).uniform_(-eps * beta, eps * beta)
+                neighbor_images.requires_grad = True
+                output = 0
+                for model_name in self.aux_models:
+                    model = self.aux_models[model_name]
+                    output += model.forward(neighbor_images) / n_model_ensemble
+
+                output_clone = output.clone()
+                # Calculate loss
+                if targeted:
+                    cost = -self.criterion(output_clone, y_target, targeted)
+                else:
+                    cost = self.criterion(output_clone, y_target, targeted)
+                cost.backward()
+                GV_grad += neighbor_images.grad.data
+            # obtaining the gradient variance
+            v = GV_grad / N - adv_grad
+
+            if targeted == True:
+                adv = adv - alpha * ch.sign(grad)
             else:
-                adv = adv + alpha * gradient_sign
+                adv = adv + alpha * ch.sign(grad)
             adv = clip_by_tensor(adv, x_min, x_max)
             adv = V(adv, requires_grad=True)
 
@@ -123,7 +169,7 @@ class DIFGSM(Attacker):
         else:
             num_transfered = ch.count_nonzero(target_model_prediction != y_target)
         transferability = float(num_transfered / batch_size) * 100
-        print("The transferbility of DIFGSM is %s %%" % str(transferability))
+        print("The transferbility of VNITIDISIFGSM is %s %%" % str(transferability))
         self.logger.add_result(n_iters, {
             "transferability": str(transferability),
         })
