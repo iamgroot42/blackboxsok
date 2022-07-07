@@ -75,23 +75,25 @@ class SIFGSM(Attacker):
             if i == 0:
                 adv = clip_by_tensor(adv, x_min, x_max)
                 adv = V(adv, requires_grad=True)
-                x_nes = V(adv, requires_grad=True)
-            output = 0
             grad=0
+            print(i)
 
             for j in ch.arange(m):
-                x_nes = x_nes / ch.pow(2, j)
+                x_nes = adv / ch.pow(2, j)
+                x_nes = V(x_nes, requires_grad=True)
+                output=0
                 for model_name in self.aux_models:
                     model = self.aux_models[model_name]
                     output += model.forward(x_nes) / n_model_ensemble
 
                 output_clone = output.clone()
                 loss = self.criterion(output_clone, y_target, targeted)
-                print(i)
                 print(loss)
                 loss.backward()
-                print(x_nes)
+                # print(x_nes)
+                # AttributeError: 'NoneType' object has no attribute 'data'
                 grad += x_nes.grad.data
+                # grad += x_nes.grad.data
 
             if targeted:
                 adv = adv - alpha * ch.sign(grad)
@@ -99,6 +101,39 @@ class SIFGSM(Attacker):
                 adv = adv + alpha * ch.sign(grad)
             adv = clip_by_tensor(adv, x_min, x_max)
             adv = V(adv, requires_grad=True)
+
+        # for i in range(n_iters):
+        #     if i == 0:
+        #         adv = clip_by_tensor(adv, x_min, x_max)
+        #         adv = V(adv, requires_grad=True)
+        #     output = 0
+        #     grad=0
+        #     print(i)
+        #     for j in ch.arange(m):
+        #         print(ch.pow(2, j))
+        #         x_nes = adv / ch.pow(2, j)
+        #         x_nes = V(x_nes, requires_grad=True)
+        #         for model_name in self.aux_models:
+        #             model = self.aux_models[model_name]
+        #             output += model.forward(x_nes) / n_model_ensemble
+        #
+        #         output_clone = output.clone()
+        #         loss = self.criterion(output_clone, y_target, targeted)
+        #         print(loss)
+        #         loss.backward(retain_graph=True)
+        #         # print(x_nes)
+        #         # AttributeError: 'NoneType' object has no attribute 'data'
+        #         print(type(x_nes.grad))
+        #         grad += x_nes.grad.data
+        #         # grad += x_nes.grad.data
+        #
+        #     if targeted:
+        #         adv = adv - alpha * ch.sign(grad)
+        #     else:
+        #         adv = adv + alpha * ch.sign(grad)
+        #     adv = clip_by_tensor(adv, x_min, x_max)
+        #     adv = V(adv, requires_grad=True)
+
 
         stop_queries = 1
 
