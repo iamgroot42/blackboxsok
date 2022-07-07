@@ -188,7 +188,7 @@ class DIFGSM(Serializable):
     """Interpolation dimension"""
 
 @dataclass
-class TIDIMIFGSM(Serializable):
+class MITIDIFGSM(Serializable):
     """
         Configuration for MIFGSM attack
     """
@@ -217,6 +217,20 @@ class SIFGSM(Serializable):
 
 @dataclass
 class VMIFGSM(Serializable):
+    """
+        Configuration for MIFGSM attack
+    """
+    n_iters: int
+    """Number of iterations"""
+    image_resizes: List[int]
+    """List of image resizes to try"""
+    image_width: int = 299
+    """Width of image"""
+    interpol_dim: int = 256
+    """Interpolation dimension"""
+
+@dataclass
+class MITIDISIFGSM(Serializable):
     """
         Configuration for MIFGSM attack
     """

@@ -1,12 +1,12 @@
 {
-    "experiment_name": "untargeted_SIFGSM_transfer_imagenet",
+    "experiment_name": "untargeted_MITIDISIFGSM_transfer_imagenet",
     "dataset_config": {
         "name": "imagenet",
         "type": "image"
     },
     "attack_configs_dict": [
         {
-            "name": "SIFGSM_transfer",
+            "name": "MITIDISIFGSM_transfer",
             "access_level": "no",
             "targeted": false,
             "eps": 16,

@@ -1,0 +1,10 @@
+{
+    "name": "untargeted_MITIDIFGSM_transfer_imagenet",
+    "start time": "2022-07-07 11:42:24.173471",
+    "result": {
+        "20": {
+            "transferability": "75.0"
+        }
+    },
+    "save time": "2022-07-07 11:42:39.733827"
+}

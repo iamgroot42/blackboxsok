@@ -15,8 +15,8 @@ import torchvision.models as models  # TODO: remove after test
 
 np.set_printoptions(precision=5, suppress=True)
 
-# https://arxiv.org/pdf/1908.06281.pdf
-class SIFGSM(Attacker):
+
+class MITIDIFGSM(Attacker):
     def __init__(self, model: GenericModelWrapper, aux_models: dict, config: AttackerConfig,
                  experiment_config: ExperimentConfig):
         super().__init__(model, aux_models, config, experiment_config)
@@ -27,6 +27,22 @@ class SIFGSM(Attacker):
         self.criterion = get_loss_fn("ce")
         self.norm = None
 
+    def input_diversity(self, x,img_resize):
+        diversity_prob = 0.7
+        img_size = x.shape[-1]
+
+        rnd = ch.randint(low=img_size, high=img_resize, size=(1,), dtype=ch.int32)
+        rescaled = F.interpolate(x, size=[rnd, rnd], mode='bilinear', align_corners=False)
+        h_rem = img_resize - rnd
+        w_rem = img_resize - rnd
+        pad_top = ch.randint(low=0, high=h_rem.item(), size=(1,), dtype=ch.int32)
+        pad_bottom = h_rem - pad_top
+        pad_left = ch.randint(low=0, high=w_rem.item(), size=(1,), dtype=ch.int32)
+        pad_right = w_rem - pad_left
+
+        padded = F.pad(rescaled, [pad_left.item(), pad_right.item(), pad_top.item(), pad_bottom.item()], value=0)
+
+        return padded if ch.rand(1) < diversity_prob else x
 
     def _attack(self, x_orig, x_adv=None, y_label=None, y_target=None):
         """
@@ -51,7 +67,9 @@ class SIFGSM(Attacker):
         n_model_ensemble = len(self.aux_models)
         n_input_ensemble = len(image_resizes)
         alpha = eps / n_iters
-        m=5
+        decay = 1.0
+        grad = 0
+        momentum=0
 
         # initializes the advesarial example
         # x.requires_grad = True
@@ -62,6 +80,13 @@ class SIFGSM(Attacker):
         # quite specific piece of code to staircase attack
         x_min = clip_by_tensor(x_orig - eps, x_min_val, x_max_val)
         x_max = clip_by_tensor(x_orig + eps, x_min_val, x_max_val)
+
+        # kernel_size = 15 or 21
+        kernel_size = 15
+        kernel = gkern(kernel_size, 3).astype(np.float32)
+        gaussian_kernel = np.stack([kernel, kernel, kernel])
+        gaussian_kernel = np.expand_dims(gaussian_kernel, 1)
+        gaussian_kernel = ch.from_numpy(gaussian_kernel).cuda()
 
         for model_name in self.aux_models:
             model = self.aux_models[model_name]
@@ -75,65 +100,28 @@ class SIFGSM(Attacker):
             if i == 0:
                 adv = clip_by_tensor(adv, x_min, x_max)
                 adv = V(adv, requires_grad=True)
-            grad=0
+
+            output = 0
+            for model_name in self.aux_models:
+                model = self.aux_models[model_name]
+                output += model.forward(self.input_diversity(adv,image_resizes[0])) / n_model_ensemble
+
+            output_clone = output.clone()
+            loss = self.criterion(output_clone, y_target, targeted)
             print(i)
-            for j in ch.arange(m):
-                x_nes = adv / ch.pow(2, j)
-                x_nes = V(x_nes, requires_grad=True)
-                output=0
-                for model_name in self.aux_models:
-                    model = self.aux_models[model_name]
-                    output += model.forward(x_nes) / n_model_ensemble
+            print(loss)
+            loss.backward()
+            grad=adv.grad.data
+            grad = F.conv2d(grad, gaussian_kernel, stride=1, padding='same', groups=3)
+            grad = momentum * decay + grad / ch.mean(ch.abs(grad), dim=(1,2,3), keepdim=True)
+            momentum = grad
 
-                output_clone = output.clone()
-                loss = self.criterion(output_clone, y_target, targeted)
-                print(loss)
-                loss.backward()
-                # print(x_nes)
-                # AttributeError: 'NoneType' object has no attribute 'data'
-                grad += x_nes.grad.data
-                # grad += x_nes.grad.data
-
-            if targeted:
+            if targeted == True:
                 adv = adv - alpha * ch.sign(grad)
             else:
                 adv = adv + alpha * ch.sign(grad)
             adv = clip_by_tensor(adv, x_min, x_max)
             adv = V(adv, requires_grad=True)
-
-
-        # for i in range(n_iters):
-        #     if i == 0:
-        #         adv = clip_by_tensor(adv, x_min, x_max)
-        #         adv = V(adv, requires_grad=True)
-        #     output = 0
-        #     grad=0
-        #     print(i)
-        #     for j in ch.arange(m):
-        #         print(ch.pow(2, j))
-        #         x_nes = adv / ch.pow(2, j)
-        #         x_nes = V(x_nes, requires_grad=True)
-        #         for model_name in self.aux_models:
-        #             model = self.aux_models[model_name]
-        #             output += model.forward(x_nes) / n_model_ensemble
-        #
-        #         output_clone = output.clone()
-        #         loss = self.criterion(output_clone, y_target, targeted)
-        #         print(loss)
-        #         loss.backward(retain_graph=True)
-        #         # print(x_nes)
-        #         # AttributeError: 'NoneType' object has no attribute 'data'
-        #         print(type(x_nes.grad))
-        #         grad += x_nes.grad.data
-        #         # grad += x_nes.grad.data
-        #
-        #     if targeted:
-        #         adv = adv - alpha * ch.sign(grad)
-        #     else:
-        #         adv = adv + alpha * ch.sign(grad)
-        #     adv = clip_by_tensor(adv, x_min, x_max)
-        #     adv = V(adv, requires_grad=True)
-
 
         stop_queries = 1
 
@@ -148,7 +136,7 @@ class SIFGSM(Attacker):
         else:
             num_transfered = ch.count_nonzero(target_model_prediction != y_target)
         transferability = float(num_transfered / batch_size) * 100
-        print("The transferbility of SIFGSM is %s %%" % str(transferability))
+        print("The transferbility of MITIDIFGSM is %s %%" % str(transferability))
         self.logger.add_result(n_iters, {
             "transferability": str(transferability),
         })

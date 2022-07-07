@@ -15,8 +15,8 @@ import torchvision.models as models  # TODO: remove after test
 
 np.set_printoptions(precision=5, suppress=True)
 
-
-class TIDIMIFGSM(Attacker):
+# https://arxiv.org/pdf/1908.06281.pdf, modified from NI-SI-FGSM
+class MITIDISIFGSM(Attacker):
     def __init__(self, model: GenericModelWrapper, aux_models: dict, config: AttackerConfig,
                  experiment_config: ExperimentConfig):
         super().__init__(model, aux_models, config, experiment_config)
@@ -28,7 +28,7 @@ class TIDIMIFGSM(Attacker):
         self.norm = None
 
     def input_diversity(self, x,img_resize):
-        diversity_prob = 0.7
+        diversity_prob = 0.5
         img_size = x.shape[-1]
 
         rnd = ch.randint(low=img_size, high=img_resize, size=(1,), dtype=ch.int32)
@@ -70,6 +70,7 @@ class TIDIMIFGSM(Attacker):
         decay = 1.0
         grad = 0
         momentum=0
+        m=5
 
         # initializes the advesarial example
         # x.requires_grad = True
@@ -82,7 +83,7 @@ class TIDIMIFGSM(Attacker):
         x_max = clip_by_tensor(x_orig + eps, x_min_val, x_max_val)
 
         # kernel_size = 15 or 21
-        kernel_size = 15
+        kernel_size = 7
         kernel = gkern(kernel_size, 3).astype(np.float32)
         gaussian_kernel = np.stack([kernel, kernel, kernel])
         gaussian_kernel = np.expand_dims(gaussian_kernel, 1)
@@ -100,18 +101,22 @@ class TIDIMIFGSM(Attacker):
             if i == 0:
                 adv = clip_by_tensor(adv, x_min, x_max)
                 adv = V(adv, requires_grad=True)
-
-            output = 0
-            for model_name in self.aux_models:
-                model = self.aux_models[model_name]
-                output += model.forward(self.input_diversity(adv,image_resizes[0])) / n_model_ensemble
-
-            output_clone = output.clone()
-            loss = self.criterion(output_clone, y_target, targeted)
+            grad=0
             print(i)
-            print(loss)
-            loss.backward()
-            grad=adv.grad.data
+            for j in ch.arange(m):
+                x_nes = adv / ch.pow(2, j)
+                x_nes = V(x_nes, requires_grad=True)
+                output = 0
+                for model_name in self.aux_models:
+                    model = self.aux_models[model_name]
+                    output += model.forward(self.input_diversity(x_nes,image_resizes[0])) / n_model_ensemble
+
+                output_clone = output.clone()
+                loss = self.criterion(output_clone, y_target, targeted)
+                print(loss)
+                loss.backward()
+                grad+=x_nes.grad.data
+
             grad = F.conv2d(grad, gaussian_kernel, stride=1, padding='same', groups=3)
             grad = momentum * decay + grad / ch.mean(ch.abs(grad), dim=(1,2,3), keepdim=True)
             momentum = grad
@@ -136,7 +141,7 @@ class TIDIMIFGSM(Attacker):
         else:
             num_transfered = ch.count_nonzero(target_model_prediction != y_target)
         transferability = float(num_transfered / batch_size) * 100
-        print("The transferbility of TIDIMIFGSM is %s %%" % str(transferability))
+        print("The transferbility of MITIDISIFGSM is %s %%" % str(transferability))
         self.logger.add_result(n_iters, {
             "transferability": str(transferability),
         })
