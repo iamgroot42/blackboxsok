@@ -17,8 +17,11 @@ np.set_printoptions(precision=5, suppress=True)
 
 
 # https://arxiv.org/pdf/2203.13479.pdf
+# n_iters=20
+# num_transformations=12
+# m=5
 
-class SMIMIFGSM(Attacker):
+class SMIMITIDISIFGSM(Attacker):
     def __init__(self, model: GenericModelWrapper, aux_models: dict, config: AttackerConfig,
                  experiment_config: ExperimentConfig):
         super().__init__(model, aux_models, config, experiment_config)
@@ -44,6 +47,23 @@ class SMIMIFGSM(Attacker):
         padded = F.pad(rescaled, [pad_left.item(), pad_right.item(), pad_top.item(), pad_bottom.item()], value=0)
 
         return padded
+
+    def input_diversity(self, x,img_resize):
+        diversity_prob = 0.5
+        img_size = x.shape[-1]
+
+        rnd = ch.randint(low=img_size, high=img_resize, size=(1,), dtype=ch.int32)
+        rescaled = F.interpolate(x, size=[rnd, rnd], mode='bilinear', align_corners=False)
+        h_rem = img_resize - rnd
+        w_rem = img_resize - rnd
+        pad_top = ch.randint(low=0, high=h_rem.item(), size=(1,), dtype=ch.int32)
+        pad_bottom = h_rem - pad_top
+        pad_left = ch.randint(low=0, high=w_rem.item(), size=(1,), dtype=ch.int32)
+        pad_right = w_rem - pad_left
+
+        padded = F.pad(rescaled, [pad_left.item(), pad_right.item(), pad_top.item(), pad_bottom.item()], value=0)
+
+        return padded if ch.rand(1) < diversity_prob else x
 
     def _attack(self, x_orig, x_adv=None, y_label=None, y_target=None):
         """
@@ -73,6 +93,7 @@ class SMIMIFGSM(Attacker):
         num_transformations = 12
         lamda = 1 / num_transformations
         Gradients = []
+        m=3
 
         # initializes the advesarial example
         # x.requires_grad = True
@@ -84,6 +105,12 @@ class SMIMIFGSM(Attacker):
         x_min = clip_by_tensor(x_orig - eps, x_min_val, x_max_val)
         x_max = clip_by_tensor(x_orig + eps, x_min_val, x_max_val)
 
+        kernel_size = 5
+        kernel = gkern(kernel_size, 3).astype(np.float32)
+        gaussian_kernel = np.stack([kernel, kernel, kernel])
+        gaussian_kernel = np.expand_dims(gaussian_kernel, 1)
+        gaussian_kernel = ch.from_numpy(gaussian_kernel).cuda()
+
         for model_name in self.aux_models:
             model = self.aux_models[model_name]
             model.set_eval()  # Make sure model is in eval model
@@ -93,27 +120,38 @@ class SMIMIFGSM(Attacker):
             # print('Clean accuracy of candidate samples: {:.2%}'.format(ch.mean(1. * corr_classified).item()))
 
         for i in range(n_iters):
-            print(i)
             if i == 0:
                 adv = clip_by_tensor(adv, x_min, x_max)
                 adv = V(adv, requires_grad=True)
+
+            print("iteration "+str(i))
             grad = 0
             for t in range(num_transformations):
-                adv = adv
-                output = 0
-                for model_name in self.aux_models:
-                    model = self.aux_models[model_name]
-                    output += model.forward(self.transformation_function(adv)) / n_model_ensemble
+                print("transformation "+str(t))
+                input = self.transformation_function(adv)
+                grad_temp = 0
+                for j in ch.arange(1):
+                    print(j)
+                    x_nes = input / ch.pow(2, j)
+                    x_nes = V(x_nes, requires_grad=True)
+                    output = 0
+                    for model_name in self.aux_models:
+                        model = self.aux_models[model_name]
+                        output += model.forward(self.input_diversity(x_nes, image_resizes[0])) / n_model_ensemble
 
-                output_clone = output.clone()
-                loss = self.criterion(output_clone, y_target, targeted)
-                print(loss)
-                loss.backward()
-                Gradients.append(adv.grad.data)
+                    output_clone = output.clone()
+                    loss = self.criterion(output_clone, y_target, targeted)
+                    print(loss)
+                    loss.backward()
+                    grad_temp += x_nes.grad.data/m
+
+                Gradients.append(grad_temp)
+
 
             for gradient in Gradients:
                 grad += lamda * gradient
 
+            grad = F.conv2d(grad, gaussian_kernel, stride=1, padding='same', groups=3)
             grad = momentum * decay + grad / ch.mean(ch.abs(grad), dim=(1, 2, 3), keepdim=True)
             momentum = grad
 
@@ -137,7 +175,7 @@ class SMIMIFGSM(Attacker):
         else:
             num_transfered = ch.count_nonzero(target_model_prediction != y_target)
         transferability = float(num_transfered / batch_size) * 100
-        print("The transferbility of SMIMIFGSM is %s %%" % str(transferability))
+        print("The transferbility of SMIMITIDISIFGSM is %s %%" % str(transferability))
         self.logger.add_result(n_iters, {
             "transferability": str(transferability),
         })
