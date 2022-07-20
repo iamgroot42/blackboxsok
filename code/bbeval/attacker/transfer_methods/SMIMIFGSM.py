@@ -15,9 +15,10 @@ import torchvision.models as models  # TODO: remove after test
 
 np.set_printoptions(precision=5, suppress=True)
 
+
 # https://arxiv.org/pdf/2203.13479.pdf
 
-class SMIFGSM(Attacker):
+class SMIMIFGSM(Attacker):
     def __init__(self, model: GenericModelWrapper, aux_models: dict, config: AttackerConfig,
                  experiment_config: ExperimentConfig):
         super().__init__(model, aux_models, config, experiment_config)
@@ -68,11 +69,10 @@ class SMIFGSM(Attacker):
         n_input_ensemble = len(image_resizes)
         alpha = eps / n_iters
         decay = 1.0
-        grad = 0
-        momentum=0
-        num_transformations=12
-        lamda=1/num_transformations
-        Gradients=[]
+        momentum = 0
+        num_transformations = 12
+        lamda = 1 / num_transformations
+        Gradients = []
 
         # initializes the advesarial example
         # x.requires_grad = True
@@ -97,8 +97,8 @@ class SMIFGSM(Attacker):
             if i == 0:
                 adv = clip_by_tensor(adv, x_min, x_max)
                 adv = V(adv, requires_grad=True)
-            for t in range (num_transformations):
-                adv=adv
+            for t in range(num_transformations):
+                adv = adv
                 output = 0
                 grad = 0
                 for model_name in self.aux_models:
@@ -112,10 +112,10 @@ class SMIFGSM(Attacker):
                 Gradients.append(adv.grad.data)
 
             for gradient in Gradients:
-                grad += lamda*gradient
+                grad += lamda * gradient
 
-            # grad = momentum * decay + grad / ch.mean(ch.abs(grad), dim=(1,2,3), keepdim=True)
-            # momentum = grad
+            grad = momentum * decay + grad / ch.mean(ch.abs(grad), dim=(1, 2, 3), keepdim=True)
+            momentum = grad
 
             if targeted == True:
                 adv = adv - alpha * ch.sign(grad)
@@ -137,7 +137,7 @@ class SMIFGSM(Attacker):
         else:
             num_transfered = ch.count_nonzero(target_model_prediction != y_target)
         transferability = float(num_transfered / batch_size) * 100
-        print("The transferbility of SMIFGSM is %s %%" % str(transferability))
+        print("The transferbility of SMIMIFGSM is %s %%" % str(transferability))
         self.logger.add_result(n_iters, {
             "transferability": str(transferability),
         })
