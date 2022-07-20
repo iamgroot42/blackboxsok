@@ -1,0 +1,10 @@
+{
+    "name": "untargeted_FGSM_transfer_imagenet",
+    "start time": "2022-07-20 15:33:33.334896",
+    "result": {
+        "1": {
+            "transferability": "53.125"
+        }
+    },
+    "save time": "2022-07-20 15:33:34.441731"
+}

@@ -15,8 +15,9 @@ import torchvision.models as models  # TODO: remove after test
 
 np.set_printoptions(precision=5, suppress=True)
 
+# https://arxiv.org/pdf/2203.13479.pdf
 
-class DIFGSM(Attacker):
+class SMIFGSM(Attacker):
     def __init__(self, model: GenericModelWrapper, aux_models: dict, config: AttackerConfig,
                  experiment_config: ExperimentConfig):
         super().__init__(model, aux_models, config, experiment_config)
@@ -27,15 +28,13 @@ class DIFGSM(Attacker):
         self.criterion = get_loss_fn("ce")
         self.norm = None
 
-    def input_diversity(self, x,img_resize):
-        diversity_prob = 0.5
+    def transformation_function(self, x):
         img_size = x.shape[-1]
-        # print(img_size)
-
-        rnd = ch.randint(low=img_size, high=img_resize, size=(1,), dtype=ch.int32)
+        img_resize = 270
+        rnd = ch.randint(low=img_resize, high=img_size, size=(1,), dtype=ch.int32)
         rescaled = F.interpolate(x, size=[rnd, rnd], mode='bilinear', align_corners=False)
-        h_rem = img_resize - rnd
-        w_rem = img_resize - rnd
+        h_rem = img_size - rnd
+        w_rem = img_size - rnd
         pad_top = ch.randint(low=0, high=h_rem.item(), size=(1,), dtype=ch.int32)
         pad_bottom = h_rem - pad_top
         pad_left = ch.randint(low=0, high=w_rem.item(), size=(1,), dtype=ch.int32)
@@ -43,7 +42,7 @@ class DIFGSM(Attacker):
 
         padded = F.pad(rescaled, [pad_left.item(), pad_right.item(), pad_top.item(), pad_bottom.item()], value=0)
 
-        return padded if ch.rand(1) < diversity_prob else x
+        return padded
 
     def _attack(self, x_orig, x_adv=None, y_label=None, y_target=None):
         """
@@ -68,6 +67,12 @@ class DIFGSM(Attacker):
         n_model_ensemble = len(self.aux_models)
         n_input_ensemble = len(image_resizes)
         alpha = eps / n_iters
+        decay = 1.0
+        grad = 0
+        momentum=0
+        num_transformations=12
+        lamda=1/num_transformations
+        Gradients=[]
 
         # initializes the advesarial example
         # x.requires_grad = True
@@ -88,25 +93,33 @@ class DIFGSM(Attacker):
             # print('Clean accuracy of candidate samples: {:.2%}'.format(ch.mean(1. * corr_classified).item()))
 
         for i in range(n_iters):
+            print(i)
             if i == 0:
                 adv = clip_by_tensor(adv, x_min, x_max)
                 adv = V(adv, requires_grad=True)
-                
-            output = 0
-            for model_name in self.aux_models:
-                model = self.aux_models[model_name]
-                output += model.forward(self.input_diversity(adv,image_resizes[0])) / n_model_ensemble
+            for t in range (num_transformations):
+                adv=adv
+                output = 0
+                for model_name in self.aux_models:
+                    model = self.aux_models[model_name]
+                    output += model.forward(self.transformation_function(adv)) / n_model_ensemble
 
-            output_clone = output.clone()
-            loss = self.criterion(output_clone, y_target, targeted)
-            print(i)
-            print(loss)
-            loss.backward()
-            gradient_sign = adv.grad.data.sign()
-            if targeted:
-                adv = adv - alpha * gradient_sign
+                output_clone = output.clone()
+                loss = self.criterion(output_clone, y_target, targeted)
+                print(loss)
+                loss.backward()
+                Gradients.append(adv.grad.data)
+
+            for gradient in Gradients:
+                grad += lamda*gradient
+
+            # grad = momentum * decay + grad / ch.mean(ch.abs(grad), dim=(1,2,3), keepdim=True)
+            # momentum = grad
+
+            if targeted == True:
+                adv = adv - alpha * ch.sign(grad)
             else:
-                adv = adv + alpha * gradient_sign
+                adv = adv + alpha * ch.sign(grad)
             adv = clip_by_tensor(adv, x_min, x_max)
             adv = V(adv, requires_grad=True)
 
@@ -123,7 +136,7 @@ class DIFGSM(Attacker):
         else:
             num_transfered = ch.count_nonzero(target_model_prediction != y_target)
         transferability = float(num_transfered / batch_size) * 100
-        print("The transferbility of DIFGSM is %s %%" % str(transferability))
+        print("The transferbility of SMIFGSM is %s %%" % str(transferability))
         self.logger.add_result(n_iters, {
             "transferability": str(transferability),
         })

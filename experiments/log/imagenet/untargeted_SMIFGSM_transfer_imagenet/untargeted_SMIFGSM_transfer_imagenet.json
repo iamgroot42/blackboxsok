@@ -1,0 +1,10 @@
+{
+    "name": "untargeted_SMIFGSM_transfer_imagenet",
+    "start time": "2022-07-20 15:48:47.192991",
+    "result": {
+        "20": {
+            "transferability": "93.75"
+        }
+    },
+    "save time": "2022-07-20 15:51:39.355462"
+}
