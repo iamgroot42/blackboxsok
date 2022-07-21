@@ -1,0 +1,10 @@
+{
+    "name": "untargeted_EMIFGSM_transfer_imagenet",
+    "start time": "2022-07-21 18:21:49.276857",
+    "result": {
+        "20": {
+            "transferability": "71.875"
+        }
+    },
+    "save time": "2022-07-21 18:22:23.818788"
+}

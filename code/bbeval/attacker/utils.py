@@ -19,7 +19,8 @@ from bbeval.attacker.transfer_methods.VNITIDISIFGSM import VNITIDISIFGSM
 from bbeval.attacker.transfer_methods.SMIFGSM import SMIFGSM
 from bbeval.attacker.transfer_methods.SMIMIFGSM import SMIMIFGSM
 from bbeval.attacker.transfer_methods.SMIMITIDISIFGSM import SMIMITIDISIFGSM
-
+from bbeval.attacker.transfer_methods.EMIFGSM import EMIFGSM
+from bbeval.attacker.transfer_methods.EMITIDISIFGSM import EMITIDISIFGSM
 
 
 from bbeval.config import AttackerConfig, ExperimentConfig
@@ -48,6 +49,8 @@ ATTACK_WRAPPER_MAPPING = {
     "SMIFGSM_transfer": SMIFGSM,
     "SMIMIFGSM_transfer": SMIMIFGSM,
     "SMIMITIDISIFGSM_transfer": SMIMITIDISIFGSM,
+    "EMIFGSM_transfer": EMIFGSM,
+    "EMITIDISIFGSM_transfer": EMITIDISIFGSM,
 }
 
 def get_attack_wrapper(model: GenericModelWrapper, aux_models: dict, attack_config: AttackerConfig, experiment_config: ExperimentConfig):
