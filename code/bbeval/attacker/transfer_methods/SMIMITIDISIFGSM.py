@@ -93,7 +93,7 @@ class SMIMITIDISIFGSM(Attacker):
         num_transformations = 12
         lamda = 1 / num_transformations
         Gradients = []
-        m=3
+        m=5
 
         # initializes the advesarial example
         # x.requires_grad = True
@@ -128,16 +128,15 @@ class SMIMITIDISIFGSM(Attacker):
             grad = 0
             for t in range(num_transformations):
                 print("transformation "+str(t))
-                input = self.transformation_function(adv)
                 grad_temp = 0
-                for j in ch.arange(1):
+                for j in ch.arange(m):
                     print(j)
-                    x_nes = input / ch.pow(2, j)
+                    x_nes = adv / ch.pow(2, j)
                     x_nes = V(x_nes, requires_grad=True)
                     output = 0
                     for model_name in self.aux_models:
                         model = self.aux_models[model_name]
-                        output += model.forward(self.input_diversity(x_nes, image_resizes[0])) / n_model_ensemble
+                        output += model.forward(self.input_diversity(self.transformation_function(x_nes), image_resizes[0])) / n_model_ensemble
 
                     output_clone = output.clone()
                     loss = self.criterion(output_clone, y_target, targeted)
