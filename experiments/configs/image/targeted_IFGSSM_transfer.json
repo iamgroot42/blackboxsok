@@ -1,12 +1,12 @@
 {
-    "experiment_name": "targeted_staircase_transfer_imagenet",
+    "experiment_name": "targeted_IFGSSM_transfer_imagenet",
     "dataset_config": {
         "name": "imagenet",
         "type": "image"
     },
     "attack_configs_dict": [
         {
-            "name": "staircase_transfer",
+            "name": "IFGSSM_transfer",
             "access_level": "no",
             "targeted": true,
             "eps": 16,

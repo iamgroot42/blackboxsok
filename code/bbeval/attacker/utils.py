@@ -1,6 +1,5 @@
 from bbeval.attacker.full_score.square import Square_Attack
 from bbeval.attacker.top1_score.rays import RayS
-from bbeval.attacker.transfer_methods.staircase import Staircase
 from bbeval.attacker.transfer_methods.FGSM import FGSM
 from bbeval.attacker.transfer_methods.IFGSM import IFGSM
 from bbeval.attacker.transfer_methods.MIFGSM import MIFGSM
@@ -21,6 +20,8 @@ from bbeval.attacker.transfer_methods.SMIMIFGSM import SMIMIFGSM
 from bbeval.attacker.transfer_methods.SMIMITIDISIFGSM import SMIMITIDISIFGSM
 from bbeval.attacker.transfer_methods.EMIFGSM import EMIFGSM
 from bbeval.attacker.transfer_methods.EMITIDISIFGSM import EMITIDISIFGSM
+from bbeval.attacker.transfer_methods.IFGSSM import IFGSSM
+
 
 
 from bbeval.config import AttackerConfig, ExperimentConfig
@@ -30,7 +31,6 @@ from bbeval.models.core import GenericModelWrapper
 ATTACK_WRAPPER_MAPPING = {
     "square_attack": Square_Attack,
     "rays": RayS,
-    "staircase_transfer": Staircase,
     "FGSM_transfer": FGSM,
     "IFGSM_transfer": IFGSM,
     "MIFGSM_transfer": MIFGSM,
@@ -51,6 +51,7 @@ ATTACK_WRAPPER_MAPPING = {
     "SMIMITIDISIFGSM_transfer": SMIMITIDISIFGSM,
     "EMIFGSM_transfer": EMIFGSM,
     "EMITIDISIFGSM_transfer": EMITIDISIFGSM,
+    "IFGSSM_transfer": IFGSSM,
 }
 
 def get_attack_wrapper(model: GenericModelWrapper, aux_models: dict, attack_config: AttackerConfig, experiment_config: ExperimentConfig):

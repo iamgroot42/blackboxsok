@@ -16,7 +16,7 @@ import torchvision.models as models  # TODO: remove after test
 np.set_printoptions(precision=5, suppress=True)
 
 
-class DIFGSM(Attacker):
+class IFGSSM(Attacker):
     def __init__(self, model: GenericModelWrapper, aux_models: dict, config: AttackerConfig,
                  experiment_config: ExperimentConfig):
         super().__init__(model, aux_models, config, experiment_config)
@@ -27,23 +27,6 @@ class DIFGSM(Attacker):
         self.criterion = get_loss_fn("ce")
         self.norm = None
 
-    def input_diversity(self, x,img_resize):
-        diversity_prob = 0.5
-        img_size = x.shape[-1]
-        # print(img_size)
-
-        rnd = ch.randint(low=img_size, high=img_resize, size=(1,), dtype=ch.int32)
-        rescaled = F.interpolate(x, size=[rnd, rnd], mode='bilinear', align_corners=False)
-        h_rem = img_resize - rnd
-        w_rem = img_resize - rnd
-        pad_top = ch.randint(low=0, high=h_rem.item(), size=(1,), dtype=ch.int32)
-        pad_bottom = h_rem - pad_top
-        pad_left = ch.randint(low=0, high=w_rem.item(), size=(1,), dtype=ch.int32)
-        pad_right = w_rem - pad_left
-
-        padded = F.pad(rescaled, [pad_left.item(), pad_right.item(), pad_top.item(), pad_bottom.item()], value=0)
-
-        return padded if ch.rand(1) < diversity_prob else x
 
     def _attack(self, x_orig, x_adv=None, y_label=None, y_target=None):
         """
@@ -91,21 +74,21 @@ class DIFGSM(Attacker):
             if i == 0:
                 adv = clip_by_tensor(adv, x_min, x_max)
                 adv = V(adv, requires_grad=True)
-                
+
             output = 0
             for model_name in self.aux_models:
                 model = self.aux_models[model_name]
-                output += model.forward(self.input_diversity(adv,image_resizes[0])) / n_model_ensemble
+                output += model.forward(adv) / n_model_ensemble
 
             output_clone = output.clone()
             loss = self.criterion(output_clone, y_target, targeted)
             print(i)
             print(loss)
             loss.backward()
-            if targeted:
-                adv = adv - alpha * adv.grad.data.sign()
+            if targeted==True:
+                adv = adv - alpha * torch_staircase_sign(adv.grad.data, 1.5625)
             else:
-                adv = adv + alpha * adv.grad.data.sign()
+                adv = adv + alpha * torch_staircase_sign(adv.grad.data, 1.5625)
             adv = clip_by_tensor(adv, x_min, x_max)
             adv = V(adv, requires_grad=True)
 
@@ -122,7 +105,7 @@ class DIFGSM(Attacker):
         else:
             num_transfered = ch.count_nonzero(target_model_prediction != y_target)
         transferability = float(num_transfered / batch_size) * 100
-        print("The transferbility of DIFGSM is %s %%" % str(transferability))
+        print("The transferbility of IFGSSM is %s %%" % str(transferability))
         self.logger.add_result(n_iters, {
             "transferability": str(transferability),
         })
