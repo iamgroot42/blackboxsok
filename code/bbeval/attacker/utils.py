@@ -52,7 +52,9 @@ ATTACK_WRAPPER_MAPPING = {
     "EMIFGSM_transfer": EMIFGSM,
     "EMITIDISIFGSM_transfer": EMITIDISIFGSM,
     "IFGSSM_transfer": IFGSSM,
-    "PITIDIFGSSM": PITIDIFGSSM,
+    "PITIDIFGSSM_transfer": PITIDIFGSSM,
+    "ADMIXFGSM_transfer": ADMIXFGSM,
+    "ADMIXTIDIFGSM_transfer": ADMIXTIDIFGSM,
 }
 
 def get_attack_wrapper(model: GenericModelWrapper, aux_models: dict, attack_config: AttackerConfig, experiment_config: ExperimentConfig):

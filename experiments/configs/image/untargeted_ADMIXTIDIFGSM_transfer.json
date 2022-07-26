@@ -1,12 +1,12 @@
 {
-    "experiment_name": "untargeted_PITIDIFGSSM_transfer_imagenet",
+    "experiment_name": "untargeted_ADMIXTIDIFGSM_transfer_imagenet",
     "dataset_config": {
         "name": "imagenet",
         "type": "image"
     },
     "attack_configs_dict": [
         {
-            "name": "PITIDIFGSSM_transfer",
+            "name": "ADMIXTIDIFGSM_transfer",
             "access_level": "no",
             "targeted": false,
             "eps": 16,
@@ -21,11 +21,15 @@
                     "use_pretrained": true,
                     "name": "resnet18",
                     "dataset": "imagenet"
+                },
+                {
+                    "use_pretrained": true,
+                    "name": "vgg16",
+                    "dataset": "imagenet"
                 }
-
             ],
             "attack_params": {
-                "n_iters": 19,
+                "n_iters": 20,
                 "image_resizes": [
                     330
                 ]
