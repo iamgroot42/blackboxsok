@@ -1,0 +1,10 @@
+{
+    "name": "untargeted_RAPFGSM_transfer_imagenet",
+    "start time": "2022-07-27 18:02:31.024353",
+    "result": {
+        "400": {
+            "transferability": "40.625"
+        }
+    },
+    "save time": "2022-07-27 18:13:50.491119"
+}
