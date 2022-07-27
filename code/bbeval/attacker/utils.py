@@ -22,7 +22,8 @@ from bbeval.attacker.transfer_methods.EMIFGSM import EMIFGSM
 from bbeval.attacker.transfer_methods.EMITIDISIFGSM import EMITIDISIFGSM
 from bbeval.attacker.transfer_methods.IFGSSM import IFGSSM
 from bbeval.attacker.transfer_methods.PITIDIFGSSM import PITIDIFGSSM
-
+from bbeval.attacker.transfer_methods.ADMIXFGSM import ADMIXFGSM
+from bbeval.attacker.transfer_methods.MIADMIXTIDIFGSM import MIADMIXTIDIFGSM
 
 from bbeval.config import AttackerConfig, ExperimentConfig
 from bbeval.models.core import GenericModelWrapper
@@ -54,7 +55,7 @@ ATTACK_WRAPPER_MAPPING = {
     "IFGSSM_transfer": IFGSSM,
     "PITIDIFGSSM_transfer": PITIDIFGSSM,
     "ADMIXFGSM_transfer": ADMIXFGSM,
-    "ADMIXTIDIFGSM_transfer": ADMIXTIDIFGSM,
+    "MIADMIXTIDIFGSM_transfer": MIADMIXTIDIFGSM,
 }
 
 def get_attack_wrapper(model: GenericModelWrapper, aux_models: dict, attack_config: AttackerConfig, experiment_config: ExperimentConfig):

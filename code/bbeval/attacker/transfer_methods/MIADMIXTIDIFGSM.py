@@ -16,7 +16,7 @@ import torchvision.models as models  # TODO: remove after test
 np.set_printoptions(precision=5, suppress=True)
 
 
-class ADMIXTIDIFGSM(Attacker):
+class MIADMIXTIDIFGSM(Attacker):
     def __init__(self, model: GenericModelWrapper, aux_models: dict, config: AttackerConfig,
                  experiment_config: ExperimentConfig):
         super().__init__(model, aux_models, config, experiment_config)
@@ -106,7 +106,7 @@ class ADMIXTIDIFGSM(Attacker):
         else:
             num_transfered = ch.count_nonzero(target_model_prediction != y_target)
         transferability = float(num_transfered / batch_size) * 100
-        print("The transferbility of ADMIXTIDIFGSM is %s %%" % str(transferability))
+        print("The transferbility of MIADMIXTIDIFGSM is %s %%" % str(transferability))
         self.logger.add_result(n_iters, {
             "transferability": str(transferability),
         })

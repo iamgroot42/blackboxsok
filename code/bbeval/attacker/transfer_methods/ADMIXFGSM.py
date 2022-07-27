@@ -27,6 +27,12 @@ class ADMIXFGSM(Attacker):
         self.criterion = get_loss_fn("ce")
         self.norm = None
 
+    def admix(self, x,size=3,portion=0.2):
+        ret_value=[]
+        for _ in range(size):
+            temp=x+portion*x[ch.randperm(x.shape[0])]
+            ret_value.append(temp)
+        return ret_value
 
     def _attack(self, x_orig, x_adv=None, y_label=None, y_target=None):
         """
@@ -51,6 +57,8 @@ class ADMIXFGSM(Attacker):
         n_model_ensemble = len(self.aux_models)
         n_input_ensemble = len(image_resizes)
         alpha = eps / n_iters
+        m = 5
+        size=3
 
         # initializes the advesarial example
         # x.requires_grad = True
@@ -74,22 +82,33 @@ class ADMIXFGSM(Attacker):
             if i == 0:
                 adv = clip_by_tensor(adv, x_min, x_max)
                 adv = V(adv, requires_grad=True)
-
-            output = 0
-            for model_name in self.aux_models:
-                model = self.aux_models[model_name]
-                output += model.forward(adv) / n_model_ensemble
-
-            output_clone = output.clone()
-            loss = self.criterion(output_clone, y_target, targeted)
+            grad = 0
             print(i)
-            print(loss)
-            loss.backward()
-            gradient_sign = adv.grad.data.sign()
-            if targeted==True:
-                adv = adv - alpha*gradient_sign
+            admix_adv=self.admix(adv)
+            for s in range(size):
+                temp_adv=admix_adv[s]
+
+                for j in ch.arange(m):
+                    x_nes = temp_adv / ch.pow(2, j)
+                    x_nes = V(x_nes, requires_grad=True)
+                    output = 0
+                    for model_name in self.aux_models:
+                        model = self.aux_models[model_name]
+                        output += model.forward(x_nes) / n_model_ensemble
+
+                    output_clone = output.clone()
+                    loss = self.criterion(output_clone, y_target, targeted)
+                    print(loss)
+                    loss.backward()
+                    # print(x_nes)
+                    # AttributeError: 'NoneType' object has no attribute 'data'
+                    grad += x_nes.grad.data/m/size
+                    # grad += x_nes.grad.data
+
+            if targeted:
+                adv = adv - alpha * ch.sign(grad)
             else:
-                adv = adv + alpha*gradient_sign
+                adv = adv + alpha * ch.sign(grad)
             adv = clip_by_tensor(adv, x_min, x_max)
             adv = V(adv, requires_grad=True)
 

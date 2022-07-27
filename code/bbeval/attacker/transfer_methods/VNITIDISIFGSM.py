@@ -121,7 +121,7 @@ class VNITIDISIFGSM(Attacker):
                 loss = self.criterion(output_clone, y_target, targeted)
                 print(loss)
                 loss.backward()
-                grad += x_nes.grad.data
+                grad += x_nes.grad.data/m
 
             adv_grad = grad
             grad = F.conv2d(grad + v, gaussian_kernel, stride=1, padding='same', groups=3)

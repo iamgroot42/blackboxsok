@@ -91,7 +91,7 @@ class SIFGSM(Attacker):
                 loss.backward()
                 # print(x_nes)
                 # AttributeError: 'NoneType' object has no attribute 'data'
-                grad += x_nes.grad.data
+                grad += x_nes.grad.data/m
                 # grad += x_nes.grad.data
 
             if targeted:
