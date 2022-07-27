@@ -1,0 +1,10 @@
+{
+    "name": "untargeted_MIADMIXTIDIFGSM_transfer_imagenet",
+    "start time": "2022-07-27 15:40:24.698332",
+    "result": {
+        "20": {
+            "transferability": "96.875"
+        }
+    },
+    "save time": "2022-07-27 15:42:28.763211"
+}

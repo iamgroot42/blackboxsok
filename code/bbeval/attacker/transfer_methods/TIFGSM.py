@@ -27,23 +27,6 @@ class TIFGSM(Attacker):
         self.criterion = get_loss_fn("ce")
         self.norm = None
 
-    def input_diversity(self, x,img_resize):
-        diversity_prob = 0.5
-        img_size = x.shape[-1]
-
-        rnd = ch.randint(low=img_size, high=img_resize, size=(1,), dtype=ch.int32)
-        rescaled = F.interpolate(x, size=[rnd, rnd], mode='bilinear', align_corners=False)
-        h_rem = img_resize - rnd
-        w_rem = img_resize - rnd
-        pad_top = ch.randint(low=0, high=h_rem.item(), size=(1,), dtype=ch.int32)
-        pad_bottom = h_rem - pad_top
-        pad_left = ch.randint(low=0, high=w_rem.item(), size=(1,), dtype=ch.int32)
-        pad_right = w_rem - pad_left
-
-        padded = F.pad(rescaled, [pad_left.item(), pad_right.item(), pad_top.item(), pad_bottom.item()], value=0)
-
-        return padded if ch.rand(1) < diversity_prob else x
-
     def _attack(self, x_orig, x_adv=None, y_label=None, y_target=None):
         """
             Attack the original image using combination of transfer methods and return adversarial example

@@ -115,7 +115,7 @@ class MITIDISIFGSM(Attacker):
                 loss = self.criterion(output_clone, y_target, targeted)
                 print(loss)
                 loss.backward()
-                grad+=x_nes.grad.data
+                grad+=x_nes.grad.data/m
 
             grad = F.conv2d(grad, gaussian_kernel, stride=1, padding='same', groups=3)
             grad = momentum * decay + grad / ch.mean(ch.abs(grad), dim=(1,2,3), keepdim=True)

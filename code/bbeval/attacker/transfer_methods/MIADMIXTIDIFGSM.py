@@ -27,6 +27,30 @@ class MIADMIXTIDIFGSM(Attacker):
         self.criterion = get_loss_fn("ce")
         self.norm = None
 
+    def input_diversity(self, x,img_resize):
+        diversity_prob = 0.5
+        img_size = x.shape[-1]
+        # print(img_size)
+
+        rnd = ch.randint(low=img_size, high=img_resize, size=(1,), dtype=ch.int32)
+        rescaled = F.interpolate(x, size=[rnd, rnd], mode='bilinear', align_corners=False)
+        h_rem = img_resize - rnd
+        w_rem = img_resize - rnd
+        pad_top = ch.randint(low=0, high=h_rem.item(), size=(1,), dtype=ch.int32)
+        pad_bottom = h_rem - pad_top
+        pad_left = ch.randint(low=0, high=w_rem.item(), size=(1,), dtype=ch.int32)
+        pad_right = w_rem - pad_left
+
+        padded = F.pad(rescaled, [pad_left.item(), pad_right.item(), pad_top.item(), pad_bottom.item()], value=0)
+
+        return padded if ch.rand(1) < diversity_prob else x
+
+    def admix(self, x,size=3,portion=0.2):
+        ret_value=[]
+        for _ in range(size):
+            temp=x+portion*x[ch.randperm(x.shape[0])]
+            ret_value.append(temp)
+        return ret_value
 
     def _attack(self, x_orig, x_adv=None, y_label=None, y_target=None):
         """
@@ -51,6 +75,10 @@ class MIADMIXTIDIFGSM(Attacker):
         n_model_ensemble = len(self.aux_models)
         n_input_ensemble = len(image_resizes)
         alpha = eps / n_iters
+        m = 5
+        size=3
+        decay = 1.0
+        momentum=0
 
         # initializes the advesarial example
         # x.requires_grad = True
@@ -61,6 +89,12 @@ class MIADMIXTIDIFGSM(Attacker):
         # quite specific piece of code to staircase attack
         x_min = clip_by_tensor(x_orig - eps, x_min_val, x_max_val)
         x_max = clip_by_tensor(x_orig + eps, x_min_val, x_max_val)
+
+        kernel_size = 7
+        kernel = gkern(kernel_size, 3).astype(np.float32)
+        gaussian_kernel = np.stack([kernel, kernel, kernel])
+        gaussian_kernel = np.expand_dims(gaussian_kernel, 1)
+        gaussian_kernel = ch.from_numpy(gaussian_kernel).cuda()
 
         for model_name in self.aux_models:
             model = self.aux_models[model_name]
@@ -74,22 +108,36 @@ class MIADMIXTIDIFGSM(Attacker):
             if i == 0:
                 adv = clip_by_tensor(adv, x_min, x_max)
                 adv = V(adv, requires_grad=True)
-
-            output = 0
-            for model_name in self.aux_models:
-                model = self.aux_models[model_name]
-                output += model.forward(adv) / n_model_ensemble
-
-            output_clone = output.clone()
-            loss = self.criterion(output_clone, y_target, targeted)
+            grad = 0
             print(i)
-            print(loss)
-            loss.backward()
-            gradient_sign = adv.grad.data.sign()
-            if targeted==True:
-                adv = adv - alpha*gradient_sign
+            admix_adv=self.admix(adv)
+            for s in range(size):
+                temp_adv=admix_adv[s]
+
+                for j in ch.arange(m):
+                    x_nes = temp_adv / ch.pow(2, j)
+                    x_nes = V(x_nes, requires_grad=True)
+                    output = 0
+                    for model_name in self.aux_models:
+                        model = self.aux_models[model_name]
+                        output += model.forward(self.input_diversity(x_nes,image_resizes[0])) / n_model_ensemble
+
+                    output_clone = output.clone()
+                    loss = self.criterion(output_clone, y_target, targeted)
+                    print(loss)
+                    loss.backward()
+                    # print(x_nes)
+                    # AttributeError: 'NoneType' object has no attribute 'data'
+                    grad += x_nes.grad.data/m/size
+                    # grad += x_nes.grad.data
+
+            grad = momentum * decay + grad / ch.mean(ch.abs(grad), dim=(1,2,3), keepdim=True)
+            momentum = grad
+
+            if targeted:
+                adv = adv - alpha * ch.sign(grad)
             else:
-                adv = adv + alpha*gradient_sign
+                adv = adv + alpha * ch.sign(grad)
             adv = clip_by_tensor(adv, x_min, x_max)
             adv = V(adv, requires_grad=True)
 

@@ -1,10 +1,10 @@
 {
     "name": "untargeted_SIFGSM_transfer_imagenet",
-    "start time": "2022-07-27 12:15:13.969446",
+    "start time": "2022-07-27 12:18:24.024629",
     "result": {
         "20": {
-            "transferability": "53.125"
+            "transferability": "65.625"
         }
     },
-    "save time": "2022-07-27 12:16:05.706386"
+    "save time": "2022-07-27 12:19:15.668712"
 }
