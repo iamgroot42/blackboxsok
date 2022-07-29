@@ -1,0 +1,21 @@
+{
+    "experiment_name": "targeted_SimBA",
+    "dataset_config": {
+        "name": "imagenet",
+        "type": "image"
+    },
+    "attack_configs_dict": [
+        {
+            "name": "SimBA",
+            "access_level": "all",
+            "eps": 0.05,
+            "targeted": true,
+            "query_budget": 4000,
+            "adv_model_config": {
+                "use_pretrained": true,
+                "name": "inceptionv3",
+                "dataset": "imagenet"
+            }
+        }
+    ]
+}

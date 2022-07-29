@@ -298,6 +298,19 @@ class VNITIDISIFGSM(Serializable):
     """Width of image"""
     interpol_dim: int = 256
     """Interpolation dimension"""
+@dataclass
+class SimBA(Serializable):
+    """
+        Configuration for SimBA attack
+    """
+    n_iters: int
+    """Number of iterations"""
+    image_resizes: List[int]
+    """List of image resizes to try"""
+    image_width: int = 299
+    """Width of image"""
+    interpol_dim: int = 256
+    """Interpolation dimension"""
 
 @dataclass
 class SquareAttackConfig(Serializable):
