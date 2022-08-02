@@ -1,6 +1,6 @@
 
 from robustbench.utils import load_model
-from torchvision.models import inception_v3, resnet18, vgg16, resnet101
+from torchvision.models import inception_v3, resnet18, vgg16, resnet101, resnet50, vgg16_bn
 from torchvision import transforms
 
 from bbeval.config import ModelConfig
@@ -37,7 +37,21 @@ class ResNet18(PyTorchModelWrapper):
         transform_norm = transforms.Normalize(mean=mean,
                                         std=std)
         return transform_norm(x)
-    
+
+class ResNet50(PyTorchModelWrapper):
+    def __init__(self, model_config: ModelConfig):
+        super().__init__(model_config)
+        self.use_pretrained = model_config.use_pretrained
+        self.model = resnet50(pretrained=self.use_pretrained)
+
+    def pre_process_fn(self, x):
+        # imagenet inputs need to be normalized
+        mean = [0.485, 0.456, 0.406]
+        std = [0.229, 0.224, 0.225]
+        transform_norm = transforms.Normalize(mean=mean,
+                                              std=std)
+        return transform_norm(x)
+
 class VGG16(PyTorchModelWrapper):
     def __init__(self, model_config: ModelConfig):
         super().__init__(model_config)
@@ -50,6 +64,20 @@ class VGG16(PyTorchModelWrapper):
         std=[0.229, 0.224, 0.225]
         transform_norm = transforms.Normalize(mean=mean,
                                         std=std)
+        return transform_norm(x)
+
+class VGG16_bn(PyTorchModelWrapper):
+    def __init__(self, model_config: ModelConfig):
+        super().__init__(model_config)
+        self.use_pretrained = model_config.use_pretrained
+        self.model = vgg16_bn(pretrained=self.use_pretrained)
+
+    def pre_process_fn(self, x):
+        # imagenet inputs need to be normalized
+        mean = [0.485, 0.456, 0.406]
+        std = [0.229, 0.224, 0.225]
+        transform_norm = transforms.Normalize(mean=mean,
+                                              std=std)
         return transform_norm(x)
 
 class RobustBenchModel(PyTorchModelWrapper):

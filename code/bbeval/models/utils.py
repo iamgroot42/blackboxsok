@@ -4,7 +4,9 @@ from bbeval.config import ModelConfig
 MODEL_WRAPPER_MAPPING = {
     "inceptionv3": image.Inceptionv3,    
     "resnet18": image.ResNet18,
+    "resnet50": image.ResNet50,
     "vgg16": image.VGG16,
+    "vgg16_bn": image.VGG16_bn,
     "resnet101": image.ResNet101,
     "inceptionv4": image.Inceptionv4,
     "inceptionresnetv2": image.InceptionResNetv2,
