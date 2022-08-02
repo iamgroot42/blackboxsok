@@ -22,9 +22,9 @@ class BayesOpt(Attacker):
         super().__init__(model, aux_models, config, experiment_config)
         self.params = StairCaseConfig(**self.params)
         self.device ="cuda"
-        self.eps=0.05
+        self.eps=5.0/255
         self.arch = "inception_v3"
-        self.inf_norm =True
+        self.inf_norm =False
         self.discrete=True
         self.hard_label=True
         self.dim =12
@@ -36,7 +36,7 @@ class BayesOpt(Attacker):
         self.sin =True
         self.cos = True
         self.beta=1
-        self.itr =300
+        self.itr =1000
 
     def obj_func(self,x, x0, y0):
         # evaluate objective function
@@ -231,7 +231,7 @@ class BayesOpt(Attacker):
 
                 print(itr, success)
                 if success:
-                    results_dict[idx] = [itr,adv,adv_added_image]
+                    results_dict[idx] = itr
                     adv_dic[idx]=adv,adv_added_image
                 else:
                     results_dict[idx] = 0
@@ -241,11 +241,21 @@ class BayesOpt(Attacker):
 
         best_query=2000
         best_adv =[]
+        suc_num = 0
+        query_count=0
         for idx in results_dict.keys():
-            if results_dict[idx][0]<best_query:
+            if results_dict[idx]<best_query and results_dict[idx]!=0:
                 best_query=results_dict[idx][0]
                 best_adv=adv_dic[idx][0]
+
+            if results_dict[idx]!=0:
+                suc_num+=1
+                query_count+=results_dict[idx]
         time_end = time.time()
         print("\n\nTotal running time: %.4f seconds\n" % (time_end - time_start))
+
+        ave_query=ave_query/suc_num
+
+        print("Out of ",x," available images,",suc_num," images are successfully attack", ", and the average query is ",ave_query," with eps of",self.eps)
         return best_adv, best_query
 
