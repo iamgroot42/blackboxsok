@@ -16,7 +16,7 @@ from botorch.optim import  gen_batch_initial_conditions
 from botorch.generation.gen import gen_candidates_torch, get_best_candidates
 from bbeval.attacker.full_score.Bayes_utils import  proj,latent_proj,fft_transform,fft_transform_mc,transform
 
-class BayesAttack(Attacker):
+class BayesOpt(Attacker):
     def __init__(self, model: GenericModelWrapper, aux_models: dict, config: AttackerConfig,
                  experiment_config: ExperimentConfig):
         super().__init__(model, aux_models, config, experiment_config)
@@ -36,6 +36,7 @@ class BayesAttack(Attacker):
         self.sin =True
         self.cos = True
         self.beta=1
+        self.itr =300
 
     def obj_func(self,x, x0, y0):
         # evaluate objective function
@@ -132,15 +133,15 @@ class BayesAttack(Attacker):
         """
         best_observed = []
         query_count, success = 0, 0
-
+        best_candidate,best_adv_added =[],[]
         #initialization of the GP model
         train_x, train_obj, mll, model, best_value, mean, std = self.initialize_model(
             x0, y0, n=1)
         best_observed.append(best_value)
         query_count += 1
 
-        #run 1000 rounds for simplicity
-        for i in range(1000):
+        #run self.itr rounds for simplicity
+        for i in range(self.itr):
 
             # fit the model
             fit_gpytorch_model(mll)
@@ -191,7 +192,7 @@ class BayesAttack(Attacker):
                 return query_count, success,best_candidate,best_candidate+x0
             query_count += 1
 
-        return query_count, success,best_candidate,best_candidate+x0
+        return query_count, success,best_candidate,best_adv_added
 
 
 
@@ -210,6 +211,7 @@ class BayesAttack(Attacker):
 
         print("Length of sample_set: ", x_orig.size())
         results_dict = {}
+        adv_dic={}
         x =0
         for idx in range(32):
             image, label = x_orig[idx],y_label[idx]
@@ -230,10 +232,11 @@ class BayesAttack(Attacker):
                 print(itr, success)
                 if success:
                     results_dict[idx] = [itr,adv,adv_added_image]
+                    adv_dic[idx]=adv,adv_added_image
                 else:
                     results_dict[idx] = 0
 
-
+        print(x,"images haven been attacked")
         print('RESULTS', results_dict)
 
         best_query=2000
@@ -241,7 +244,7 @@ class BayesAttack(Attacker):
         for idx in results_dict.keys():
             if results_dict[idx][0]<best_query:
                 best_query=results_dict[idx][0]
-                best_adv=results_dict[idx][1]
+                best_adv=adv_dic[idx][0]
         time_end = time.time()
         print("\n\nTotal running time: %.4f seconds\n" % (time_end - time_start))
         return best_adv, best_query

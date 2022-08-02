@@ -10,7 +10,7 @@ class Inceptionv3(PyTorchModelWrapper):
     def __init__(self, model_config: ModelConfig):
         super().__init__(model_config)
         self.use_pretrained = model_config.use_pretrained
-        self.model = inception_v3(pretrained=self.use_pretrained, aux_logits=False)
+        self.model = inception_v3(pretrained=self.use_pretrained, aux_logits=True)
     
     def pre_process_fn(self, x):
         # imagenet inputs need to be normalized

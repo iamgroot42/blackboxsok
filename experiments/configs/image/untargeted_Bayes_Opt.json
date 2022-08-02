@@ -1,12 +1,12 @@
 {
-    "experiment_name": "untargted_BayesAttack",
+    "experiment_name": "untargted_Bayes_Opt",
     "dataset_config": {
         "name": "imagenet",
         "type": "image"
     },
     "attack_configs_dict": [
         {
-            "name": "BayesAttack",
+            "name": "BayesOpt",
             "access_level": "no",
             "targeted": true,
             "eps": 16,
