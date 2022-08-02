@@ -19,7 +19,7 @@
             "aux_model_configs_dict": [
                 {
                     "use_pretrained": true,
-                    "name": "inceptionv4",
+                    "name": "resnet50",
                     "dataset": "imagenet"
                 }
             ],
