@@ -218,6 +218,8 @@ class BayesOpt(Attacker):
             #print(image,label)
             image = image.unsqueeze(0).to(self.device)
             #print(image, label)
+            self.model.set_eval()
+            self.model.zero_grad()
             print(f"Image {idx:d}   Original label: {label:d}")
             predicted_label = torch.argmax(self.model.forward(image))
             print("Predicted label: ", predicted_label.item())
@@ -253,8 +255,10 @@ class BayesOpt(Attacker):
                 query_count+=results_dict[idx]
         time_end = time.time()
         print("\n\nTotal running time: %.4f seconds\n" % (time_end - time_start))
-
-        ave_query=ave_query/suc_num
+        if suc_num !=0:
+            ave_query=ave_query/suc_num
+        else:
+            ave_query =0
 
         print("Out of ",x," available images,",suc_num," images are successfully attack", ", and the average query is ",ave_query," with eps of",self.eps)
         return best_adv, best_query

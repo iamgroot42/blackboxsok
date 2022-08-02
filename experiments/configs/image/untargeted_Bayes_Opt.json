@@ -13,7 +13,7 @@
             "query_budget": 1,
             "adv_model_config": {
                 "use_pretrained": true,
-                "name": "vgg16_bn",
+                "name": "resnet50",
                 "dataset": "imagenet"
             },
 
