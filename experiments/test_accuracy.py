@@ -40,7 +40,7 @@ if __name__ == "__main__":
     config = ExperimentConfig.load(args.config, drop_extra_fields=False)
 
     ds_config = config.dataset_config
-    batch_size = config.batch_size
+    batch_size = 20
 
     # Get data-loader, make sure it works
     ds: CustomDatasetWrapper = get_dataset_wrapper(ds_config)
@@ -49,10 +49,7 @@ if __name__ == "__main__":
     # Compute clean accuracy
     loss_function = get_loss_fn("ce")
 
-    # the original dataset is normalized into the range of [0,1]
-    # specific attacks may have different ranges and should be handled case by case
-    x_orig, y_label = next(iter(test_loader))
-    x_orig, y_label = x_orig.cuda(), y_label.cuda()
+    num_correct=0
 
     # Extract configs
     attacker_config_1: AttackerConfig = config.first_attack_config()
@@ -60,36 +57,44 @@ if __name__ == "__main__":
 
     # Load up model(s)
     target_model_1, aux_models_1 = get_model_and_aux_models(attacker_config_1)
-
-    num_class = ds.num_classes
-    if attacker_config_1.targeted:
-        # mode = "easiest"/"hardest"/"random"/"user"
-        # mode = attacker_config_1.target_label_selection_mode
-        mode = "random"
-        y_target = get_target_label(
-            mode, x_orig, target_model_1, num_class, y_label, 32)
-        y_target = y_target.cuda()
-    else:
-        y_target = y_label
-
-    print(target_model_1)
-    print(aux_models_1)
-    # outputs the accuracy of the target model
     target_model_1.set_eval()  # Make sure model is in eval model
     target_model_1.zero_grad()  # Make sure no leftover gradients
-    target_model_output = target_model_1.forward(x_orig)
-    target_model_prediction = ch.max(target_model_output, 1).indices
-    batch_size = len(y_target)
-    num_correct = ch.count_nonzero(target_model_prediction == y_label)
-    accuracy = float(num_correct / batch_size) * 100
+
+    for i in range(50):
+        # the original dataset is normalized into the range of [0,1]
+        # specific attacks may have different ranges and should be handled case by case
+        x_orig, y_label = next(iter(test_loader))
+        x_orig, y_label = x_orig.cuda(), y_label.cuda()
+
+        num_class = ds.num_classes
+        if attacker_config_1.targeted:
+            # mode = "easiest"/"hardest"/"random"/"user"
+            # mode = attacker_config_1.target_label_selection_mode
+            mode = "random"
+            y_target = get_target_label(
+                mode, x_orig, target_model_1, num_class, y_label, 20)
+            y_target = y_target.cuda()
+        else:
+            y_target = y_label
+
+        print(target_model_1)
+        print(x_orig.shape)
+        # outputs the accuracy of the target model
+        target_model_output = target_model_1.forward(x_orig)
+        target_model_prediction = ch.max(target_model_output, 1).indices
+        batch_size = len(y_target)
+        num_correct += ch.count_nonzero(target_model_prediction == y_label)
+        print(i)
+
+    accuracy = float(num_correct / 1000) * 100
     print("The accuracy of the target model is %s %%" % str(accuracy))
 
-    for _, model in aux_models_1.items():
-        model.set_eval()  # Make sure model is in eval model
-        model.zero_grad()  # Make sure no leftover gradients
-        model_output = model.forward(x_orig)
-        model_prediction = ch.max(model_output, 1).indices
-        batch_size = len(y_target)
-        num_correct = ch.count_nonzero(model_prediction == y_label)
-        accuracy = float(num_correct / batch_size) * 100
-        print("The accuracy of the target model is %s %%" % str(accuracy))
+        # for name, model in aux_models_1.items():
+        #     model.set_eval()  # Make sure model is in eval model
+        #     model.zero_grad()  # Make sure no leftover gradients
+        #     model_output = model.forward(x_orig)
+        #     model_prediction = ch.max(model_output, 1).indices
+        #     batch_size = len(y_target)
+        #     num_correct = ch.count_nonzero(model_prediction == y_label)
+        #     accuracy = float(num_correct / batch_size) * 100
+        #     print("The accuracy of %s is %s %%" % (name,str(accuracy)))

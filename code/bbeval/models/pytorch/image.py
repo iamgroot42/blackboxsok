@@ -164,7 +164,7 @@ class ImageNetRobust(PyTorchModelWrapper):
     def __init__(self, model_config: ModelConfig):
         super().__init__(model_config)
         self.use_pretrained = model_config.use_pretrained
-        self.model =  load_model(model_name='Salman2020Do_50_2', dataset='imagenet', threat_model='Linf')
+        self.model = load_model(model_name='Salman2020Do_50_2', dataset='imagenet', threat_model='Linf')
 
     def pre_process_fn(self, x):
         # imagenet inputs need to be normalized
@@ -178,7 +178,7 @@ class Cifar10Robust(PyTorchModelWrapper):
     def __init__(self, model_config: ModelConfig):
         super().__init__(model_config)
         self.use_pretrained = model_config.use_pretrained
-        self.model =  load_model(model_name='Rebuffi2021Fixing_70_16_cutmix_extra', dataset='cifar10', threat_model='Linf')
+        self.model = load_model(model_name='Rebuffi2021Fixing_70_16_cutmix_extra', dataset='cifar10', threat_model='Linf')
 
     def pre_process_fn(self, x):
         # imagenet inputs need to be normalized
