@@ -1,10 +1,5 @@
 {
     "name": "untargeted_VNITIDISIFGSM_transfer_imagenet",
-    "start time": "2022-07-07 18:08:17.713811",
-    "result": {
-        "20": {
-            "transferability": "96.875"
-        }
-    },
-    "save time": "2022-07-07 18:14:10.148995"
+    "start time": "2022-08-05 11:28:13.266467",
+    "save time": "2022-08-05 11:28:38.887750"
 }

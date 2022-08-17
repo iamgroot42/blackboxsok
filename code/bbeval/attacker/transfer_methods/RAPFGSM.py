@@ -36,7 +36,7 @@ class RAPFGSM(Attacker):
         targeted = self.targeted
         image_resizes = self.params.image_resizes
         image_width = self.params.image_width
-        n_iters = 400
+        n_iters = self.params.n_iters
         interpol_dim = self.params.interpol_dim  # Not sure why this thing is different
 
         if not isinstance(self.aux_models, dict):
@@ -50,7 +50,7 @@ class RAPFGSM(Attacker):
         n_model_ensemble = len(self.aux_models)
         n_input_ensemble = len(image_resizes)
         alpha = eps / n_iters
-        kls = 100
+        kls = 0
         t_iters = 3
         alpha_inner = 2 / 255
         n_adv=0
@@ -77,7 +77,7 @@ class RAPFGSM(Attacker):
             if i == 0:
                 adv = clip_by_tensor(adv, x_min, x_max)
                 adv = V(adv, requires_grad=True)
-            print(i)
+            # print(i)
 
             if i >= kls:
                 n_adv = 0
@@ -91,8 +91,8 @@ class RAPFGSM(Attacker):
 
                     output_inner_clone = output_inner.clone()
                     loss_inner = self.criterion(output_inner_clone, y_target, targeted)
-                    print(t)
-                    print(loss_inner)
+                    # print(t)
+                    # print(loss_inner)
                     loss_inner.backward(retain_graph=True)
                     if targeted == True:
                         n_adv = n_adv + alpha_inner * x_temp_inner.grad.data.sign()
@@ -108,7 +108,7 @@ class RAPFGSM(Attacker):
 
             output_clone = output.clone()
             loss = self.criterion(output_clone, y_target, targeted)
-            print(loss)
+            # print(loss)
             loss.backward()
             gradient_sign = x_temp.grad.data.sign()
             if targeted == True:
@@ -121,18 +121,18 @@ class RAPFGSM(Attacker):
         stop_queries = 1
 
         # outputs the transferability
-        self.model.set_eval()  # Make sure model is in eval model
-        self.model.zero_grad()  # Make sure no leftover gradients
-        target_model_output = self.model.forward(adv)
-        target_model_prediction = ch.max(target_model_output, 1).indices
-        batch_size = len(y_target)
-        if targeted:
-            num_transfered = ch.count_nonzero(target_model_prediction == y_target)
-        else:
-            num_transfered = ch.count_nonzero(target_model_prediction != y_target)
-        transferability = float(num_transfered / batch_size) * 100
-        print("The transferbility of RAPFGSM is %s %%" % str(transferability))
-        self.logger.add_result(n_iters, {
-            "transferability": str(transferability),
-        })
+        # self.model.set_eval()  # Make sure model is in eval model
+        # self.model.zero_grad()  # Make sure no leftover gradients
+        # target_model_output = self.model.forward(adv)
+        # target_model_prediction = ch.max(target_model_output, 1).indices
+        # batch_size = len(y_target)
+        # if targeted:
+        #     num_transfered = ch.count_nonzero(target_model_prediction == y_target)
+        # else:
+        #     num_transfered = ch.count_nonzero(target_model_prediction != y_target)
+        # transferability = float(num_transfered / batch_size) * 100
+        # print("The transferbility of RAPFGSM is %s %%" % str(transferability))
+        # self.logger.add_result(n_iters, {
+        #     "transferability": str(transferability),
+        # })
         return adv.detach(), stop_queries

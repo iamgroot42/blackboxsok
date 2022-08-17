@@ -91,8 +91,8 @@ class VNIFGSM(Attacker):
 
             output_clone = output.clone()
             loss = self.criterion(output_clone, y_target, targeted)
-            print(i)
-            print(loss)
+            # print(i)
+            # print(loss)
             loss.backward()
             adv_grad = adv.grad.data
             grad = momentum * decay + (adv_grad+v) / ch.mean(ch.abs(adv_grad+v), dim=(1, 2, 3), keepdim=True)
@@ -129,18 +129,18 @@ class VNIFGSM(Attacker):
         stop_queries = 1
 
         # outputs the transferability
-        self.model.set_eval()  # Make sure model is in eval model
-        self.model.zero_grad()  # Make sure no leftover gradients
-        target_model_output = self.model.forward(adv)
-        target_model_prediction = ch.max(target_model_output, 1).indices
-        batch_size = len(y_target)
-        if targeted:
-            num_transfered = ch.count_nonzero(target_model_prediction == y_target)
-        else:
-            num_transfered = ch.count_nonzero(target_model_prediction != y_target)
-        transferability = float(num_transfered / batch_size) * 100
-        print("The transferbility of VNIFGSM is %s %%" % str(transferability))
-        self.logger.add_result(n_iters, {
-            "transferability": str(transferability),
-        })
+        # self.model.set_eval()  # Make sure model is in eval model
+        # self.model.zero_grad()  # Make sure no leftover gradients
+        # target_model_output = self.model.forward(adv)
+        # target_model_prediction = ch.max(target_model_output, 1).indices
+        # batch_size = len(y_target)
+        # if targeted:
+        #     num_transfered = ch.count_nonzero(target_model_prediction == y_target)
+        # else:
+        #     num_transfered = ch.count_nonzero(target_model_prediction != y_target)
+        # transferability = float(num_transfered / batch_size) * 100
+        # print("The transferbility of VNIFGSM is %s %%" % str(transferability))
+        # self.logger.add_result(n_iters, {
+        #     "transferability": str(transferability),
+        # })
         return adv.detach(), stop_queries

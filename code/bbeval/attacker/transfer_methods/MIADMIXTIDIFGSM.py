@@ -109,7 +109,7 @@ class MIADMIXTIDIFGSM(Attacker):
                 adv = clip_by_tensor(adv, x_min, x_max)
                 adv = V(adv, requires_grad=True)
             grad = 0
-            print(i)
+            # print(i)
             admix_adv=self.admix(adv)
             for s in range(size):
                 temp_adv=admix_adv[s]
@@ -124,7 +124,7 @@ class MIADMIXTIDIFGSM(Attacker):
 
                     output_clone = output.clone()
                     loss = self.criterion(output_clone, y_target, targeted)
-                    print(loss)
+                    # print(loss)
                     loss.backward()
                     # print(x_nes)
                     # AttributeError: 'NoneType' object has no attribute 'data'
@@ -144,18 +144,18 @@ class MIADMIXTIDIFGSM(Attacker):
         stop_queries = 1
 
         # outputs the transferability
-        self.model.set_eval()  # Make sure model is in eval model
-        self.model.zero_grad()  # Make sure no leftover gradients
-        target_model_output = self.model.forward(adv)
-        target_model_prediction = ch.max(target_model_output, 1).indices
-        batch_size = len(y_target)
-        if targeted:
-            num_transfered = ch.count_nonzero(target_model_prediction == y_target)
-        else:
-            num_transfered = ch.count_nonzero(target_model_prediction != y_target)
-        transferability = float(num_transfered / batch_size) * 100
-        print("The transferbility of MIADMIXTIDIFGSM is %s %%" % str(transferability))
-        self.logger.add_result(n_iters, {
-            "transferability": str(transferability),
-        })
+        # self.model.set_eval()  # Make sure model is in eval model
+        # self.model.zero_grad()  # Make sure no leftover gradients
+        # target_model_output = self.model.forward(adv)
+        # target_model_prediction = ch.max(target_model_output, 1).indices
+        # batch_size = len(y_target)
+        # if targeted:
+        #     num_transfered = ch.count_nonzero(target_model_prediction == y_target)
+        # else:
+        #     num_transfered = ch.count_nonzero(target_model_prediction != y_target)
+        # transferability = float(num_transfered / batch_size) * 100
+        # print("The transferbility of MIADMIXTIDIFGSM is %s %%" % str(transferability))
+        # self.logger.add_result(n_iters, {
+        #     "transferability": str(transferability),
+        # })
         return adv.detach(), stop_queries

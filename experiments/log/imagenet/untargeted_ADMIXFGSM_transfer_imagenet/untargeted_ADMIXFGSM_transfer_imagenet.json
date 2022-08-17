@@ -1,10 +1,5 @@
 {
     "name": "untargeted_ADMIXFGSM_transfer_imagenet",
-    "start time": "2022-07-27 12:10:33.796780",
-    "result": {
-        "20": {
-            "transferability": "84.375"
-        }
-    },
-    "save time": "2022-07-27 12:13:06.181573"
+    "start time": "2022-08-05 08:34:52.218803",
+    "save time": "2022-08-05 08:35:07.807405"
 }

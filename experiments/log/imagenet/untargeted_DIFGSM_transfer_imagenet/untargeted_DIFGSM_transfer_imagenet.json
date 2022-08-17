@@ -1,10 +1,5 @@
 {
     "name": "untargeted_DIFGSM_transfer_imagenet",
-    "start time": "2022-07-22 11:53:46.122322",
-    "result": {
-        "20": {
-            "transferability": "65.625"
-        }
-    },
-    "save time": "2022-07-22 11:53:50.926354"
+    "start time": "2022-08-04 17:43:02.560319",
+    "save time": "2022-08-04 17:43:03.556557"
 }

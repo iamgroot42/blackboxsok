@@ -102,7 +102,7 @@ class MITIDISIFGSM(Attacker):
                 adv = clip_by_tensor(adv, x_min, x_max)
                 adv = V(adv, requires_grad=True)
             grad=0
-            print(i)
+            # print(i)
             for j in ch.arange(m):
                 x_nes = adv / ch.pow(2, j)
                 x_nes = V(x_nes, requires_grad=True)
@@ -113,7 +113,7 @@ class MITIDISIFGSM(Attacker):
 
                 output_clone = output.clone()
                 loss = self.criterion(output_clone, y_target, targeted)
-                print(loss)
+                # print(loss)
                 loss.backward()
                 grad+=x_nes.grad.data/m
 
@@ -131,18 +131,18 @@ class MITIDISIFGSM(Attacker):
         stop_queries = 1
 
         # outputs the transferability
-        self.model.set_eval()  # Make sure model is in eval model
-        self.model.zero_grad()  # Make sure no leftover gradients
-        target_model_output = self.model.forward(adv)
-        target_model_prediction = ch.max(target_model_output, 1).indices
-        batch_size = len(y_target)
-        if targeted:
-            num_transfered = ch.count_nonzero(target_model_prediction == y_target)
-        else:
-            num_transfered = ch.count_nonzero(target_model_prediction != y_target)
-        transferability = float(num_transfered / batch_size) * 100
-        print("The transferbility of MITIDISIFGSM is %s %%" % str(transferability))
-        self.logger.add_result(n_iters, {
-            "transferability": str(transferability),
-        })
+        # self.model.set_eval()  # Make sure model is in eval model
+        # self.model.zero_grad()  # Make sure no leftover gradients
+        # target_model_output = self.model.forward(adv)
+        # target_model_prediction = ch.max(target_model_output, 1).indices
+        # batch_size = len(y_target)
+        # if targeted:
+        #     num_transfered = ch.count_nonzero(target_model_prediction == y_target)
+        # else:
+        #     num_transfered = ch.count_nonzero(target_model_prediction != y_target)
+        # transferability = float(num_transfered / batch_size) * 100
+        # print("The transferbility of MITIDISIFGSM is %s %%" % str(transferability))
+        # self.logger.add_result(n_iters, {
+        #     "transferability": str(transferability),
+        # })
         return adv.detach(), stop_queries

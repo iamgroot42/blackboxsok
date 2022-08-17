@@ -30,7 +30,7 @@ class MIDIFGSM(Attacker):
     def input_diversity(self, x,img_resize):
         diversity_prob = 0.5
         img_size = x.shape[-1]
-        print(img_size)
+        # print(img_size)
 
         rnd = ch.randint(low=img_size, high=img_resize, size=(1,), dtype=ch.int32)
         rescaled = F.interpolate(x, size=[rnd, rnd], mode='bilinear', align_corners=False)
@@ -102,8 +102,8 @@ class MIDIFGSM(Attacker):
 
             output_clone = output.clone()
             loss = self.criterion(output_clone, y_target, targeted)
-            print(i)
-            print(loss)
+            # print(i)
+            # print(loss)
             loss.backward()
             grad=adv.grad.data
             grad = momentum * decay + grad / ch.mean(ch.abs(grad), dim=(1,2,3), keepdim=True)
@@ -119,18 +119,18 @@ class MIDIFGSM(Attacker):
         stop_queries = 1
 
         # outputs the transferability
-        self.model.set_eval()  # Make sure model is in eval model
-        self.model.zero_grad()  # Make sure no leftover gradients
-        target_model_output = self.model.forward(adv)
-        target_model_prediction = ch.max(target_model_output, 1).indices
-        batch_size = len(y_target)
-        if targeted:
-            num_transfered = ch.count_nonzero(target_model_prediction == y_target)
-        else:
-            num_transfered = ch.count_nonzero(target_model_prediction != y_target)
-        transferability = float(num_transfered / batch_size) * 100
-        print("The transferbility of MIDIFGSM is %s %%" % str(transferability))
-        self.logger.add_result(n_iters, {
-            "transferability": str(transferability),
-        })
+        # self.model.set_eval()  # Make sure model is in eval model
+        # self.model.zero_grad()  # Make sure no leftover gradients
+        # target_model_output = self.model.forward(adv)
+        # target_model_prediction = ch.max(target_model_output, 1).indices
+        # batch_size = len(y_target)
+        # if targeted:
+        #     num_transfered = ch.count_nonzero(target_model_prediction == y_target)
+        # else:
+        #     num_transfered = ch.count_nonzero(target_model_prediction != y_target)
+        # transferability = float(num_transfered / batch_size) * 100
+        # print("The transferbility of MIDIFGSM is %s %%" % str(transferability))
+        # self.logger.add_result(n_iters, {
+        #     "transferability": str(transferability),
+        # })
         return adv.detach(), stop_queries

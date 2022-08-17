@@ -79,9 +79,9 @@ class EMIFGSM(Attacker):
             # corr_classified = ch.argmax(logits_clean, dim=1) == y_label
             # print('Clean accuracy of candidate samples: {:.2%}'.format(ch.mean(1. * corr_classified).item()))
 
-        print(factors)
+        # print(factors)
         for i in range(n_iters):
-            print(i)
+            # print(i)
             if i == 0:
                 adv = clip_by_tensor(adv, x_min, x_max)
                 adv = V(adv, requires_grad=True)
@@ -89,7 +89,7 @@ class EMIFGSM(Attacker):
             x_lookaheads = [adv + factor * grad_bar for factor in factors]
 
             for num in range(sampling_number):
-                print(num)
+                # print(num)
                 x_input=x_lookaheads[num]
                 x_input = V(x_input, requires_grad=True)
                 output = 0
@@ -99,7 +99,7 @@ class EMIFGSM(Attacker):
 
                 output_clone = output.clone()
                 loss = self.criterion(output_clone, y_target, targeted)
-                print(loss)
+                # print(loss)
                 if i==0:
                     loss.backward(retain_graph = True)
                 #     Trying to backward through the graph a second time
@@ -119,19 +119,19 @@ class EMIFGSM(Attacker):
 
         stop_queries = 1
 
-        # outputs the transferability
-        self.model.set_eval()  # Make sure model is in eval model
-        self.model.zero_grad()  # Make sure no leftover gradients
-        target_model_output = self.model.forward(adv)
-        target_model_prediction = ch.max(target_model_output, 1).indices
-        batch_size = len(y_target)
-        if targeted:
-            num_transfered = ch.count_nonzero(target_model_prediction == y_target)
-        else:
-            num_transfered = ch.count_nonzero(target_model_prediction != y_target)
-        transferability = float(num_transfered / batch_size) * 100
-        print("The transferbility of EMIFGSM is %s %%" % str(transferability))
-        self.logger.add_result(n_iters, {
-            "transferability": str(transferability),
-        })
+        # # outputs the transferability
+        # self.model.set_eval()  # Make sure model is in eval model
+        # self.model.zero_grad()  # Make sure no leftover gradients
+        # target_model_output = self.model.forward(adv)
+        # target_model_prediction = ch.max(target_model_output, 1).indices
+        # batch_size = len(y_target)
+        # if targeted:
+        #     num_transfered = ch.count_nonzero(target_model_prediction == y_target)
+        # else:
+        #     num_transfered = ch.count_nonzero(target_model_prediction != y_target)
+        # transferability = float(num_transfered / batch_size) * 100
+        # print("The transferbility of EMIFGSM is %s %%" % str(transferability))
+        # self.logger.add_result(n_iters, {
+        #     "transferability": str(transferability),
+        # })
         return adv.detach(), stop_queries
