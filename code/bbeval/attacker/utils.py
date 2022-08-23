@@ -25,8 +25,9 @@ from bbeval.attacker.transfer_methods.PITIDIFGSSM import PITIDIFGSSM
 from bbeval.attacker.transfer_methods.ADMIXFGSM import ADMIXFGSM
 from bbeval.attacker.transfer_methods.MIADMIXTIDIFGSM import MIADMIXTIDIFGSM
 from bbeval.attacker.transfer_methods.RAPFGSM import RAPFGSM
-from bbeval.attacker.transfer_methods.MITIDIAIRAPLSFGSM import MITIDIAIRAPLSFGSM
-from bbeval.attacker.full_score.BayesOpt import BayesOpt
+#from bbeval.attacker.transfer_methods.MITIDIAIRAPLSFGSM import MITIDIAIRAPLSFGSM
+from bbeval.attacker.top1_score.BayesOpt import BayesOpt
+from bbeval.attacker.full_score.BayesOpt_full import BayesOpt_full
 
 
 from bbeval.config import AttackerConfig, ExperimentConfig
@@ -61,8 +62,9 @@ ATTACK_WRAPPER_MAPPING = {
     "ADMIXFGSM_transfer": ADMIXFGSM,
     "MIADMIXTIDIFGSM_transfer": MIADMIXTIDIFGSM,
     "RAPFGSM_transfer": RAPFGSM,
-    "MITIDIAIRAPLSFGSM_transfer": MITIDIAIRAPLSFGSM,
+    #"MITIDIAIRAPLSFGSM_transfer": MITIDIAIRAPLSFGSM,
     "BayesOpt":BayesOpt,
+    "BayesOpt_full":BayesOpt_full
 }
 
 def get_attack_wrapper(model: GenericModelWrapper, aux_models: dict, attack_config: AttackerConfig, experiment_config: ExperimentConfig):
