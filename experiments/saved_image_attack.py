@@ -102,11 +102,11 @@ if __name__ == "__main__":
         n += 10
     print("The clean accuracy is %s %%" % str(float(correctly_classified / 10)))
     #
-    for i in tqdm(range(int(100))):
+    for i in range(int(1)):
         # the original dataset is normalized into the range of [0,1]
         # specific attacks may have different ranges and should be handled case by case
 
-        x_orig, y_label = correct_images[i * 10:i * 10 + 10], correct_labels[i * 10:i * 10 + 10]
+        x_orig, y_label = correct_images[i * 100:i * 100 + 100], correct_labels[i * 100:i * 100 + 100]
         x_orig, y_label = x_orig.cuda(), y_label.cuda()
 
         num_class = ds.num_classes
@@ -125,6 +125,7 @@ if __name__ == "__main__":
                                                                                    aux_models=aux_models_1,
                                                                                    x_orig=x_orig,
                                                                                    x_sample_adv=x_orig,
+                                                                              
                                                                                    y_label=y_label,
                                                                                    y_target=y_target,
                                                                                    attacker_config=attacker_config_1,
@@ -140,7 +141,7 @@ if __name__ == "__main__":
             total_transfered += ch.count_nonzero(target_model_prediction == y_target)
         else:
             total_transfered += ch.count_nonzero(target_model_prediction != y_target)
-
+'''
     transferability = float(total_transfered / 10)
     print("Target model: %s " % (str(attacker_config_1.adv_model_config.name)))
     print("Aux model: %s" % (str(attacker_config_1.aux_model_configs[0].name)))
@@ -156,3 +157,4 @@ with open('experiment.txt', 'a') as f:
     f.write("The transferbility of %s is %s %%" % (str(attacker_config_1.name), str(transferability)))
     f.write('\n')
     f.write("--- %s seconds ---" % (time.time() - start_time))
+'''

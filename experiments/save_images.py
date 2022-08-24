@@ -43,7 +43,7 @@ if __name__ == "__main__":
 
     ds_config = config.dataset_config
     # batch_size = config.batch_size
-    batch_size = 10
+    batch_size = 5
 
     # Get data-loader, make sure it works
     ds: CustomDatasetWrapper = get_dataset_wrapper(ds_config)
@@ -70,7 +70,7 @@ if __name__ == "__main__":
 
     counter=0
     # select correctly classfied images
-    while len(correct_images) <= 100:
+    while len(correct_images) <= 500:
         print(len(correct_images))
         x_orig, y_label = next(iter(test_loader))
         x_orig, y_label = x_orig.cuda(), y_label.cuda()
@@ -83,10 +83,10 @@ if __name__ == "__main__":
                 correct_labels.append(int(y_label[i].detach().cpu()))
             else:
                 counter+=1
-        if len(correct_images) == 100:
+        if len(correct_images) == 500:
             break
     print("--- %s seconds ---" % (time.time() - start_time))
-    for i in range(101):
+    for i in range(501):
         if i not in correct_labels:
             print(i)
     correct_labels = ch.Tensor(correct_labels)
@@ -94,14 +94,14 @@ if __name__ == "__main__":
     correct_images = ch.Tensor(correct_images)
     # check whether images are correctly classified
     i = 0
-    while i < 100:
-        x_orig = correct_images[i:i + 10]
-        y_label = correct_labels[i:i + 10]
+    while i < 500:
+        x_orig = correct_images[i:i + 5]
+        y_label = correct_labels[i:i + 5]
         x_orig, y_label = x_orig.cuda(), y_label.cuda()
         target_model_output = target_model_1.forward(x_orig)
         target_model_prediction = ch.max(target_model_output, 1).indices
         total_transfered += ch.count_nonzero(target_model_prediction == y_label)
-        i += 10
+        i += 5
         print(total_transfered)
     print(total_transfered)
     # print(correct_images.shape)
