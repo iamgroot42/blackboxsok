@@ -27,6 +27,7 @@ from bbeval.attacker.transfer_methods.MIADMIXTIDIFGSM import MIADMIXTIDIFGSM
 from bbeval.attacker.transfer_methods.RAPFGSM import RAPFGSM
 from bbeval.attacker.full_score.BayesOpt import BayesOpt
 from bbeval.attacker.topk_score.NES import NES
+from bbeval.attacker.full_score.BayesOpt_full import BayesOpt_full
 
 
 from bbeval.config import AttackerConfig, ExperimentConfig
@@ -63,6 +64,7 @@ ATTACK_WRAPPER_MAPPING = {
     "RAPFGSM_transfer": RAPFGSM,
     "BayesOpt":BayesOpt,
     "nes": NES,
+    "BayesOpt_full":BayesOpt_full
 }
 
 def get_attack_wrapper(model: GenericModelWrapper, aux_models: dict, attack_config: AttackerConfig, experiment_config: ExperimentConfig):

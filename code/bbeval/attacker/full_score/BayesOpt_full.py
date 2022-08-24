@@ -15,19 +15,19 @@ from botorch.acquisition import ProbabilityOfImprovement, UpperConfidenceBound
 from botorch.sampling.samplers import SobolQMCNormalSampler
 from botorch.optim import  gen_batch_initial_conditions
 from botorch.generation.gen import gen_candidates_torch, get_best_candidates
-from bbeval.attacker.full_score.Bayes_utils import  proj,latent_proj,fft_transform,fft_transform_mc,transform
+from bbeval.attacker.full_score.BayesOpt_full_util import  proj,latent_proj,fft_transform,fft_transform_mc,transform
 
-class BayesOpt(Attacker):
+class BayesOpt_full(Attacker):
     def __init__(self, model: GenericModelWrapper, aux_models: dict, config: AttackerConfig,
                  experiment_config: ExperimentConfig):
         super().__init__(model, aux_models, config, experiment_config)
         self.params = StairCaseConfig(**self.params)
         self.device ="cuda"
-        self.eps=20/255
+        self.eps=5/255
         self.arch = "inception_v3"
         self.inf_norm =True
         self.discrete=True
-        self.hard_label=True
+        self.hard_label=False
         self.dim =12
         self.standardize=True
         self.bounds=0
@@ -37,7 +37,7 @@ class BayesOpt(Attacker):
         self.sin =True
         self.cos = True
         self.beta=1
-        self.itr =1000
+        self.itr =100
 
     def obj_func(self,x, x0, y0):
         # evaluate objective function
@@ -144,7 +144,7 @@ class BayesOpt(Attacker):
         query_count += 1
 
         #run self.itr rounds for simplicity
-        for i in tqdm(range(self.itr)):
+        for i in range(self.itr):
 
             # fit the model
             fit_gpytorch_model(mll)
@@ -188,12 +188,12 @@ class BayesOpt(Attacker):
             # to check success
             if adv_label != y0:
                 success = 1
+                '''
                 if self.inf_norm:
-                    print('Adversarial Label', adv_label.item(),
-                          'Norm:', best_candidate.abs().max().item())
+                    print('Adversarial Label', adv_label.item(),'Norm:', best_candidate.abs().max().item())
                 else:
-                    print('Adversarial Label', adv_label.item(),
-                          'Norm:', best_candidate.norm().item())
+                    print('Adversarial Label', adv_label.item(),'Norm:', best_candidate.norm().item())
+                '''
                 return query_count, success,best_candidate,best_candidate+x0
             query_count += 1
 
@@ -215,18 +215,18 @@ class BayesOpt(Attacker):
         results_dict = {}
         adv_dic={}
         x =0
-
-        for idx in range(32):
-            print("###################===================####################")
+        size = x_orig.size(0)
+        for idx in tqdm(range(x_orig.size(0))):
+            #print("###################===================####################")
             image, label = x_orig[idx],y_label[idx]
             #print(image,label)
             image = image.unsqueeze(0).to(self.device)
             #print(image, label)
             self.model.set_eval()
             self.model.zero_grad()
-            print(f"Image {idx:d}   Original label: {label:d}")
+            #####print(f"Image {idx:d}   Original label: {label:d}")
             predicted_label = torch.argmax(self.model.forward(image))
-            print("Predicted label: ", predicted_label.item())
+            ######print("Predicted label: ", predicted_label.item())
             if predicted_label==label:
                 x+=1
             # ignore incorrectly classified images
@@ -234,7 +234,7 @@ class BayesOpt(Attacker):
 
                 itr, success,adv,adv_added_image = self.bayes_opt(image, label)
 
-                print(itr, success)
+                #print(itr, success)
                 if success:
                     results_dict[idx] = itr
                     adv_dic[idx]=adv,adv_added_image
