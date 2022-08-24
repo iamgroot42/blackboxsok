@@ -70,7 +70,7 @@ if __name__ == "__main__":
 
     counter=0
     # select correctly classfied images
-    while len(correct_images) <= 1000:
+    while len(correct_images) <= 100:
         print(len(correct_images))
         x_orig, y_label = next(iter(test_loader))
         x_orig, y_label = x_orig.cuda(), y_label.cuda()
@@ -83,10 +83,10 @@ if __name__ == "__main__":
                 correct_labels.append(int(y_label[i].detach().cpu()))
             else:
                 counter+=1
-        if len(correct_images) == 1000:
+        if len(correct_images) == 100:
             break
     print("--- %s seconds ---" % (time.time() - start_time))
-    for i in range(1001):
+    for i in range(101):
         if i not in correct_labels:
             print(i)
     correct_labels = ch.Tensor(correct_labels)
@@ -94,7 +94,7 @@ if __name__ == "__main__":
     correct_images = ch.Tensor(correct_images)
     # check whether images are correctly classified
     i = 0
-    while i < 1000:
+    while i < 100:
         x_orig = correct_images[i:i + 10]
         y_label = correct_labels[i:i + 10]
         x_orig, y_label = x_orig.cuda(), y_label.cuda()
