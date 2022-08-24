@@ -9,11 +9,11 @@
             "name": "PITIDIFGSSM_transfer",
             "access_level": "no",
             "targeted": false,
-            "eps": 16,
+            "eps": 8,
             "query_budget": 1,
             "adv_model_config": {
                 "use_pretrained": true,
-                "name": "advinceptionv3",
+                "name": "inceptionv3",
                 "dataset": "imagenet"
             },
             "aux_model_configs_dict": [

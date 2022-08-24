@@ -9,7 +9,7 @@
             "name": "IFGSM_transfer",
             "access_level": "no",
             "targeted": false,
-            "eps": 16,
+            "eps": 8,
             "query_budget": 1,
             "adv_model_config": {
                 "use_pretrained": true,

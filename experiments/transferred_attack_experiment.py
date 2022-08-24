@@ -32,8 +32,8 @@ def get_model_and_aux_models(attacker_config: AttackerConfig):
 def single_attack(target_model, aux_models, x_orig, x_sample_adv, y_label, y_target, attacker_config: AttackerConfig,
                   experiment_config: ExperimentConfig):
     attacker = get_attack_wrapper(target_model, aux_models, attacker_config, experiment_config)
-    x_sample_adv, queries_used, num_transfered = attacker.attack(x_orig, x_sample_adv, y_label, y_target)
-    return (x_sample_adv, queries_used, num_transfered), attacker
+    x_sample_adv, queries_used = attacker.attack(x_orig, x_sample_adv, y_label, y_target)
+    return (x_sample_adv, queries_used), attacker
 
 
 # os.environ['TORCH_HOME'] = '/p/blackboxsok/models/imagenet_torch' # download imagenet models to project directory
@@ -63,13 +63,29 @@ if __name__ == "__main__":
 
     ds_config = config.dataset_config
     if ds_config.name == 'imagenet':
+        if attacker_config_1.adv_model_config.name == 'inceptionv3':
+            correct_images = ch.load('data/inceptionv3/correct_images.pt')
+            correct_labels = ch.load('data/inceptionv3/correct_labels.pt')
         if attacker_config_1.adv_model_config.name == 'inceptionv4':
             correct_images = ch.load('data/inceptionv4/correct_images.pt')
             correct_labels = ch.load('data/inceptionv4/correct_labels.pt')
-
+        if attacker_config_1.adv_model_config.name == 'inceptionresnetv2':
+            correct_images = ch.load('data/inceptionresnetv2/correct_images.pt')
+            correct_labels = ch.load('data/inceptionresnetv2/correct_labels.pt')
+        if attacker_config_1.adv_model_config.name == 'resnet101':
+            correct_images = ch.load('data/resnet101/correct_images.pt')
+            correct_labels = ch.load('data/resnet101/correct_labels.pt')
+        if attacker_config_1.adv_model_config.name == 'ensinceptionresnetv2':
+            correct_images = ch.load('data/ensinceptionresnetv2/correct_images.pt')
+            correct_labels = ch.load('data/ensinceptionresnetv2/correct_labels.pt')
+        if attacker_config_1.adv_model_config.name == 'advinceptionv3':
+            correct_images = ch.load('data/advinceptionv3/correct_images.pt')
+            correct_labels = ch.load('data/advinceptionv3/correct_labels.pt')
     # start_time = time.time()
 
     n, i = 0, 0
+    start_time = time.time()
+
     while n < 1000:
         x_orig = correct_images[i:i + 10]
         y_label = correct_labels[i:i + 10]
@@ -99,7 +115,7 @@ if __name__ == "__main__":
             y_target = y_label
 
         # Perform attack
-        (x_sample_adv, queries_used_1, num_transfered), attacker_1 = single_attack(target_model_1,
+        (x_sample_adv, queries_used_1), attacker_1 = single_attack(target_model_1,
                                                                                    aux_models=aux_models_1,
                                                                                    x_orig=x_orig,
                                                                                    x_sample_adv=x_orig,
@@ -124,13 +140,13 @@ if __name__ == "__main__":
     print("Aux model: %s" % (str(attacker_config_1.aux_model_configs[0].name)))
     print("The transferability of %s is %s %%" % (str(attacker_config_1.name), str(transferability)))
 
-# with open('experiment.txt', 'a') as f:
-#     f.write('\n')
-#     f.write('\n')
-#     f.write("Target model: %s " % (str(attacker_config_1.adv_model_config.name)))
-#     f.write('\n')
-#     f.write("Aux model: %s" % (str(attacker_config_1.aux_model_configs[0].name)))
-#     f.write('\n')
-#     f.write("The transferbility of %s is %s %%" % (str(attacker_config_1.name), str(transferability)))
-#     f.write('\n')
-#     f.write("--- %s seconds ---" % (time.time() - start_time))
+with open('experiment.txt', 'a') as f:
+    f.write('\n')
+    f.write('\n')
+    f.write("Target model: %s " % (str(attacker_config_1.adv_model_config.name)))
+    f.write('\n')
+    f.write("Aux model: %s" % (str(attacker_config_1.aux_model_configs[0].name)))
+    f.write('\n')
+    f.write("The transferbility of %s is %s %%" % (str(attacker_config_1.name), str(transferability)))
+    f.write('\n')
+    f.write("--- %s seconds ---" % (time.time() - start_time))

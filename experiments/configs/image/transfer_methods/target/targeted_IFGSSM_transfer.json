@@ -19,12 +19,7 @@
             "aux_model_configs_dict": [
                 {
                     "use_pretrained": true,
-                    "name": "resnet18",
-                    "dataset": "imagenet"
-                },
-                {
-                    "use_pretrained": true,
-                    "name": "vgg16",
+                    "name": "inceptionv3",
                     "dataset": "imagenet"
                 }
             ],
