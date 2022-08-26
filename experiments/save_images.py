@@ -43,8 +43,9 @@ if __name__ == "__main__":
 
     ds_config = config.dataset_config
     # batch_size = config.batch_size
-    batch_size = 5
+    batch_size = 10
 
+    num_img =1000
     # Get data-loader, make sure it works
     ds: CustomDatasetWrapper = get_dataset_wrapper(ds_config)
     _, _, test_loader = ds.get_loaders(
@@ -68,9 +69,11 @@ if __name__ == "__main__":
     target_model_1.set_eval()  # Make sure model is in eval model
     target_model_1.zero_grad()  # Make sure no leftover gradients
 
+    
+        
     counter=0
     # select correctly classfied images
-    while len(correct_images) <= 500:
+    while len(correct_images) <= num_img:
         print(len(correct_images))
         x_orig, y_label = next(iter(test_loader))
         x_orig, y_label = x_orig.cuda(), y_label.cuda()
@@ -83,30 +86,73 @@ if __name__ == "__main__":
                 correct_labels.append(int(y_label[i].detach().cpu()))
             else:
                 counter+=1
-        if len(correct_images) == 500:
+        if len(correct_images) == num_img:
             break
     print("--- %s seconds ---" % (time.time() - start_time))
-    for i in range(501):
+    for i in range(num_img+1):
         if i not in correct_labels:
             print(i)
+    
+
+    print("==========")
+
+
+    if attacker_config_1.targeted:
+        counter =0
+        y_target =[]
+        # mode = "easiest"/"hardest"/"random"/"user"
+        mode = "random"
+        y_target = get_target_label(mode, correct_images, target_model_1, num_img, correct_labels, num_img)
+        print(len(y_target))
+
+        x_target=[]
+        for i in range(num_img):
+            x_target.append(-1)
+        target_l = []
+        while len(target_l)<= num_img:
+            print(len(target_l))
+            x, y = next(iter(test_loader))
+            print(y)
+            for i in range(len(y)):
+                cur=int(y[i].detach().cpu())
+                y_ind = correct_labels.index(cur)
+                if  cur not in target_l:
+                    x_target[y_ind]=x.detach().cpu().numpy()
+                    target_l.append(cur)
+                    print(cur)
+
+        
+        print("===============")
+        print(y_target.shape)
+        print(x_target.shape)
+
+
     correct_labels = ch.Tensor(correct_labels)
-    correct_labels=correct_labels.type(ch.LongTensor)
+    correct_labels = correct_labels.type(ch.LongTensor)
     correct_images = ch.Tensor(correct_images)
     # check whether images are correctly classified
     i = 0
-    while i < 500:
-        x_orig = correct_images[i:i + 5]
-        y_label = correct_labels[i:i + 5]
+    while i < num_img:
+        x_orig = correct_images[i:i + batch_size]
+        y_label = correct_labels[i:i + batch_size]
         x_orig, y_label = x_orig.cuda(), y_label.cuda()
         target_model_output = target_model_1.forward(x_orig)
         target_model_prediction = ch.max(target_model_output, 1).indices
         total_transfered += ch.count_nonzero(target_model_prediction == y_label)
-        i += 5
+        i += batch_size
         print(total_transfered)
     print(total_transfered)
     # print(correct_images.shape)
+
+    y_target = ch.Tensor(y_target)
+    y_target = y_target.type(ch.LongTensor)
+    x_target = ch.Tensor(x_target)
 
     model_name=attacker_config_1.adv_model_config.name
 
     ch.save(correct_images, 'data/'+model_name+'/correct_images.pt')
     ch.save(correct_labels, 'data/'+model_name+'/correct_labels.pt')
+    ch.save(y_target, 'data/'+model_name+'/y_target.pt')
+    ch.save(x_target, 'data/'+model_name+'/x_target.pt')
+
+
