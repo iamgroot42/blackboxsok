@@ -1,3 +1,4 @@
+from unittest import skip
 from simple_parsing import ArgumentParser
 from pathlib import Path
 
@@ -43,9 +44,10 @@ if __name__ == "__main__":
 
     ds_config = config.dataset_config
     # batch_size = config.batch_size
-    batch_size = 10
+    batch_size = 1
 
-    num_img =1000
+    num_img =10
+
     # Get data-loader, make sure it works
     ds: CustomDatasetWrapper = get_dataset_wrapper(ds_config)
     _, _, test_loader = ds.get_loaders(
@@ -108,25 +110,29 @@ if __name__ == "__main__":
         x_target=[]
         for i in range(num_img):
             x_target.append(-1)
+
         target_l = []
+        counter=0
+
         while len(target_l)<= num_img:
-            print(len(target_l))
-            x, y = next(iter(test_loader))
-            print(y)
-            for i in range(len(y)):
-                cur=int(y[i].detach().cpu())
-                y_ind = correct_labels.index(cur)
-                if  cur not in target_l:
-                    x_target[y_ind]=x.detach().cpu().numpy()
-                    target_l.append(cur)
-                    print(cur)
-
-        
-        print("===============")
-        print(y_target.shape)
-        print(x_target.shape)
-
-
+            print("len(target_l):",len(target_l))
+            x_orig, y_label = next(iter(test_loader))
+            x_orig, y_label = x_orig.cuda(), y_label.cuda()
+            target_model_output = target_model_1.forward(x_orig)
+            target_model_prediction = ch.max(target_model_output, 1).indices
+            for i in range(len(target_model_prediction)):
+                cur=int(target_model_prediction[i].detach().cpu())
+                try:
+                    y_ind = correct_labels.index(cur)
+                    if  target_model_prediction[i]== y_label[i] and cur not in target_l:
+                        x_target[y_ind]=x_orig[i].detach().cpu().numpy()
+                        target_l.append(cur)
+                        print(cur)
+                except:
+                    continue
+            if len(target_l)==num_img:
+                break
+        print(x_target)     
     correct_labels = ch.Tensor(correct_labels)
     correct_labels = correct_labels.type(ch.LongTensor)
     correct_images = ch.Tensor(correct_images)
@@ -140,13 +146,20 @@ if __name__ == "__main__":
         target_model_prediction = ch.max(target_model_output, 1).indices
         total_transfered += ch.count_nonzero(target_model_prediction == y_label)
         i += batch_size
-        print(total_transfered)
+        #print(total_transfered)
     print(total_transfered)
     # print(correct_images.shape)
 
     y_target = ch.Tensor(y_target)
     y_target = y_target.type(ch.LongTensor)
     x_target = ch.Tensor(x_target)
+
+
+    print("===============")
+    print("y_target:",y_target.shape)
+    print("x_target:",x_target.shape)
+
+
 
     model_name=attacker_config_1.adv_model_config.name
 
