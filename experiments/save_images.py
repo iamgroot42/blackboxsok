@@ -11,6 +11,7 @@ from bbeval.loss import get_loss_fn
 from tqdm import tqdm
 import time
 import torch as ch
+import random
 
 def get_model_and_aux_models(attacker_config: AttackerConfig):
     model_config = attacker_config.adv_model_config
@@ -44,9 +45,9 @@ if __name__ == "__main__":
 
     ds_config = config.dataset_config
     # batch_size = config.batch_size
-    batch_size = 5
+    batch_size = 10
 
-    num_img =5
+    num_img =1000
 
     # Get data-loader, make sure it works
     ds: CustomDatasetWrapper = get_dataset_wrapper(ds_config)
@@ -100,40 +101,51 @@ if __name__ == "__main__":
 
 
     if attacker_config_1.targeted:
-        counter =0
+        # getting y_target labels
         y_target =[]
-        # mode = "easiest"/"hardest"/"random"/"user"
+                # mode = "easiest"/"hardest"/"random"/"user"
         mode = "random"
         y_target = get_target_label(mode, correct_images, target_model_1, num_img, correct_labels, num_img)
         print(len(y_target))
-
+        # getting x_target images
         x_target=[]
         for i in range(num_img):
             x_target.append(-1)
 
-        target_l = []
-        counter=0
 
-        while len(target_l)<= num_img:
-            print("len(target_l):",len(target_l))
-            x_orig, y_label = next(iter(test_loader))
-            x_orig, y_label = x_orig.cuda(), y_label.cuda()
-            target_model_output = target_model_1.forward(x_orig)
-            target_model_prediction = ch.max(target_model_output, 1).indices
-            for i in range(len(target_model_prediction)):
-                cur=int(target_model_prediction[i].detach().cpu())
-                try:
-                    y_ind = correct_labels.index(cur)
-                    if  target_model_prediction[i] == y_label[i] and cur not in target_l:
-                        x_target[y_ind]=x_orig[i].detach().cpu().numpy()
-                        target_l.append(cur)
-                        print(cur)
-                except:
-                    counter+=1
-                    continue
-            if len(target_l)==num_img:
-                break
-        print(x_target)     
+        #print(correct_labels,y_target)
+        for l_ind in tqdm(range(len(y_target))):
+            #print(y_target[l_ind])
+            if y_target[l_ind] in correct_labels:
+                y_ind = correct_labels.index(y_target[l_ind])
+                x_target[l_ind] = correct_images[y_ind]
+                #print("found index:",y_ind)
+            else:
+                counter = 0
+                while counter<=10000:
+                    x_orig, y_label = next(iter(test_loader))
+                    x_orig, y_label = x_orig.cuda(), y_label.cuda()
+                    target_model_output = target_model_1.forward(x_orig)
+                    target_model_prediction = ch.max(target_model_output, 1).indices
+                    for i in range(len(target_model_prediction)):
+                        cur=int(target_model_prediction[i].detach().cpu())
+                        if cur ==y_target[l_ind]:
+                            x_target[l_ind] = x_orig[i].detach().cpu().numpy()
+                            #print("found")
+                        else:
+                            counter+=1
+                if counter == 10000:
+                    new_label = random.randint(0, 999)
+                    y_target[l_ind] = new_label
+                    if y_target[l_ind] in correct_labels:
+                        y_ind = correct_labels.index(y_target[l_ind])
+                        x_target[l_ind] = correct_images[y_ind]
+                        #print("found index:",y_ind)
+                    else:
+                        print("not possible")
+                            
+
+
     correct_labels = ch.Tensor(correct_labels)
     correct_labels = correct_labels.type(ch.LongTensor)
     correct_images = ch.Tensor(correct_images)
