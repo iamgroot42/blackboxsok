@@ -66,7 +66,7 @@ if __name__ == "__main__":
         # mode = attacker_config_1.target_label_selection_mode
         mode = "random"
         y_target = get_target_label(
-            mode, x_orig, target_model_1, num_class, y_label, 32)
+            mode, x_orig, target_model_1, num_class, y_label, batch_size)
         y_target = y_target.cuda()
     else:
         y_target = y_label

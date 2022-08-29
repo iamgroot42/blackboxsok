@@ -93,12 +93,22 @@ class BCEWithLogitsLossWrapper(Loss):
         labels_ = nn.functional.one_hot(label, preds.shape[1])
         return self.loss_obj(preds, labels_.float())
 
+class SCEWithLogitsLossWrapper(Loss):
+    def __init__(self, reduction='mean'):
+        super().__init__("softmax_cross_entropy_with_logits")
+
+    def __call__(self, logits, labels, dim=-1):
+        labels=labels.cuda()
+        res=(-labels * nn.functional.log_softmax(logits, dim=dim)).sum(dim=dim)
+        return res
+
 _LOSS_FUNCTION_MAPPING = {
     "margin": MarginLossWrapper,
     "ce": CrossEntropyLossWrapper,
     "bce": BCEWithLogitsLossWrapper,
     "logit": LogitLossWrapper,
-    "potrip":PoTripLossWrapper
+    "potrip":PoTripLossWrapper,
+    "scel": SCEWithLogitsLossWrapper
 }
 
 
