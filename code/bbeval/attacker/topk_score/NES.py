@@ -60,13 +60,14 @@ class NES(Attacker):
         noise = noise[good_inds]
         return losses, noise
 
-    def robust_in_top_k(self, target_class, proposed_adv, k_):
+    def robust_in_top_k(self, target_class, proposed_adv):
         eval_logits_ = self.model.forward(proposed_adv)
-        if not target_class in eval_logits_.argsort()[-k_:][::-1]:
+        vals, inds = ch.topk(eval_logits_, k=self.k)
+        if not target_class in inds:
             return False
         return True
 
-    def _attack(self, x_orig, x_adv=None, y_label=None, y_target=None):
+    def _attack(self, x_orig, x_adv, y_label, x_target, y_target):
         """
             Attack the original image using combination of transfer methods and return adversarial example
             (x, y_label): original image
@@ -95,7 +96,7 @@ class NES(Attacker):
         for row in range(batch_size):
             labels[row][y_target[row]] = 1
 
-        adv = clip_by_tensor(x_adv, x_min, x_max)
+        adv = clip_by_tensor(x_target, x_min, x_max)
         adv = adv.cuda()
         self.model.set_eval()  # Make sure model is in eval model
         self.model.zero_grad()  # Make sure no leftover gradients
@@ -143,7 +144,7 @@ class NES(Attacker):
                 proposed_adv = ch.clip(proposed_adv, lower, upper)
                 num_queries += 1
 
-                if robust_in_top_k(target_class, proposed_adv, k):
+                if robust_in_top_k(target_class, proposed_adv):
                     if prop_de > 0:
                         delta_epsilon = max(prop_de, 0.1)
                         last_ls = []

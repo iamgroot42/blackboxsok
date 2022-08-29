@@ -63,7 +63,7 @@ ATTACK_WRAPPER_MAPPING = {
     "MIADMIXTIDIFGSM_transfer": MIADMIXTIDIFGSM,
     "RAPFGSM_transfer": RAPFGSM,
     "BayesOpt":BayesOpt,
-    "nes": NES,
+    "NES": NES,
     "BayesOpt_full":BayesOpt_full
 }
 

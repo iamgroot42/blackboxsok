@@ -44,9 +44,9 @@ if __name__ == "__main__":
 
     ds_config = config.dataset_config
     # batch_size = config.batch_size
-    batch_size = 1
+    batch_size = 5
 
-    num_img =10
+    num_img =5
 
     # Get data-loader, make sure it works
     ds: CustomDatasetWrapper = get_dataset_wrapper(ds_config)
@@ -94,7 +94,7 @@ if __name__ == "__main__":
     for i in range(num_img+1):
         if i not in correct_labels:
             print(i)
-    
+
 
     print("==========")
 
@@ -124,11 +124,12 @@ if __name__ == "__main__":
                 cur=int(target_model_prediction[i].detach().cpu())
                 try:
                     y_ind = correct_labels.index(cur)
-                    if  target_model_prediction[i]== y_label[i] and cur not in target_l:
+                    if  target_model_prediction[i] == y_label[i] and cur not in target_l:
                         x_target[y_ind]=x_orig[i].detach().cpu().numpy()
                         target_l.append(cur)
                         print(cur)
                 except:
+                    counter+=1
                     continue
             if len(target_l)==num_img:
                 break
@@ -150,8 +151,8 @@ if __name__ == "__main__":
     print(total_transfered)
     # print(correct_images.shape)
 
+    y_target = y_target.type(ch.float)
     y_target = ch.Tensor(y_target)
-    y_target = y_target.type(ch.LongTensor)
     x_target = ch.Tensor(x_target)
 
 

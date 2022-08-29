@@ -29,10 +29,10 @@ def get_model_and_aux_models(attacker_config: AttackerConfig):
     return target_model, aux_models
 
 
-def single_attack(target_model, aux_models, x_orig, x_sample_adv, y_label, y_target, attacker_config: AttackerConfig,
+def single_attack(target_model, aux_models, x_orig, x_sample_adv, y_label, x_target, y_target, attacker_config: AttackerConfig,
                   experiment_config: ExperimentConfig):
     attacker = get_attack_wrapper(target_model, aux_models, attacker_config, experiment_config)
-    x_sample_adv, queries_used = attacker.attack(x_orig, x_sample_adv, y_label, y_target)
+    x_sample_adv, queries_used = attacker._attack(x_orig, x_sample_adv, y_label, x_target, y_target)
     return (x_sample_adv, queries_used), attacker
 
 
@@ -111,13 +111,10 @@ if __name__ == "__main__":
 
         num_class = ds.num_classes
         if attacker_config_1.targeted:
-            # mode = "easiest"/"hardest"/"random"/"user"
-            # mode = attacker_config_1.target_label_selection_mode
-            mode = "random"
-            y_target = get_target_label(
-                mode, x_orig, target_model_1, num_class, y_label, 10)
-            y_target = y_target.cuda()
+            x_target = ch.load('data/resnet50/x_target.pt')
+            y_target = ch.load('data/resnet50/y_target.pt')
         else:
+            x_target=x_orig
             y_target = y_label
 
         # Perform attack
@@ -125,7 +122,7 @@ if __name__ == "__main__":
                                                                                    aux_models=aux_models_1,
                                                                                    x_orig=x_orig,
                                                                                    x_sample_adv=x_orig,
-                                                                              
+                                                                                    x_target=x_target,
                                                                                    y_label=y_label,
                                                                                    y_target=y_target,
                                                                                    attacker_config=attacker_config_1,
