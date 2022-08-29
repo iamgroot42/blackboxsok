@@ -23,7 +23,7 @@ class BayesOpt_full(Attacker):
         super().__init__(model, aux_models, config, experiment_config)
         self.params = StairCaseConfig(**self.params)
         self.device ="cuda"
-        self.eps=5/255
+        self.eps=10/255
         self.arch = "inception_v3"
         self.inf_norm =True
         self.discrete=True
@@ -255,6 +255,8 @@ class BayesOpt_full(Attacker):
             if results_dict[idx]!=0:
                 suc_num+=1
                 query_count+=results_dict[idx]
+            else:
+                query_count+=self.itr
         time_end = time.time()
         print("\n\nTotal running time: %.4f seconds\n" % (time_end - time_start))
         ave_query =0

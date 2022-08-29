@@ -25,7 +25,7 @@ from bbeval.attacker.transfer_methods.PITIDIFGSSM import PITIDIFGSSM
 from bbeval.attacker.transfer_methods.ADMIXFGSM import ADMIXFGSM
 from bbeval.attacker.transfer_methods.MIADMIXTIDIFGSM import MIADMIXTIDIFGSM
 from bbeval.attacker.transfer_methods.RAPFGSM import RAPFGSM
-from bbeval.attacker.full_score.BayesOpt import BayesOpt
+from bbeval.attacker.top1_score.BayesOpt import BayesOpt
 from bbeval.attacker.topk_score.NES import NES
 from bbeval.attacker.full_score.BayesOpt_full import BayesOpt_full
 
