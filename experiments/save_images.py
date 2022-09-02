@@ -103,7 +103,7 @@ if __name__ == "__main__":
     if attacker_config_1.targeted:
         # getting y_target labels
         y_target =[]
-                # mode = "easiest"/"hardest"/"random"/"user"
+        # mode = "easiest"/"hardest"/"random"/"user"
         mode = "random"
         y_target = get_target_label(mode, correct_images, target_model_1, num_img, correct_labels, num_img)
         print(len(y_target))
@@ -165,6 +165,7 @@ if __name__ == "__main__":
 
     y_target = y_target.type(ch.float)
     y_target = ch.Tensor(y_target)
+    y_target = y_target.type(ch.LongTensor)
     x_target = ch.Tensor(x_target)
 
 

@@ -312,3 +312,13 @@ Target model: inceptionv4
 Aux model: inceptionv3
 The transferbility of SMIMIFGSM_transfer is 66.70000457763672 %
 --- 1104.2656888961792 seconds ---
+
+Target model: inceptionv3 
+Aux model: inceptionv3
+The transferbility of IFGSSM_transfer is 99.9000015258789 %
+--- 252.1203474998474 seconds ---
+
+Target model: inceptionv3 
+Aux model: inceptionv3
+The transferbility of FGSM_transfer is 51.900001525878906 %
+--- 47.291674852371216 seconds ---

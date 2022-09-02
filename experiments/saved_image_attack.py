@@ -32,12 +32,14 @@ def get_model_and_aux_models(attacker_config: AttackerConfig):
 def single_attack(target_model, aux_models, x_orig, x_sample_adv, y_label, x_target, y_target, attacker_config: AttackerConfig,
                   experiment_config: ExperimentConfig):
     attacker = get_attack_wrapper(target_model, aux_models, attacker_config, experiment_config)
-    x_sample_adv, queries_used = attacker._attack(x_orig, x_sample_adv, y_label, x_target, y_target)
+    x_sample_adv, queries_used = attacker.attack(x_orig, x_sample_adv, y_label, x_target, y_target)
     return (x_sample_adv, queries_used), attacker
 
 
 # os.environ['TORCH_HOME'] = '/p/blackboxsok/models/imagenet_torch' # download imagenet models to project directory
 if __name__ == "__main__":
+    # available_gpus = [ch.cuda.device(i) for i in range(ch.cuda.device_count())]
+    # print(available_gpus)
     parser = ArgumentParser(add_help=False)
     parser.add_argument(
         "--config", help="Specify config file", type=Path)
@@ -88,10 +90,15 @@ if __name__ == "__main__":
             correct_images = ch.load('data/vgg16_bn/correct_images.pt')
             correct_labels = ch.load('data/vgg16_bn/correct_labels.pt')
     # start_time = time.time()
+    if attacker_config_1.targeted:
+        target_images = ch.load('data/resnet50/x_target.pt')
+        target_labels = ch.load('data/resnet50/y_target.pt')
+    else:
+        target_images=correct_images
+        target_labels = correct_labels
 
     n, i = 0, 0
     start_time = time.time()
-
     while n < 1000:
         x_orig = correct_images[i:i + 10]
         y_label = correct_labels[i:i + 10]
@@ -102,20 +109,15 @@ if __name__ == "__main__":
         n += 10
     print("The clean accuracy is %s %%" % str(float(correctly_classified / 10)))
     #
-    for i in range(int(1)):
+    for i in range(int(100)):
         # the original dataset is normalized into the range of [0,1]
         # specific attacks may have different ranges and should be handled case by case
 
-        x_orig, y_label = correct_images[i * 100:i * 100 + 100], correct_labels[i * 100:i * 100 + 100]
+        x_orig, y_label = correct_images[i * 10:i * 10 + 10], correct_labels[i * 10:i * 10 + 10]
         x_orig, y_label = x_orig.cuda(), y_label.cuda()
-
+        x_target, y_target = target_images[i * 10:i * 10 + 10], target_labels[i * 10:i * 10 + 10]
+        x_target, y_target = x_target.cuda(), y_target.cuda()
         num_class = ds.num_classes
-        if attacker_config_1.targeted:
-            x_target = ch.load('data/resnet50/x_target.pt')
-            y_target = ch.load('data/resnet50/y_target.pt')
-        else:
-            x_target=x_orig
-            y_target = y_label
 
         # Perform attack
         (x_sample_adv, queries_used_1), attacker_1 = single_attack(target_model_1,
