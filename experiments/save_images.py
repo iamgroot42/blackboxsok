@@ -47,7 +47,7 @@ if __name__ == "__main__":
     # batch_size = config.batch_size
     batch_size = 10
 
-    num_img =1000
+    num_img =100
 
     # Get data-loader, make sure it works
     ds: CustomDatasetWrapper = get_dataset_wrapper(ds_config)
@@ -103,7 +103,7 @@ if __name__ == "__main__":
     if attacker_config_1.targeted:
         # getting y_target labels
         y_target =[]
-        # mode = "easiest"/"hardest"/"random"/"user"
+                # mode = "easiest"/"hardest"/"random"/"user"
         mode = "random"
         y_target = get_target_label(mode, correct_images, target_model_1, num_img, correct_labels, num_img)
         print(len(y_target))
@@ -163,23 +163,27 @@ if __name__ == "__main__":
     print(total_transfered)
     # print(correct_images.shape)
 
-    y_target = y_target.type(ch.float)
-    y_target = ch.Tensor(y_target)
-    y_target = y_target.type(ch.LongTensor)
-    x_target = ch.Tensor(x_target)
-
-
-    print("===============")
-    print("y_target:",y_target.shape)
-    print("x_target:",x_target.shape)
-
 
 
     model_name=attacker_config_1.adv_model_config.name
 
+    if attacker_config_1.targeted:
+        y_target = y_target.type(ch.float)
+        y_target = ch.Tensor(y_target)
+        x_target = ch.Tensor(x_target)
+
+
+        print("===============")
+        print("y_target:",y_target.shape)
+        print("x_target:",x_target.shape)
+        ch.save(y_target, 'data/'+model_name+'/y_target.pt')
+        ch.save(x_target, 'data/'+model_name+'/x_target.pt')
+
+
+
+
     ch.save(correct_images, 'data/'+model_name+'/correct_images.pt')
     ch.save(correct_labels, 'data/'+model_name+'/correct_labels.pt')
-    ch.save(y_target, 'data/'+model_name+'/y_target.pt')
-    ch.save(x_target, 'data/'+model_name+'/x_target.pt')
+
 
 
