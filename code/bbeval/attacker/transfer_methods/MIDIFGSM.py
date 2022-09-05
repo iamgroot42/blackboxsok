@@ -4,7 +4,7 @@ import torch.nn.functional as F
 from torch.autograd import Variable as V
 
 from bbeval.attacker.core import Attacker
-from bbeval.config import StairCaseConfig, AttackerConfig, ExperimentConfig
+from bbeval.config import TransferredAttackConfig, AttackerConfig, ExperimentConfig
 from bbeval.models.core import GenericModelWrapper
 from bbeval.loss import get_loss_fn
 from bbeval.attacker.transfer_methods._manipulate_gradient import torch_staircase_sign, project_noise, gkern, \
@@ -21,31 +21,13 @@ class MIDIFGSM(Attacker):
                  experiment_config: ExperimentConfig):
         super().__init__(model, aux_models, config, experiment_config)
         # Parse params dict into SquareAttackConfig
-        self.params = StairCaseConfig(**self.params)
+        self.params = TransferredAttackConfig(**self.params)
         self.x_final = None
         self.queries = 1
         self.criterion = get_loss_fn("ce")
         self.norm = None
 
-    def input_diversity(self, x,img_resize):
-        diversity_prob = 0.5
-        img_size = x.shape[-1]
-        # print(img_size)
-
-        rnd = ch.randint(low=img_size, high=img_resize, size=(1,), dtype=ch.int32)
-        rescaled = F.interpolate(x, size=[rnd, rnd], mode='bilinear', align_corners=False)
-        h_rem = img_resize - rnd
-        w_rem = img_resize - rnd
-        pad_top = ch.randint(low=0, high=h_rem.item(), size=(1,), dtype=ch.int32)
-        pad_bottom = h_rem - pad_top
-        pad_left = ch.randint(low=0, high=w_rem.item(), size=(1,), dtype=ch.int32)
-        pad_right = w_rem - pad_left
-
-        padded = F.pad(rescaled, [pad_left.item(), pad_right.item(), pad_top.item(), pad_bottom.item()], value=0)
-
-        return padded if ch.rand(1) < diversity_prob else x
-
-    def _attack(self, x_orig, x_adv=None, y_label=None, y_target=None):
+    def attack(self, x_orig, x_adv=None, y_label=None, x_target=None, y_target=None):
         """
             Attack the original image using combination of transfer methods and return adversarial example
             (x, y_label): original image
@@ -98,10 +80,10 @@ class MIDIFGSM(Attacker):
             output = 0
             for model_name in self.aux_models:
                 model = self.aux_models[model_name]
-                output += model.forward(self.input_diversity(adv,image_resizes[0])) / n_model_ensemble
+                output += model.forward(input_diversity(adv,image_resizes[0])) / n_model_ensemble
 
             output_clone = output.clone()
-            loss = self.criterion(output_clone, y_target, targeted)
+            loss = self.criterion(output_clone, y_target)
             # print(i)
             # print(loss)
             loss.backward()

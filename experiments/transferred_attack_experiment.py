@@ -29,10 +29,10 @@ def get_model_and_aux_models(attacker_config: AttackerConfig):
     return target_model, aux_models
 
 
-def single_attack(target_model, aux_models, x_orig, x_sample_adv, y_label, y_target, attacker_config: AttackerConfig,
+def single_attack(target_model, aux_models, x_orig, x_sample_adv, y_label, x_target, y_target, attacker_config: AttackerConfig,
                   experiment_config: ExperimentConfig):
     attacker = get_attack_wrapper(target_model, aux_models, attacker_config, experiment_config)
-    x_sample_adv, queries_used = attacker.attack(x_orig, x_sample_adv, y_label, y_target)
+    x_sample_adv, queries_used = attacker.attack(x_orig=x_orig, x_adv=x_sample_adv, y_label=y_label, x_target=x_target, y_target=y_target)
     return (x_sample_adv, queries_used), attacker
 
 
@@ -60,6 +60,8 @@ if __name__ == "__main__":
     loss_function = get_loss_fn("ce")
     target_model_1.set_eval()  # Make sure model is in eval model
     target_model_1.zero_grad()  # Make sure no leftover gradients
+
+    x_target=1
 
     ds_config = config.dataset_config
     if ds_config.name == 'imagenet':
@@ -126,6 +128,7 @@ if __name__ == "__main__":
                                                                                    x_orig=x_orig,
                                                                                    x_sample_adv=x_orig,
                                                                                    y_label=y_label,
+                                                                                   x_target=x_target,
                                                                                    y_target=y_target,
                                                                                    attacker_config=attacker_config_1,
                                                                                    experiment_config=config)

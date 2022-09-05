@@ -44,7 +44,7 @@ class CrossEntropyLossWrapper(Loss):
         super().__init__("cross_entropy_loss", reduction)
         self.loss_obj = nn.CrossEntropyLoss(reduction=reduction)
     
-    def __call__(self, preds, label, is_targeted=False, **kwargs):
+    def __call__(self, preds, label, **kwargs):
         return self.loss_obj(preds, label)
 
 # need to be edited
@@ -52,7 +52,7 @@ class LogitLossWrapper(Loss):
     def __init__(self, reduction='mean'):
         super().__init__("logit_loss", reduction)
 
-    def __call__(self, preds, label, is_targeted=False, **kwargs):
+    def __call__(self, preds, label, **kwargs):
         real = preds.gather(1, label.unsqueeze(1)).squeeze(1)
         logit_dists = (-1 * real)
         loss = logit_dists.mean()
@@ -77,7 +77,7 @@ class PoTripLossWrapper(Loss):
         distance = ch.mean(a_b / ch.sqrt(L2_a * L2_b))
         return distance
 
-    def __call__(self, preds, label, is_targeted=False, **kwargs):
+    def __call__(self, preds, label, **kwargs):
         labels_ = nn.functional.one_hot(label, preds.shape[1])
         loss_po = self.Poincare_dis((preds / ch.sum(ch.abs(preds), 1, keepdim=True)),ch.clamp((labels_ - 0.00001), 0.0, 1.0))
         loss_cos = ch.clamp(self.Cos_dis(labels_, preds) - self.Cos_dis(labels_, preds) + 0.007, 0.0, 2.1)
@@ -89,7 +89,8 @@ class BCEWithLogitsLossWrapper(Loss):
         super().__init__("bce_with_logits_loss", reduction)
         self.loss_obj = nn.BCEWithLogitsLoss(reduction=reduction)
     
-    def __call__(self, preds, label, is_targeted=False, **kwargs):
+    def __call__(self, preds, label, **kwargs):
+
         labels_ = nn.functional.one_hot(label, preds.shape[1])
         return self.loss_obj(preds, labels_.float())
 

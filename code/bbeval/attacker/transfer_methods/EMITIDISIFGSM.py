@@ -1,11 +1,10 @@
-# is not implemented correctely due to the poor performance of EMIFGSM
 import numpy as np
 import torch as ch
 import torch.nn.functional as F
 from torch.autograd import Variable as V
 
 from bbeval.attacker.core import Attacker
-from bbeval.config import StairCaseConfig, AttackerConfig, ExperimentConfig
+from bbeval.config import TransferredAttackConfig, AttackerConfig, ExperimentConfig
 from bbeval.models.core import GenericModelWrapper
 from bbeval.loss import get_loss_fn
 from bbeval.attacker.transfer_methods._manipulate_gradient import torch_staircase_sign, project_noise, gkern, \
@@ -16,36 +15,22 @@ import torchvision.models as models  # TODO: remove after test
 
 np.set_printoptions(precision=5, suppress=True)
 
+
 # https://arxiv.org/pdf/2103.10609.pdf
+# better performance than MI-FGSM or NI-FGSM, didn't show high performance similar to VNI-FGSM or SMI-FGSM
 
 class EMITIDISIFGSM(Attacker):
     def __init__(self, model: GenericModelWrapper, aux_models: dict, config: AttackerConfig,
                  experiment_config: ExperimentConfig):
         super().__init__(model, aux_models, config, experiment_config)
         # Parse params dict into SquareAttackConfig
-        self.params = StairCaseConfig(**self.params)
+        self.params = TransferredAttackConfig(**self.params)
         self.x_final = None
         self.queries = 1
         self.criterion = get_loss_fn("ce")
         self.norm = None
 
-    def transformation_function(self, x):
-        img_size = x.shape[-1]
-        img_resize = 270
-        rnd = ch.randint(low=img_resize, high=img_size, size=(1,), dtype=ch.int32)
-        rescaled = F.interpolate(x, size=[rnd, rnd], mode='bilinear', align_corners=False)
-        h_rem = img_size - rnd
-        w_rem = img_size - rnd
-        pad_top = ch.randint(low=0, high=h_rem.item(), size=(1,), dtype=ch.int32)
-        pad_bottom = h_rem - pad_top
-        pad_left = ch.randint(low=0, high=w_rem.item(), size=(1,), dtype=ch.int32)
-        pad_right = w_rem - pad_left
-
-        padded = F.pad(rescaled, [pad_left.item(), pad_right.item(), pad_top.item(), pad_bottom.item()], value=0)
-
-        return padded
-
-    def _attack(self, x_orig, x_adv=None, y_label=None, y_target=None):
+    def attack(self, x_orig, x_adv=None, y_label=None, x_target=None, y_target=None):
         """
             Attack the original image using combination of transfer methods and return adversarial example
             (x, y_label): original image
@@ -70,10 +55,13 @@ class EMITIDISIFGSM(Attacker):
         alpha = eps / n_iters
         decay = 1.0
         grad = 0
-        momentum=0
-        num_transformations=12
-        lamda=1/num_transformations
-        Gradients=[]
+        momentum = 0
+        m = 5
+
+        sampling_number = 11
+        sampling_interval = 7
+        grad_bar = 0
+        factors = np.linspace(-sampling_interval, sampling_interval, num=sampling_number)
 
         # initializes the advesarial example
         # x.requires_grad = True
@@ -81,42 +69,54 @@ class EMITIDISIFGSM(Attacker):
         adv = adv.cuda()
         adv.requires_grad = True
         pre_grad = ch.zeros(adv.shape).cuda()
-        # quite specific piece of code to staircase attack
         x_min = clip_by_tensor(x_orig - eps, x_min_val, x_max_val)
         x_max = clip_by_tensor(x_orig + eps, x_min_val, x_max_val)
+
+        kernel_size = 5
+        kernel = gkern(kernel_size, 3).astype(np.float32)
+        gaussian_kernel = np.stack([kernel, kernel, kernel])
+        gaussian_kernel = np.expand_dims(gaussian_kernel, 1)
+        gaussian_kernel = ch.from_numpy(gaussian_kernel).cuda()
 
         for model_name in self.aux_models:
             model = self.aux_models[model_name]
             model.set_eval()  # Make sure model is in eval model
             model.zero_grad()  # Make sure no leftover gradients
-            # logits_clean = model.forward(x_orig, detach=True)
-            # corr_classified = ch.argmax(logits_clean, dim=1) == y_label
-            # print('Clean accuracy of candidate samples: {:.2%}'.format(ch.mean(1. * corr_classified).item()))
 
+        # print(factors)
         for i in range(n_iters):
             # print(i)
             if i == 0:
                 adv = clip_by_tensor(adv, x_min, x_max)
                 adv = V(adv, requires_grad=True)
-            for t in range (num_transformations):
-                adv=adv
-                output = 0
-                grad = 0
-                for model_name in self.aux_models:
-                    model = self.aux_models[model_name]
-                    output += model.forward(self.transformation_function(adv)) / n_model_ensemble
 
-                output_clone = output.clone()
-                loss = self.criterion(output_clone, y_target, targeted)
-                # print(loss)
-                loss.backward()
-                Gradients.append(adv.grad.data)
+            x_lookaheads = [adv + factor * grad_bar for factor in factors]
 
-            for gradient in Gradients:
-                grad += lamda*gradient
+            for num in range(sampling_number):
+                # print(num)
+                x_input = x_lookaheads[num]
+                x_input = V(x_input, requires_grad=True)
+                for j in ch.arange(m):
+                    x_nes = x_input / ch.pow(2, j)
+                    x_nes = V(x_nes, requires_grad=True)
+                    output = 0
+                    for model_name in self.aux_models:
+                        model = self.aux_models[model_name]
+                        output += model.forward(input_diversity(x_nes, image_resizes[0])) / n_model_ensemble
 
-            # grad = momentum * decay + grad / ch.mean(ch.abs(grad), dim=(1,2,3), keepdim=True)
-            # momentum = grad
+                    output_clone = output.clone()
+                    loss = self.criterion(output_clone, y_target)
+                    # print(loss)
+                    if i == 0:
+                        loss.backward(retain_graph=True)
+                    #     Trying to backward through the graph a second time
+                    else:
+                        loss.backward()
+                    grad_bar += x_nes.grad.data / sampling_number / m
+
+            grad = F.conv2d(grad_bar, gaussian_kernel, stride=1, padding='same', groups=3)
+            grad = momentum * decay + grad / ch.mean(ch.abs(grad), dim=(1, 2, 3), keepdim=True)
+            momentum = grad
 
             if targeted == True:
                 adv = adv - alpha * ch.sign(grad)
