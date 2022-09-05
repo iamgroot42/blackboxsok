@@ -322,3 +322,8 @@ Target model: inceptionv3
 Aux model: inceptionv3
 The transferbility of FGSM_transfer is 51.900001525878906 %
 --- 47.291674852371216 seconds ---
+
+Target model: inceptionv3 
+Aux model: inceptionv3
+The transferbility of FGSM_transfer is 54.20000076293945 %
+--- 10.924500226974487 seconds ---

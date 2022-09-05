@@ -47,7 +47,7 @@ if __name__ == "__main__":
     # batch_size = config.batch_size
     batch_size = 10
 
-    num_img =100
+    num_img =1000
 
     # Get data-loader, make sure it works
     ds: CustomDatasetWrapper = get_dataset_wrapper(ds_config)
