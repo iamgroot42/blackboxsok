@@ -4,7 +4,7 @@ import torch.nn.functional as F
 from torch.autograd import Variable as V
 
 from bbeval.attacker.core import Attacker
-from bbeval.config import StairCaseConfig, AttackerConfig, ExperimentConfig
+from bbeval.config import TransferredAttackConfig, AttackerConfig, ExperimentConfig
 from bbeval.models.core import GenericModelWrapper
 from bbeval.loss import get_loss_fn
 from bbeval.attacker.transfer_methods._manipulate_gradient import torch_staircase_sign, project_noise, gkern, \
@@ -21,13 +21,13 @@ class RAPFGSM(Attacker):
                  experiment_config: ExperimentConfig):
         super().__init__(model, aux_models, config, experiment_config)
         # Parse params dict into SquareAttackConfig
-        self.params = StairCaseConfig(**self.params)
+        self.params = TransferredAttackConfig(**self.params)
         self.x_final = None
         self.queries = 1
         self.criterion = get_loss_fn("ce")
         self.norm = None
 
-    def _attack(self, x_orig, x_adv=None, y_label=None, y_target=None):
+    def attack(self, x_orig, x_adv=None, y_label=None, x_target=None, y_target=None):
         """
             Attack the original image using combination of transfer methods and return adversarial example
             (x, y_label): original image
@@ -90,7 +90,7 @@ class RAPFGSM(Attacker):
                         output_inner += model.forward(x_temp_inner) / n_model_ensemble
 
                     output_inner_clone = output_inner.clone()
-                    loss_inner = self.criterion(output_inner_clone, y_target, targeted)
+                    loss_inner = self.criterion(output_inner_clone, y_target)
                     # print(t)
                     # print(loss_inner)
                     loss_inner.backward(retain_graph=True)

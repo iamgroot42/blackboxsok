@@ -4,7 +4,7 @@ import torch.nn.functional as F
 from torch.autograd import Variable as V
 
 from bbeval.attacker.core import Attacker
-from bbeval.config import StairCaseConfig, AttackerConfig, ExperimentConfig
+from bbeval.config import TransferredAttackConfig, AttackerConfig, ExperimentConfig
 from bbeval.models.core import GenericModelWrapper
 from bbeval.loss import get_loss_fn
 from bbeval.attacker.transfer_methods._manipulate_gradient import torch_staircase_sign, project_noise, gkern, \
@@ -15,6 +15,7 @@ import torchvision.models as models  # TODO: remove after test
 
 np.set_printoptions(precision=5, suppress=True)
 
+
 # https://arxiv.org/pdf/2103.10609.pdf
 # better performance than MI-FGSM or NI-FGSM, didn't show high performance similar to VNI-FGSM or SMI-FGSM
 
@@ -23,13 +24,13 @@ class EMIFGSM(Attacker):
                  experiment_config: ExperimentConfig):
         super().__init__(model, aux_models, config, experiment_config)
         # Parse params dict into SquareAttackConfig
-        self.params = StairCaseConfig(**self.params)
+        self.params = TransferredAttackConfig(**self.params)
         self.x_final = None
         self.queries = 1
         self.criterion = get_loss_fn("ce")
         self.norm = None
 
-    def _attack(self, x_orig, x_adv=None, y_label=None, y_target=None):
+    def attack(self, x_orig, x_adv=None, y_label=None, x_target=None, y_target=None):
         """
             Attack the original image using combination of transfer methods and return adversarial example
             (x, y_label): original image
@@ -54,11 +55,11 @@ class EMIFGSM(Attacker):
         alpha = eps / n_iters
         decay = 1.0
         grad = 0
-        momentum=0
+        momentum = 0
 
         sampling_number = 11
         sampling_interval = 7
-        grad_bar=0
+        grad_bar = 0
         factors = np.linspace(-sampling_interval, sampling_interval, num=sampling_number)
 
         # initializes the advesarial example
@@ -67,7 +68,6 @@ class EMIFGSM(Attacker):
         adv = adv.cuda()
         adv.requires_grad = True
         pre_grad = ch.zeros(adv.shape).cuda()
-        # quite specific piece of code to staircase attack
         x_min = clip_by_tensor(x_orig - eps, x_min_val, x_max_val)
         x_max = clip_by_tensor(x_orig + eps, x_min_val, x_max_val)
 
@@ -75,9 +75,6 @@ class EMIFGSM(Attacker):
             model = self.aux_models[model_name]
             model.set_eval()  # Make sure model is in eval model
             model.zero_grad()  # Make sure no leftover gradients
-            # logits_clean = model.forward(x_orig, detach=True)
-            # corr_classified = ch.argmax(logits_clean, dim=1) == y_label
-            # print('Clean accuracy of candidate samples: {:.2%}'.format(ch.mean(1. * corr_classified).item()))
 
         # print(factors)
         for i in range(n_iters):
@@ -90,7 +87,7 @@ class EMIFGSM(Attacker):
 
             for num in range(sampling_number):
                 # print(num)
-                x_input=x_lookaheads[num]
+                x_input = x_lookaheads[num]
                 x_input = V(x_input, requires_grad=True)
                 output = 0
                 for model_name in self.aux_models:
@@ -98,16 +95,16 @@ class EMIFGSM(Attacker):
                     output += model.forward(x_input) / n_model_ensemble
 
                 output_clone = output.clone()
-                loss = self.criterion(output_clone, y_target, targeted)
+                loss = self.criterion(output_clone, y_target)
                 # print(loss)
-                if i==0:
-                    loss.backward(retain_graph = True)
+                if i == 0:
+                    loss.backward(retain_graph=True)
                 #     Trying to backward through the graph a second time
                 else:
                     loss.backward()
-                grad_bar+=x_input.grad.data/sampling_number
+                grad_bar += x_input.grad.data / sampling_number
 
-            grad = momentum * decay + grad_bar / ch.mean(ch.abs(grad_bar), dim=(1,2,3), keepdim=True)
+            grad = momentum * decay + grad_bar / ch.mean(ch.abs(grad_bar), dim=(1, 2, 3), keepdim=True)
             momentum = grad
 
             if targeted == True:

@@ -4,7 +4,7 @@ import torch.nn.functional as F
 from torch.autograd import Variable as V
 
 from bbeval.attacker.core import Attacker
-from bbeval.config import StairCaseConfig, AttackerConfig, ExperimentConfig
+from bbeval.config import TransferredAttackConfig, AttackerConfig, ExperimentConfig
 from bbeval.models.core import GenericModelWrapper
 from bbeval.loss import get_loss_fn
 from bbeval.attacker.transfer_methods._manipulate_gradient import torch_staircase_sign, project_noise, gkern, \
@@ -21,13 +21,13 @@ class VMIFGSM(Attacker):
                  experiment_config: ExperimentConfig):
         super().__init__(model, aux_models, config, experiment_config)
         # Parse params dict into SquareAttackConfig
-        self.params = StairCaseConfig(**self.params)
+        self.params = TransferredAttackConfig(**self.params)
         self.x_final = None
         self.queries = 1
         self.criterion = get_loss_fn("ce")
         self.norm = None
 
-    def _attack(self, x_orig, x_adv=None, y_label=None, y_target=None):
+    def attack(self, x_orig, x_adv=None, y_label=None, x_target=None, y_target=None):
         """
             Attack the original image using combination of transfer methods and return adversarial example
             (x, y_label): original image
@@ -50,9 +50,6 @@ class VMIFGSM(Attacker):
         n_model_ensemble = len(self.aux_models)
         n_input_ensemble = len(image_resizes)
         alpha = eps / n_iters
-        # decay (float): momentum factor. (Default: 1.0)
-        # N (int): the number of sampled examples in the neighborhood. (Default: 20)
-        # beta (float): the upper bound of neighborhood. (Default: 3/2)
         decay = 1.0
         grad = 0
         v=0
@@ -74,9 +71,6 @@ class VMIFGSM(Attacker):
             model = self.aux_models[model_name]
             model.set_eval()  # Make sure model is in eval model
             model.zero_grad()  # Make sure no leftover gradients
-            # logits_clean = model.forward(x_orig, detach=True)
-            # corr_classified = ch.argmax(logits_clean, dim=1) == y_label
-            # print('Clean accuracy of candidate samples: {:.2%}'.format(ch.mean(1. * corr_classified).item()))
 
         for i in range(n_iters):
             if i == 0:
@@ -89,7 +83,7 @@ class VMIFGSM(Attacker):
                 output += model.forward(adv) / n_model_ensemble
 
             output_clone = output.clone()
-            loss = self.criterion(output_clone, y_target, targeted)
+            loss = self.criterion(output_clone, y_target)
             # print(i)
             # print(loss)
             loss.backward()
@@ -110,9 +104,9 @@ class VMIFGSM(Attacker):
                 output_clone = output.clone()
                 # Calculate loss
                 if targeted:
-                    cost = -self.criterion(output_clone, y_target, targeted)
+                    cost = -self.criterion(output_clone, y_target)
                 else:
-                    cost = self.criterion(output_clone, y_target, targeted)
+                    cost = self.criterion(output_clone, y_target)
                 cost.backward()
                 GV_grad += neighbor_images.grad.data
             # obtaining the gradient variance

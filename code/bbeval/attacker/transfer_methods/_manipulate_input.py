@@ -1,4 +1,4 @@
-import torch
+import torch as ch
 from torch import nn
 import torch.nn.functional as F
 import numpy as np
@@ -11,22 +11,23 @@ def save_img(save_path, img):
                     ).save(save_path, quality=95)
 
 
-def input_diversity(input_tensor, image_width, image_resize, prob, interpol_dim = None, mode='nearest', **kwargs):
-    if interpol_dim == None:
-        interpol_dim = image_resize
-    rnd = torch.randint(image_width, image_resize, ())
-    rescaled = F.interpolate(
-        input_tensor, size=[rnd, rnd], mode='bilinear', align_corners=True)
-    h_rem = image_resize - rnd
-    w_rem = image_resize - rnd
-    pad_top = torch.randint(0, h_rem, ())
+def input_diversity(x,img_resize):
+    diversity_prob = 0.5
+    img_size = x.shape[-1]
+    # print(img_size)
+
+    rnd = ch.randint(low=img_size, high=img_resize, size=(1,), dtype=ch.int32)
+    rescaled = F.interpolate(x, size=[rnd, rnd], mode='bilinear', align_corners=False)
+    h_rem = img_resize - rnd
+    w_rem = img_resize - rnd
+    pad_top = ch.randint(low=0, high=h_rem.item(), size=(1,), dtype=ch.int32)
     pad_bottom = h_rem - pad_top
-    pad_left = torch.randint(0, w_rem, ())
+    pad_left = ch.randint(low=0, high=w_rem.item(), size=(1,), dtype=ch.int32)
     pad_right = w_rem - pad_left
-    pad_list = (pad_left, pad_right, pad_top, pad_bottom)
-    padded = nn.ConstantPad2d(pad_list, 0.)(rescaled)
-    padded = nn.functional.interpolate(padded, [image_resize, image_resize],mode=mode)
-    return padded if torch.rand(()) < prob else input_tensor
+
+    padded = F.pad(rescaled, [pad_left.item(), pad_right.item(), pad_top.item(), pad_bottom.item()], value=0)
+
+    return padded if ch.rand(1) < diversity_prob else x
 
 def ensemble_input_diversity(input_tensor, image_width, image_resize, prob=1.0, interpol_dim=None, mode='bilinear', **kwargs):
     """
@@ -56,6 +57,22 @@ def ensemble_input_diversity(input_tensor, image_width, image_resize, prob=1.0, 
     padded = nn.functional.interpolate(padded, [256, 256], mode='bilinear')
     """
     padded = input_diversity(input_tensor, image_width, image_resize, prob, interpol_dim, mode)
+    return padded
+
+def transformation_function(x):
+    img_size = x.shape[-1]
+    img_resize = 270
+    rnd = ch.randint(low=img_resize, high=img_size, size=(1,), dtype=ch.int32)
+    rescaled = F.interpolate(x, size=[rnd, rnd], mode='bilinear', align_corners=False)
+    h_rem = img_size - rnd
+    w_rem = img_size - rnd
+    pad_top = ch.randint(low=0, high=h_rem.item(), size=(1,), dtype=ch.int32)
+    pad_bottom = h_rem - pad_top
+    pad_left = ch.randint(low=0, high=w_rem.item(), size=(1,), dtype=ch.int32)
+    pad_right = w_rem - pad_left
+
+    padded = F.pad(rescaled, [pad_left.item(), pad_right.item(), pad_top.item(), pad_bottom.item()], value=0)
+
     return padded
 
 def clip_by_tensor(t, t_min, t_max):

@@ -4,7 +4,7 @@ import GPy
 from tqdm import tqdm
 from bbeval.models.core import GenericModelWrapper
 from bbeval.attacker.core import Attacker
-from bbeval.config import StairCaseConfig, AttackerConfig, ExperimentConfig
+from bbeval.config import TransferredAttackConfig, AttackerConfig, ExperimentConfig
 from bbeval.loss import get_loss_fn
 import time
 from botorch.models import SingleTaskGP
@@ -21,7 +21,7 @@ class BayesOpt_full(Attacker):
     def __init__(self, model: GenericModelWrapper, aux_models: dict, config: AttackerConfig,
                  experiment_config: ExperimentConfig):
         super().__init__(model, aux_models, config, experiment_config)
-        self.params = StairCaseConfig(**self.params)
+        self.params = TransferredAttackConfig(**self.params)
         self.device ="cuda"
         self.eps=10/255
         self.arch = "inception_v3"

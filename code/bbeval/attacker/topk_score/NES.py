@@ -4,7 +4,7 @@ import torch.nn.functional as F
 from torch.autograd import Variable as V
 
 from bbeval.attacker.core import Attacker
-from bbeval.config import StairCaseConfig, AttackerConfig, ExperimentConfig
+from bbeval.config import TransferredAttackConfig, AttackerConfig, ExperimentConfig
 from bbeval.models.core import GenericModelWrapper
 from bbeval.loss import get_loss_fn
 from bbeval.attacker.transfer_methods._manipulate_input import clip_by_tensor
@@ -17,7 +17,7 @@ class NES(Attacker):
                  experiment_config: ExperimentConfig):
         super().__init__(model, aux_models, config, experiment_config)
         # Parse params dict into SquareAttackConfig
-        self.params = StairCaseConfig(**self.params)
+        self.params = TransferredAttackConfig(**self.params)
         self.x_final = None
         self.queries = 1
         self.criterion = get_loss_fn("scel")
