@@ -1,51 +1,49 @@
 import numpy as np
 import torch
-import GPy
 from tqdm import tqdm
 from bbeval.models.core import GenericModelWrapper
 from bbeval.attacker.core import Attacker
 from bbeval.config import TransferredAttackConfig, AttackerConfig, ExperimentConfig
-from bbeval.loss import get_loss_fn
 import time
 from botorch.models import SingleTaskGP
 from botorch.fit import fit_gpytorch_model
 from gpytorch.mlls import ExactMarginalLogLikelihood
-from botorch.acquisition import qExpectedImprovement, ExpectedImprovement, PosteriorMean
+from botorch.acquisition import ExpectedImprovement, PosteriorMean
 from botorch.acquisition import ProbabilityOfImprovement, UpperConfidenceBound
-from botorch.sampling.samplers import SobolQMCNormalSampler
-from botorch.optim import  gen_batch_initial_conditions
+from botorch.optim import gen_batch_initial_conditions
 from botorch.generation.gen import gen_candidates_torch, get_best_candidates
-from bbeval.attacker.top1_score.BayesOpt_util import  proj,latent_proj,fft_transform,fft_transform_mc,transform
+from bbeval.attacker.top1_score.BayesOpt_util import proj, latent_proj, transform
+
 
 class BayesOpt(Attacker):
     def __init__(self, model: GenericModelWrapper, aux_models: dict, config: AttackerConfig,
                  experiment_config: ExperimentConfig):
         super().__init__(model, aux_models, config, experiment_config)
         self.params = TransferredAttackConfig(**self.params)
-        self.device ="cuda"
-        self.eps=20/255
+        self.device = "cuda"
+        self.eps = 20/255
         self.arch = "inception_v3"
-        self.inf_norm =True
-        self.discrete=True
-        self.hard_label=True
-        self.dim =12
-        self.standardize=True
-        self.bounds=0
-        self.acqf="EI"
+        self.inf_norm = True
+        self.discrete = True
+        self.hard_label = True
+        self.dim = 12
+        self.standardize = True
+        self.bounds = 0
+        self.acqf = "EI"
         self.optimize_acq = 'scipy'
-        self.initial_samples =5
-        self.sin =True
+        self.initial_samples = 5
+        self.sin = True
         self.cos = True
-        self.beta=1
-        self.itr =1000
+        self.beta = 1
+        self.itr = 1000
 
-    def obj_func(self,x, x0, y0):
+    def obj_func(self, x, x0, y0):
         # evaluate objective function
         # if hard label: -1 if image is correctly classified, 0 otherwise
         # (done this way because BayesOpt assumes we want to maximize)
         # if soft label, correct logit - highest logit other than correct logit
         # in both cases, successful adversarial perturbation iff objective function >= 0
-        x = transform(x,self.arch, self.cos, self.sin).to(self.device)
+        x = transform(x, self.arch, self.cos, self.sin).to(self.device)
         x = proj(x, self.eps, self.inf_norm, self.discrete)
         with torch.no_grad():
             #self.model.set_eval()
@@ -67,15 +65,17 @@ class BayesOpt(Attacker):
                             torch.zeros_like(index)).float()
         # inverse to maxize the negative value
         return -f
-    def initialize_model(self,x0, y0, n=1):
+
+    def initialize_model(self, x0, y0, n=1):
         # initialize botorch GP model
         # generate prior xs and ys for GP
-        train_x = 2 * torch.rand(n, self.latent_dim, device=self.device).float() - 1
+        train_x = 2 * torch.rand(n, self.latent_dim,
+                                 device=self.device).float() - 1
         if not self.inf_norm:
             train_x = latent_proj(train_x, self.eps)
         train_obj = self.obj_func(train_x, x0, y0)
-        mean= train_obj.mean()
-        std =torch.std(train_obj, unbiased=False)
+        mean = train_obj.mean()
+        std = torch.std(train_obj, unbiased=False)
         '''
         if self.standardize:
             train_obj = (train_obj - train_obj.mean()) / train_obj.std()
@@ -88,7 +88,7 @@ class BayesOpt(Attacker):
         mll = mll.to(train_x)
         return train_x, train_obj, mll, model, best_observed_value, mean, std
 
-    def optimize_acqf_and_get_observation(self,acq_func, x0, y0):
+    def optimize_acqf_and_get_observation(self, acq_func, x0, y0):
         # Optimizes the acquisition function, returns new candidate new_x
         # and its objective function value new_obj
 
@@ -127,7 +127,7 @@ class BayesOpt(Attacker):
         new_obj = self.obj_func(new_x, x0, y0)
         return new_x, new_obj
 
-    def bayes_opt(self,x0, y0):
+    def bayes_opt(self, x0, y0):
         """
         Main function for Bayesian Optimiazation.
         After initialization of model, fit GP to the data for each iteration
@@ -136,7 +136,7 @@ class BayesOpt(Attacker):
         """
         best_observed = []
         query_count, success = 0, 0
-        best_candidate,best_adv_added =[],[]
+        best_candidate, best_adv_added = [], []
         #initialization of the GP model
         train_x, train_obj, mll, model, best_value, mean, std = self.initialize_model(
             x0, y0, n=1)
@@ -158,7 +158,8 @@ class BayesOpt(Attacker):
             elif self.acqf == 'UCB':
                 qEI = UpperConfidenceBound(model, beta=self.beta)
             # optimize and get new observation
-            new_x, new_obj = self.optimize_acqf_and_get_observation(qEI, x0, y0)
+            new_x, new_obj = self.optimize_acqf_and_get_observation(
+                qEI, x0, y0)
             '''
             if args.standardize:
                 new_obj = (new_obj - mean) / std
@@ -194,11 +195,10 @@ class BayesOpt(Attacker):
                 else:
                     print('Adversarial Label', adv_label.item(),
                           'Norm:', best_candidate.norm().item())
-                return query_count, success,best_candidate,best_candidate+x0
+                return query_count, success, best_candidate, best_candidate+x0
             query_count += 1
 
-        return query_count, success,best_candidate,best_adv_added
-
+        return query_count, success, best_candidate, best_adv_added
 
     def attack(self, x_orig, x_adv_loc, y_label, y_target=None):
 
@@ -209,16 +209,16 @@ class BayesOpt(Attacker):
             self.latent_dim = self.dim * self.dim * 3
 
         self.bounds = torch.tensor([[-2.0] * self.latent_dim, [2.0] * self.latent_dim],
-                              device=self.device).float()
+                                   device=self.device).float()
 
         print("Length of sample_set: ", x_orig.size())
         results_dict = {}
-        adv_dic={}
-        x =0
-        
+        adv_dic = {}
+        x = 0
+
         for idx in range(32):
             print("###################===================####################")
-            image, label = x_orig[idx],y_label[idx]
+            image, label = x_orig[idx], y_label[idx]
             #print(image,label)
             image = image.unsqueeze(0).to(self.device)
             #print(image, label)
@@ -227,40 +227,42 @@ class BayesOpt(Attacker):
             print(f"Image {idx:d}   Original label: {label:d}")
             predicted_label = torch.argmax(self.model.forward(image))
             print("Predicted label: ", predicted_label.item())
-            if predicted_label==label:
-                x+=1
+            if predicted_label == label:
+                x += 1
             # ignore incorrectly classified images
                 # itr, success = bayes_opt(image, label)
 
-                itr, success,adv,adv_added_image = self.bayes_opt(image, label)
+                itr, success, adv, adv_added_image = self.bayes_opt(
+                    image, label)
 
                 print(itr, success)
                 if success:
                     results_dict[idx] = itr
-                    adv_dic[idx]=adv,adv_added_image
+                    adv_dic[idx] = adv, adv_added_image
                 else:
                     results_dict[idx] = 0
 
-        print(x,"images haven been attacked")
+        print(x, "images haven been attacked")
         print('RESULTS', results_dict)
 
-        best_query=2000
-        best_adv =[]
+        best_query = 2000
+        best_adv = []
         suc_num = 0
-        query_count=0
+        query_count = 0
         for idx in results_dict.keys():
-            if results_dict[idx]<best_query and results_dict[idx]!=0:
-                best_query=results_dict[idx]
-                best_adv=adv_dic[idx][0]
-            if results_dict[idx]!=0:
-                suc_num+=1
-                query_count+=results_dict[idx]
+            if results_dict[idx] < best_query and results_dict[idx] != 0:
+                best_query = results_dict[idx]
+                best_adv = adv_dic[idx][0]
+            if results_dict[idx] != 0:
+                suc_num += 1
+                query_count += results_dict[idx]
         time_end = time.time()
-        print("\n\nTotal running time: %.4f seconds\n" % (time_end - time_start))
-        ave_query =0
-        if suc_num !=0:
-            ave_query=query_count/suc_num
+        print("\n\nTotal running time: %.4f seconds\n" %
+              (time_end - time_start))
+        ave_query = 0
+        if suc_num != 0:
+            ave_query = query_count/suc_num
 
-        print("Out of ",x," available images,",suc_num," images are successfully attack", ", and the average query is ",ave_query," with eps of",self.eps)
+        print("Out of ", x, " available images,", suc_num, " images are successfully attack",
+              ", and the average query is ", ave_query, " with eps of", self.eps)
         return best_adv, best_query
-
