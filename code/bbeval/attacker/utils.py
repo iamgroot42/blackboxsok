@@ -62,10 +62,11 @@ ATTACK_WRAPPER_MAPPING = {
     "ADMIXFGSM_transfer": ADMIXFGSM,
     "MIADMIXTIDIFGSM_transfer": MIADMIXTIDIFGSM,
     "RAPFGSM_transfer": RAPFGSM,
-    "BayesOpt":BayesOpt,
+    "BayesOpt": BayesOpt,
     "NES": NES,
-    "BayesOpt_full":BayesOpt_full
+    "BayesOpt_full": BayesOpt_full
 }
+
 
 def get_attack_wrapper(model: GenericModelWrapper, aux_models: dict, attack_config: AttackerConfig, experiment_config: ExperimentConfig):
     """
@@ -73,5 +74,6 @@ def get_attack_wrapper(model: GenericModelWrapper, aux_models: dict, attack_conf
     """
     wrapper = ATTACK_WRAPPER_MAPPING.get(attack_config.name, None)
     if not wrapper:
-        raise NotImplementedError(f"Attack {attack_config.name} not implemented")
+        raise NotImplementedError(
+            f"Attack {attack_config.name} not implemented")
     return wrapper(model, aux_models, attack_config, experiment_config)
