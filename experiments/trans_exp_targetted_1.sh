@@ -1,9 +1,4 @@
-python transferred_attack_experiment.py --config configs/image/transfer_methods/target/targeted_FGSM_transfer.json
-python transferred_attack_experiment.py --config configs/image/transfer_methods/target/targeted_IFGSM_transfer.json
-python transferred_attack_experiment.py --config configs/image/transfer_methods/target/targeted_TIFGSM_transfer.json
-python transferred_attack_experiment.py --config configs/image/transfer_methods/target/targeted_DIFGSM_transfer.json
-python transferred_attack_experiment.py --config configs/image/transfer_methods/target/targeted_SIFGSM_transfer.json
-python transferred_attack_experiment.py --config configs/image/transfer_methods/target/targeted_ADMIXFGSM_transfer.json
+
 python transferred_attack_experiment.py --config configs/image/transfer_methods/target/targeted_EMIFGSM_transfer.json
 python transferred_attack_experiment.py --config configs/image/transfer_methods/target/targeted_EMITIDISIFGSM_transfer.json
 python transferred_attack_experiment.py --config configs/image/transfer_methods/target/targeted_MIFGSM_transfer.json

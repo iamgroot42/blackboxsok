@@ -136,6 +136,8 @@ if __name__ == "__main__":
                             counter+=1
                 if counter == 10000:
                     new_label = random.randint(0, 999)
+                    while new_label==y_target[l_ind]:
+                        new_label = random.randint(0, 999)
                     y_target[l_ind] = new_label
                     if y_target[l_ind] in correct_labels:
                         y_ind = correct_labels.index(y_target[l_ind])

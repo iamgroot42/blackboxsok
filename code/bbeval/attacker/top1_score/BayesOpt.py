@@ -23,7 +23,7 @@ class BayesOpt(Attacker):
         super().__init__(model, aux_models, config, experiment_config)
         self.params = TransferredAttackConfig(**self.params)
         self.device ="cuda"
-        self.eps=20/255
+        self.eps=16/255
         self.arch = "inception_v3"
         self.inf_norm =True
         self.discrete=True
@@ -200,7 +200,7 @@ class BayesOpt(Attacker):
         return query_count, success,best_candidate,best_adv_added
 
 
-    def attack(self, x_orig, x_adv_loc, y_label, y_target=None):
+    def attack(self, x_orig, x_adv_loc,  y_label, x_target, y_target=None):
 
         time_start = time.time()
         if self.sin and self.cos:
@@ -215,9 +215,10 @@ class BayesOpt(Attacker):
         results_dict = {}
         adv_dic={}
         x =0
+        x_sample_adv=[]
         
-        for idx in range(32):
-            print("###################===================####################")
+        for idx in range(len(x_orig)):
+            #print("###################===================####################")
             image, label = x_orig[idx],y_label[idx]
             #print(image,label)
             image = image.unsqueeze(0).to(self.device)
@@ -239,22 +240,17 @@ class BayesOpt(Attacker):
                     results_dict[idx] = itr
                     adv_dic[idx]=adv,adv_added_image
                 else:
-                    results_dict[idx] = 0
-
+                    results_dict[idx] = self.itr
+                x_sample_adv.append(adv_added_image)
+        
         print(x,"images haven been attacked")
         print('RESULTS', results_dict)
 
-        best_query=2000
-        best_adv =[]
+        
         suc_num = 0
         query_count=0
         for idx in results_dict.keys():
-            if results_dict[idx]<best_query and results_dict[idx]!=0:
-                best_query=results_dict[idx]
-                best_adv=adv_dic[idx][0]
-            if results_dict[idx]!=0:
-                suc_num+=1
-                query_count+=results_dict[idx]
+            query_count+=results_dict[idx]
         time_end = time.time()
         print("\n\nTotal running time: %.4f seconds\n" % (time_end - time_start))
         ave_query =0
@@ -262,5 +258,5 @@ class BayesOpt(Attacker):
             ave_query=query_count/suc_num
 
         print("Out of ",x," available images,",suc_num," images are successfully attack", ", and the average query is ",ave_query," with eps of",self.eps)
-        return best_adv, best_query
+        return x_sample_adv, query_count
 
