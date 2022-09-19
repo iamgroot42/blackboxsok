@@ -64,3 +64,8 @@ Target model: resnet50
 Aux model: resnet50
 The transferbility of MITIDISIFGSM_transfer is 94.20000457763672 %
 --- 5165.817565917969 seconds ---
+
+Target model: resnet50 
+Aux model: resnet50
+The transferbility of NIFGSM_transfer is 1.7000000476837158 %
+--- 1094.3514544963837 seconds ---
