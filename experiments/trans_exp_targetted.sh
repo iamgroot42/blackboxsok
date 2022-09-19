@@ -21,3 +21,6 @@ python transferred_attack_experiment.py --config configs/image/transfer_methods/
 python transferred_attack_experiment.py --config configs/image/transfer_methods/target/targeted_VNITIDISIFGSM_transfer.json
 python transferred_attack_experiment.py --config configs/image/transfer_methods/target/targeted_IFGSSM_transfer.json
 python transferred_attack_experiment.py --config configs/image/transfer_methods/target/targeted_PITIDIFGSSM_transfer.json
+
+
+

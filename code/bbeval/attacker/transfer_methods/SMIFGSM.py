@@ -25,7 +25,7 @@ class SMIFGSM(Attacker):
         self.params = TransferredAttackConfig(**self.params)
         self.x_final = None
         self.queries = 1
-        self.criterion = get_loss_fn("ce")
+        self.criterion = get_loss_fn("logit")
         self.norm = None
 
 

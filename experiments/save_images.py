@@ -105,6 +105,7 @@ if __name__ == "__main__":
         y_target =[]
                 # mode = "easiest"/"hardest"/"random"/"user"
         mode = "random"
+        
         y_target = get_target_label(mode, correct_images, target_model_1, num_img, correct_labels, num_img)
         print(len(y_target))
         # getting x_target images

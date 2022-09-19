@@ -23,7 +23,7 @@ class MIADMIXTIDIFGSM(Attacker):
         self.params = TransferredAttackConfig(**self.params)
         self.x_final = None
         self.queries = 1
-        self.criterion = get_loss_fn("ce")
+        self.criterion = get_loss_fn("logit")
         self.norm = None
 
     def admix(self, x,size=3,portion=0.2):

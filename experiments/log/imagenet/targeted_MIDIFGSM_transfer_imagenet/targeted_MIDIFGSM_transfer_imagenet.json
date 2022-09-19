@@ -1,10 +1,5 @@
 {
     "name": "targeted_MIDIFGSM_transfer_imagenet",
-    "start time": "2022-07-06 11:10:09.998015",
-    "result": {
-        "100": {
-            "transferability": "0.0"
-        }
-    },
-    "save time": "2022-07-06 11:10:37.749441"
+    "start time": "2022-09-19 15:40:19.452583",
+    "save time": "2022-09-19 15:40:28.909212"
 }

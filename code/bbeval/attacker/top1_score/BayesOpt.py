@@ -22,7 +22,7 @@ class BayesOpt(Attacker):
         self.params = TransferredAttackConfig(**self.params)
 
         self.device ="cuda"
-        self.eps=16/255
+        self.eps=self.eps/255
 
         self.arch = "inception_v3"
         self.inf_norm = True
@@ -37,7 +37,7 @@ class BayesOpt(Attacker):
         self.sin = True
         self.cos = True
         self.beta = 1
-        self.itr = 1000
+        self.itr = 100
 
     def obj_func(self, x, x0, y0):
         # evaluate objective function
@@ -202,8 +202,9 @@ class BayesOpt(Attacker):
 
         return query_count, success, best_candidate, best_adv_added
 
-    def attack(self, x_orig, x_adv_loc,  y_label, x_target, y_target=None):
-
+    def attack(self, x_orig, x_adv,  y_label, x_target, y_target=None):
+        print(self.eps*255)
+        suc_num = 0
         time_start = time.time()
         if self.sin and self.cos:
             self.latent_dim = self.dim * self.dim * 3 * 2
@@ -214,12 +215,13 @@ class BayesOpt(Attacker):
                                    device=self.device).float()
 
         print("Length of sample_set: ", x_orig.size())
+        print("Length of y_label: ", y_label.size())
         results_dict = {}
 
         adv_dic = {}
         x = 0
         x_sample_adv=[]
-        for idx in range(self.itr):
+        for idx in range(len(x_orig)):
             print("###################===================####################")
             image, label = x_orig[idx], y_label[idx]
 
@@ -243,25 +245,29 @@ class BayesOpt(Attacker):
                 if success:
                     results_dict[idx] = itr
                     adv_dic[idx] = adv, adv_added_image
+                    suc_num+=1
                 else:
                     results_dict[idx] = self.itr
                 x_sample_adv.append(adv_added_image)
-        
+            else:
+                x_sample_adv.append(x_orig[idx])
         print(x,"images haven been attacked")
         print('RESULTS', results_dict)
 
         
-        suc_num = 0
+        
         query_count = 0
         for idx in results_dict.keys():
             query_count+=results_dict[idx]
+                
+
         time_end = time.time()
         print("\n\nTotal running time: %.4f seconds\n" %
               (time_end - time_start))
         ave_query = 0
         if suc_num != 0:
-            ave_query = query_count/suc_num
-
+            ave_query = query_count/x
+        x_sample_adv.append(suc_num)
         print("Out of ",x," available images,",suc_num," images are successfully attack", ", and the average query is ",ave_query," with eps of",self.eps)
-        return x_sample_adv, query_count
+        return x_sample_adv, query_count+len(x_orig)
 

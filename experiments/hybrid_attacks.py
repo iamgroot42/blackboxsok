@@ -58,6 +58,8 @@ if __name__ == "__main__":
     # Load up model(s)
     target_model_1, aux_models_1 = get_model_and_aux_models(attacker_config_1)
     
+    #print(target_model_1)
+    
     total_queries_used = 0
     correctly_classified = 0
     num_processed = 0
@@ -113,7 +115,8 @@ if __name__ == "__main__":
     print("The clean accuracy is %s %%" % str(float(correctly_classified / total_img*100)))
     #
 
-    second_attack_x=correct_images
+    second_attack_x=correct_images[0:total_img]
+    second_attack_y=correct_labels[0:total_img]
 
     #print(attacker_config_1.name)
     for i in tqdm(range(int(total_img/batch_size))):
@@ -149,7 +152,7 @@ if __name__ == "__main__":
         
         for j in range(len(x_orig)):
             second_attack_x[i * batch_size +j ]=x_sample_adv[j]
-         
+            second_attack_y[i * batch_size +j ]=y_label[j]
         
         target_model_1.set_eval()  # Make sure model is in eval model
         target_model_1.zero_grad()  # Make sure no leftover gradients
@@ -159,38 +162,41 @@ if __name__ == "__main__":
             total_transfered += ch.count_nonzero(target_model_prediction == y_target)
         else:
             total_transfered += ch.count_nonzero(target_model_prediction != y_target)
-    
-    print(total_transfered)
+
+    print("total_transfered",total_transfered)
+
     is_bayes=True
     if is_bayes:
         for i in range(int(1)):
         # the original dataset is normalized into the range of [0,1]
         # specific attacks may have different ranges and should be handled case by case
             second_attack_x=ch.Tensor(second_attack_x)
+            print(len(second_attack_x))
             second_attack_x, y_label = second_attack_x.cuda(), y_label.cuda()
             num_class = ds.num_classes
             x_target=second_attack_x
             y_target = y_label
             target_model_2, aux_models_2 = get_model_and_aux_models(attacker_config_2)
             # Perform attack
-            (x_sample_adv, queries_used_2,suc_sum), attacker_2 = single_attack(target_model_2,
+            (x_sample_adv, queries_used_2), attacker_2 = single_attack(target_model_2,
                                                                                     aux_models=aux_models_2,
                                                                                     x_orig=second_attack_x,
                                                                                     x_sample_adv=second_attack_x,
                                                                                     x_target=x_target,
-                                                                                    y_label=y_label,
+                                                                                    y_label=second_attack_y,
                                                                                     y_target=y_target,
                                                                                     attacker_config=attacker_config_2,
                                                                                     experiment_config=config)
             total_queries_used += queries_used_2
             attacker_2.save_results()
+            print("transferability:", total_transfered)
+            if attacker_config_2.targeted:
+                total_transfered +=x_sample_adv[-1]
+            else:
+                total_transfered +=x_sample_adv[-1]
 
-            target_model_2.set_eval()  # Make sure model is in eval model
-            target_model_2.zero_grad()  # Make sure no leftover gradients
-            target_model_output = target_model_2.forward(x_sample_adv)
-            target_model_prediction = ch.max(target_model_output, 1).indices
-        total_transfered+=suc_sum
-        
+            
+            
     else:
         for i in tqdm(range(int(total_img/batch_size))):
             # the original dataset is normalized into the range of [0,1]
@@ -208,19 +214,19 @@ if __name__ == "__main__":
                     mode, x_orig, target_model_1, num_class, y_label, 10)
                 y_target = y_target.cuda()
             else:
-                y_target = y_label
+                y_target = second_attack_y
             target_model_2, aux_models_2 = get_model_and_aux_models(attacker_config_2)
             # Perform attack
-            (x_sample_adv, queries_used_1), attacker_2 = single_attack(target_model_1,
+            (x_sample_adv, queries_used_2), attacker_2 = single_attack(target_model_2,
                                                                                     aux_models=aux_models_2,
-                                                                                    x_orig=x_orig,
-                                                                                    x_sample_adv=x_orig,
-                                                                                    y_label=y_label,
+                                                                                    x_orig=second_attack_x,
+                                                                                    x_sample_adv=second_attack_x,
                                                                                     x_target=x_target,
+                                                                                    y_label=second_attack_y,
                                                                                     y_target=y_target,
                                                                                     attacker_config=attacker_config_2,
                                                                                     experiment_config=config)
-            total_queries_used += queries_used_1
+            total_queries_used += queries_used_2
             attacker_2.save_results()
 
             target_model_2.set_eval()  # Make sure model is in eval model
@@ -230,8 +236,8 @@ if __name__ == "__main__":
             if attacker_config_2.targeted:
                 total_transfered += ch.count_nonzero(target_model_prediction == y_target)
             else:
-                total_transfered += ch.count_nonzero(target_model_prediction != y_target)
-
+                total_transfered += ch.count_nonzero(target_model_prediction != second_attack_y)
+    
     transferability = float(total_transfered / total_img*100)
     print("Target model: %s " % (str(attacker_config_2.adv_model_config.name)))
     print("Aux model: %s" % (str(attacker_config_2.aux_model_configs[0].name)))
@@ -244,6 +250,6 @@ with open('experiment.txt', 'a') as f:
     f.write('\n')
     f.write("Aux model: %s" % (str(attacker_config_1.aux_model_configs[0].name)))
     f.write('\n')
-    f.write("The transferbility of %s is %s %%" % (str(attacker_config_1.name), str(transferability)))
+    f.write("The transferbility of %s is %s %%" % (str(attacker_config_1.name + attacker_config_2.name), str(transferability)))
     f.write('\n')
     f.write("--- %s seconds ---" % (time.time() - start_time))
