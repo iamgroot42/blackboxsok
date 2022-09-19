@@ -47,7 +47,7 @@ if __name__ == "__main__":
     # batch_size = config.batch_size
     batch_size = 10
 
-    num_img =1000
+    num_img =100
 
     # Get data-loader, make sure it works
     ds: CustomDatasetWrapper = get_dataset_wrapper(ds_config)
@@ -105,7 +105,6 @@ if __name__ == "__main__":
         y_target =[]
                 # mode = "easiest"/"hardest"/"random"/"user"
         mode = "random"
-        
         y_target = get_target_label(mode, correct_images, target_model_1, num_img, correct_labels, num_img)
         print(len(y_target))
         # getting x_target images
@@ -136,10 +135,10 @@ if __name__ == "__main__":
                         else:
                             counter+=1
                 if counter == 10000:
-                    new_label = random.randint(0, 999)
-                    while new_label==y_target[l_ind]:
+                    while True:
                         new_label = random.randint(0, 999)
-                    y_target[l_ind] = new_label
+                        if new_label!=y_label[l_ind]:
+                            break;
                     if y_target[l_ind] in correct_labels:
                         y_ind = correct_labels.index(y_target[l_ind])
                         x_target[l_ind] = correct_images[y_ind]

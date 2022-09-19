@@ -140,3 +140,4 @@ class MIADMIXTIDIFGSM(Attacker):
         #     "transferability": str(transferability),
         # })
         return adv.detach(), stop_queries
+

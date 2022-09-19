@@ -28,7 +28,11 @@ from bbeval.attacker.transfer_methods.RAPFGSM import RAPFGSM
 from bbeval.attacker.top1_score.BayesOpt import BayesOpt
 from bbeval.attacker.topk_score.NES import NES
 from bbeval.attacker.full_score.BayesOpt_full import BayesOpt_full
-
+from bbeval.attacker.transfer_methods.MITIDIAIFGSSM import MITIDIAIFGSSM
+from bbeval.attacker.transfer_methods.EMITIDIAIFGSM import EMITIDIAIFGSM
+from bbeval.attacker.transfer_methods.SMIMITIDIAIFGSM import SMIMITIDIAIFGSM
+from bbeval.attacker.transfer_methods.VMITIDIAIFGSM import VMITIDIAIFGSM
+from bbeval.attacker.transfer_methods.VNITIDIAIFGSM import VNITIDIAIFGSM
 
 from bbeval.config import AttackerConfig, ExperimentConfig
 from bbeval.models.core import GenericModelWrapper
@@ -61,6 +65,11 @@ ATTACK_WRAPPER_MAPPING = {
     "PITIDIFGSSM_transfer": PITIDIFGSSM,
     "ADMIXFGSM_transfer": ADMIXFGSM,
     "MIADMIXTIDIFGSM_transfer": MIADMIXTIDIFGSM,
+    "EMITIDIAIFGSM_transfer": EMITIDIAIFGSM,
+    "SMIMITIDIAIFGSM_transfer": SMIMITIDIAIFGSM,
+    "MIADMIXTIDIFGSSM_transfer": MITIDIAIFGSSM,
+    "VMITIDIAIFGSM_transfer": VMITIDIAIFGSM,
+    "VNITIDIAIFGSM_transfer": VNITIDIAIFGSM,
     "RAPFGSM_transfer": RAPFGSM,
     "BayesOpt": BayesOpt,
     "NES": NES,
