@@ -85,6 +85,7 @@ class IFGSSM(Attacker):
             # print(i)
             # print(loss)
             loss.backward()
+
             if targeted==True:
                 adv = adv - alpha * torch_staircase_sign(adv.grad.data, 1.5625)
             else:

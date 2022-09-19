@@ -24,7 +24,7 @@ class FGSM(Attacker):
         self.params = TransferredAttackConfig(**self.params)
         self.x_final = None
         self.queries = 1
-        self.criterion = get_loss_fn("bce")
+        self.criterion = get_loss_fn("ce")
         self.norm = None
 
 

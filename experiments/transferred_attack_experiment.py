@@ -62,6 +62,7 @@ if __name__ == "__main__":
     target_model_1.zero_grad()  # Make sure no leftover gradients
 
     x_target=1
+    # print(attacker_config_1.eps)
 
     ds_config = config.dataset_config
     if ds_config.name == 'imagenet':
