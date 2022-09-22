@@ -37,7 +37,7 @@ class BayesOpt(Attacker):
         self.sin = True
         self.cos = True
         self.beta = 1
-        self.itr = 100
+        self.itr = 99
 
     def obj_func(self, x, x0, y0):
         # evaluate objective function
@@ -243,16 +243,17 @@ class BayesOpt(Attacker):
 
                 print(itr, success)
                 if success:
-                    results_dict[idx] = itr
+                    results_dict[int((y_label[idx]).detach())] = itr+1
                     adv_dic[idx] = adv, adv_added_image
                     suc_num+=1
                 else:
-                    results_dict[idx] = self.itr
+                    results_dict[int((y_label[idx]).detach())] = self.itr+1
                 x_sample_adv.append(adv_added_image)
             else:
                 x_sample_adv.append(x_orig[idx])
-        print(x,"images haven been attacked")
-        print('RESULTS', results_dict)
+                results_dict[int((y_label[idx]).detach())] = 1
+        #print(x,"images haven been successfully attacked")
+        #print('RESULTS', results_dict)
 
         
         
@@ -266,8 +267,8 @@ class BayesOpt(Attacker):
               (time_end - time_start))
         ave_query = 0
         if suc_num != 0:
-            ave_query = query_count/x
+            ave_query = query_count/len(x_orig)
         x_sample_adv.append(suc_num)
-        print("Out of ",x," available images,",suc_num," images are successfully attack", ", and the average query is ",ave_query," with eps of",self.eps)
-        return x_sample_adv, query_count+len(x_orig)
+        print(x,"image untransfered,",suc_num," success under BayesOpt Attack, net average query of the entire attack is", query_count/self.itr," and average non-transfered image query is", (query_count-len(x_orig))/x)
+        return x_sample_adv, query_count+len(x_orig),results_dict
 
