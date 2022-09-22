@@ -35,6 +35,12 @@ def single_attack(target_model, aux_models, x_orig, x_sample_adv, y_label, x_tar
     x_sample_adv, queries_used = attacker.attack(x_orig=x_orig, x_adv=x_sample_adv, y_label=y_label, x_target=x_target, y_target=y_target)
     return (x_sample_adv, queries_used), attacker
 
+def second_attack(target_model, aux_models, x_orig, x_sample_adv, y_label, x_target, y_target, attacker_config: AttackerConfig,
+                  experiment_config: ExperimentConfig):
+    attacker = get_attack_wrapper(target_model, aux_models, attacker_config, experiment_config)
+    x_sample_adv, queries_used,compare_x = attacker.attack(x_orig=x_orig, x_adv=x_sample_adv, y_label=y_label, x_target=x_target, y_target=y_target)
+    return (x_sample_adv, queries_used,compare_x), attacker
+
 
 # os.environ['TORCH_HOME'] = '/p/blackboxsok/models/imagenet_torch' # download imagenet models to project directory
 if __name__ == "__main__":
@@ -64,7 +70,7 @@ if __name__ == "__main__":
     correctly_classified = 0
     num_processed = 0
     total_transfered=0
-    total_img =100
+    total_img =10
     batch_size = 10
     loss_function = get_loss_fn("ce")
     target_model_1.set_eval()  # Make sure model is in eval model
@@ -178,7 +184,7 @@ if __name__ == "__main__":
             y_target = y_label
             target_model_2, aux_models_2 = get_model_and_aux_models(attacker_config_2)
             # Perform attack
-            (x_sample_adv, queries_used_2), attacker_2 = single_attack(target_model_2,
+            (x_sample_adv, queries_used_2, compare_x), attacker_2 = second_attack(target_model_2,
                                                                                     aux_models=aux_models_2,
                                                                                     x_orig=second_attack_x,
                                                                                     x_sample_adv=second_attack_x,
@@ -237,11 +243,48 @@ if __name__ == "__main__":
                 total_transfered += ch.count_nonzero(target_model_prediction == y_target)
             else:
                 total_transfered += ch.count_nonzero(target_model_prediction != second_attack_y)
+
+    print(compare_x)
+    '''
+    untransfered_x=[]
+    y_label=y_label.tolist()
+    for y_l in compare_x.keys():
+        index_in_orig = y_label.index(y_l)
+        untransfered_x.append(x_orig[index_in_orig])
+        
     
+    y_label = compare_x.keys().cuda()
+    print(len(y_label))
+    untransfered_x =ch.Tensor(untransfered_x)
+    print(len(untransfered_x))
+
+    for i in range(int(1)):
+        # the original dataset is normalized into the range of [0,1]
+        # specific attacks may have different ranges and should be handled case by case
+        num_class = ds.num_classes
+        x_target=second_attack_x
+        y_target = y_label
+        target_model_2, aux_models_2 = get_model_and_aux_models(attacker_config_2)
+        # Perform attack
+        (x_sample_adv, queries_used_2, compare_x), attacker_2 = second_attack(target_model_2,
+                                                                                aux_models=aux_models_2,
+                                                                                x_orig=untransfered_x,
+                                                                                x_sample_adv=untransfered_x,
+                                                                                x_target=x_target,
+                                                                                y_label=y_label,
+                                                                                y_target=y_target,
+                                                                                attacker_config=attacker_config_2,
+                                                                                experiment_config=config)
+
+    '''
+
     transferability = float(total_transfered / total_img*100)
     print("Target model: %s " % (str(attacker_config_2.adv_model_config.name)))
     print("Aux model: %s" % (str(attacker_config_2.aux_model_configs[0].name)))
     print("The transferability of %s is %s %%" % (str(attacker_config_1.name+attacker_config_2.name), str(transferability)))
+
+
+
 
 with open('experiment.txt', 'a') as f:
     f.write('\n')
