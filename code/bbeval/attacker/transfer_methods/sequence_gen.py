@@ -228,10 +228,11 @@ class GenerativeLSTM(nn.Module):
                 src: ch.Tensor,
                 trg: ch.Tensor,
                 num_outputs: int) -> ch.Tensor:
-
+        # Take note of batch size and target vocabulary
         batch_size = src.shape[1]
         trg_vocab_size = self.decoder.output_dim
 
+        # Placeholder to store predictions
         outputs = ch.zeros(num_outputs, batch_size, trg_vocab_size, device=src.device)
 
         # Get encoder outputs
@@ -243,7 +244,7 @@ class GenerativeLSTM(nn.Module):
         # Generate output tokens
         for t in range(1, num_outputs):
             output, hidden = self.decoder(output, hidden, encoder_outputs)
-            # Gumbel-Softmax
+            # Gumbel-Softmax based predictions
             output = F.gumbel_softmax(output, tau=1, hard=False)
             outputs[t] = output
 
@@ -274,20 +275,17 @@ class DiscriminativeLSTM(nn.Module):
                 enc_hid_dim=enc_hid_dim,
                 dec_hid_dim=dec_hid_dim,
                 attn_dim=attn_dim)
-        self.fc = nn.Linear(enc_hid_dim * 2, 1`)
+        self.fc = nn.Linear(enc_hid_dim * 2, 1)
 
-    def forward(self,
-                src: ch.Tensor,
-                trg: ch.Tensor,
-                num_outputs: int) -> ch.Tensor:
+    def forward(self, src: ch.Tensor) -> ch.Tensor:
 
-        batch_size = src.shape[1]
-        trg_vocab_size = self.decoder.output_dim
+        # batch_size = src.shape[1]
+        # trg_vocab_size = self.decoder.output_dim
 
-        outputs = ch.zeros(num_outputs, batch_size, trg_vocab_size, device=src.device)
+        # outputs = ch.zeros(num_outputs, batch_size, trg_vocab_size, device=src.device)
 
         # Get encoder outputs
-        encoder_outputs, hidden = self.encoder(src)
+        encoder_outputs, _ = self.encoder(src)
 
         # Get logits
         return self.fc(encoder_outputs[-1])
