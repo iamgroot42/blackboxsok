@@ -24,7 +24,7 @@ class NITIDISIFGSM(Attacker):
         self.params = TransferredAttackConfig(**self.params)
         self.x_final = None
         self.queries = 1
-        self.criterion = get_loss_fn("ce")
+        self.criterion = get_loss_fn("logit")
         self.norm = None
 
     def attack(self, x_orig, x_adv=None, y_label=None, x_target=None, y_target=None):
