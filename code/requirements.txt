@@ -15,3 +15,8 @@ dacite
 timm
 git+https://github.com/iamgroot42/secml_malware.git
 git+https://github.com/iamgroot42/BODMAS.git
+lightgbm
+botorch
+h5py
+GPy
+timm

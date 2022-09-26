@@ -2,7 +2,7 @@ import random
 import torch as ch
 
 from bbeval.datasets.image import mnist, cifar10, imagenet
-from bbeval.datasets.malware import ember
+from bbeval.datasets.malware import ember, bodmas_dataset
 from bbeval.config import DatasetConfig
 
 
@@ -13,6 +13,7 @@ DATASET_WRAPPER_MAPPING = {
     "ember_2018_2": ember.Ember182Wrapper,
     "ember_2017_2": ember.Ember172Wrapper,
     "ember_2017_1": ember.Ember171Wrapper,
+    "bodmas": bodmas_dataset.BODMASWrapper,
 }
 
 
