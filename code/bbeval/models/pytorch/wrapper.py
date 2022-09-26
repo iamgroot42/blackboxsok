@@ -65,6 +65,8 @@ class PyTorchModelWrapper(GenericModelWrapper):
         """
         loss_tracker, acc_tracker = AverageMeter(), AverageMeter()
         iterator = tqdm(loader)
+        # Set model to train mode
+        self.set_train()
         for x, y in iterator:
             optimizer.zero_grad()
             x, y = x.cuda(), y.cuda()
@@ -84,8 +86,9 @@ class PyTorchModelWrapper(GenericModelWrapper):
         """
             Train model for given data (via loader) 
         """
+        self.set_train()
         optimizer = ch.optim.Adam(
-            self.model,
+            self.model.parameters(),
             lr=train_config.learning_rate,
             weight_decay=train_config.weight_decay)
         # TODO: Implement 'verbose' parameter

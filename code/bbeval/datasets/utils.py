@@ -2,7 +2,7 @@ import random
 import torch as ch
 
 from bbeval.datasets.image import mnist, cifar10, imagenet
-from bbeval.datasets.malware import ember, bodmas_dataset
+from bbeval.datasets.malware import bodmas_dataset, ember, ember_ucsb_combined
 from bbeval.config import DatasetConfig
 
 
@@ -14,6 +14,8 @@ DATASET_WRAPPER_MAPPING = {
     "ember_2017_2": ember.Ember172Wrapper,
     "ember_2017_1": ember.Ember171Wrapper,
     "bodmas": bodmas_dataset.BODMASWrapper,
+    "ember": ember_ucsb_combined.EmberCombinedWrapper,
+    "ucsb": ember_ucsb_combined.UCSBWrapper
 }
 
 
@@ -23,7 +25,7 @@ def get_dataset_wrapper(data_config: DatasetConfig):
     """
     wrapper = DATASET_WRAPPER_MAPPING.get(data_config.name, None)
     if not wrapper:
-        raise NotImplementedError(f"Dataset {data_config.name} not implemented")
+        raise NotImplementedError(f"Dataset {data_config.name} not found")
     return wrapper(data_config)
 
 
