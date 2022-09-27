@@ -1,4 +1,4 @@
-from bbeval.models.pytorch import image
+from bbeval.models.pytorch import image, malware
 from bbeval.config import ModelConfig
 
 MODEL_WRAPPER_MAPPING = {
@@ -14,6 +14,7 @@ MODEL_WRAPPER_MAPPING = {
     "advinceptionv3": image.AdvInceptionv3,
     "imagenetrobust": image.ImageNetRobust,
     "cifar10robust": image.Cifar10Robust,
+    "mlp3": malware.MLPClassifier
 }
 
 

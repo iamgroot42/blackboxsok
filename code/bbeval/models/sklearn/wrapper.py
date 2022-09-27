@@ -47,9 +47,11 @@ class SKLearnModelWrapper(GenericModelWrapper):
     def train(self, train_loader, val_loader, **kwargs):
         # In the case of sklearn models, loaders are actually data
         self.model.fit(train_loader)
-        # TODO- Return metrics
-        raise NotImplementedError(
-            "This method must be implemented by the child class")
+        train_acc = self.eval(train_loader, None, None)
+        val_acc = self.eval(val_loader, None, None)
+        print("Train acc: ", train_acc)
+        print("Val acc: ", val_acc)
+        return train_acc, val_acc
 
     def eval(self, loader, loss_function, acc_fn, **kwargs):
         if loss_function is not None:

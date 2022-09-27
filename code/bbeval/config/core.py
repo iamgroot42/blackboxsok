@@ -222,3 +222,14 @@ class ExperimentConfig(Serializable):
         # Have to do this because SimpleParsing does not support list of dataclasses
         self.attack_configs = [from_dict(
             data_class=AttackerConfig, data=config_dict) for config_dict in self.attack_configs_dict]
+
+
+@dataclass
+class ModelTrainingConfig(Serializable):
+    """
+        Configuration for training a model.
+    """
+    model_config: ModelConfig
+    """Config file for model"""
+    train_config: TrainConfig
+    """Config file for training"""
