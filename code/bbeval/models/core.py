@@ -23,6 +23,10 @@ class GenericModelWrapper:
         if hasattr(model_config, 'access_level'):
             self.access_level = model_config.access_level
     
+    def save(self, path: str):
+        raise NotImplementedError(
+            "This method must be implemented by the child class")
+    
     def cuda(self):
         raise NotImplementedError(
             "This method must be implemented by the child class")

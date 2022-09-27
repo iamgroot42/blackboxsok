@@ -1,6 +1,7 @@
 from bbeval.config.core import ModelConfig
 import torch as ch
 import numpy as np
+import os
 
 from bbeval.models.core import GenericModelWrapper
 from bbeval.utils import AverageMeter
@@ -17,6 +18,10 @@ class PyTorchModelWrapper(GenericModelWrapper):
 
     def post_process_fn(self, tensor):
         return tensor
+    
+    def save(self, path: str):
+        path_to_save = os.path.join(self.save_dir, path)
+        ch.save(self.model.state_dict(), path_to_save)
 
     def set_eval(self):
         self.model.eval()
@@ -103,12 +108,10 @@ class PyTorchModelWrapper(GenericModelWrapper):
         for e in iterator:
             # Train
             avg_train_loss, avg_train_acc = self._train_epoch(
-                train_loader, optimizer, verbose=verbose,
-                **kwargs)
+                train_loader, optimizer, verbose=verbose, **kwargs)
             # Eval if test loader provided
             avg_val_loss, avg_val_acc = self.eval(
-                val_loader, verbose=verbose,
-                **kwargs)
+                val_loader, verbose=verbose, **kwargs)
             if not verbose:
                 # Update
                 iterator.set_description("Epoch: {}, Train Loss: {:.4f}, Train Accuracy: {:.4f}, Val Loss: {:.4f}, Val Accuracy: {:.4f}".format(

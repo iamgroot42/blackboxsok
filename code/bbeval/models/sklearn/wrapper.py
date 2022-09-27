@@ -3,7 +3,9 @@
     cross-attack and cross-platform compatibility.
 """
 import numpy as np
+from joblib import dump
 import torch as ch
+import os
 from bbeval.config import ModelConfig, TrainConfig
 from bbeval.models.core import GenericModelWrapper
 from bbeval.datasets.utils import collect_data_from_loader
@@ -21,6 +23,11 @@ class SKLearnModelWrapper(GenericModelWrapper):
 
     def set_eval(self):
         pass
+
+    def save(self, path: str):
+        path_to_save = os.path.join(self.save_dir, path)
+        # Save sklearn model
+        dump(self.model, path_to_save)
 
     def forward(self, x, detach: bool = False, internal_call: bool = False):
         raise ValueError("forward() calls do not make sense for sklearn models")

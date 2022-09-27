@@ -46,3 +46,4 @@ if __name__ == "__main__":
     model.train(train_loader, val_loader, train_config, **kwargs)
 
     # TODO: Save
+    model.save("testing.pkl")
