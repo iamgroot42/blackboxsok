@@ -1,5 +1,6 @@
 import random
 import torch as ch
+from tqdm import tqdm
 
 from bbeval.datasets.image import mnist, cifar10, imagenet
 from bbeval.datasets.malware import bodmas_dataset, ember, ember_ucsb_combined
@@ -54,3 +55,13 @@ def get_target_label(mode, x_orig, model, num_class, y_label, batch_size):
         target_label = [target_class] * batch_size
         target_label = ch.tensor(target_label)
     return target_label
+
+
+def collect_data_from_loader(loader):
+    X, Y = [], []
+    for batch in tqdm(loader, desc="Collecting data from loader"):
+        X.append(batch[0])
+        Y.append(batch[1])
+    X = ch.cat(X, dim=0)
+    Y = ch.cat(Y, dim=0)
+    return X, Y

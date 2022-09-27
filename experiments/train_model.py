@@ -39,6 +39,10 @@ if __name__ == "__main__":
     # Train model
     def acc_fn(x, y):
         return ch.mean(1.*(x == y)).item()
-    model.train(train_loader, val_loader, loss_function, acc_fn, train_config)
+    kwargs = {
+        "loss_function": loss_function,
+        "acc_fn": acc_fn,
+    }
+    model.train(train_loader, val_loader, train_config, **kwargs)
 
     # TODO: Save

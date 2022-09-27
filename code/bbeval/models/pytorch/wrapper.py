@@ -59,12 +59,16 @@ class PyTorchModelWrapper(GenericModelWrapper):
         # return self.post_process_fn(ch.argmax(predictions, dim=1)[0])
         return ch.argmax(predictions, dim=1)
 
-    def _train_epoch(self, loader, optimizer, loss_function, acc_fn):
+    def _train_epoch(self, loader, optimizer, verbose: bool = False, **kwargs):
         """
             Train model for single epoch
         """
+        loss_function = kwargs.get("loss_function")
+        acc_fn = kwargs.get("acc_fn")
         loss_tracker, acc_tracker = AverageMeter(), AverageMeter()
-        iterator = tqdm(loader)
+        iterator = loader
+        if verbose:
+            iterator = tqdm(iterator)
         # Set model to train mode
         self.set_train()
         for x, y in iterator:
@@ -78,11 +82,12 @@ class PyTorchModelWrapper(GenericModelWrapper):
             optimizer.step()
             loss_tracker.update(loss, x.size(0))
             acc_tracker.update(accuracy, x.size(0))
-            iterator.set_description("Loss: {:.4f}, Accuracy: {:.4f}".format(
-                loss_tracker.avg, acc_tracker.avg))
+            if verbose:
+                iterator.set_description("Loss: {:.4f}, Accuracy: {:.4f}".format(
+                    loss_tracker.avg, acc_tracker.avg))
         return loss_tracker.avg, acc_tracker.avg
 
-    def train(self, train_loader, val_loader, loss_function, acc_fn, train_config: TrainConfig, **kwargs):
+    def train(self, train_loader, val_loader, train_config: TrainConfig, **kwargs):
         """
             Train model for given data (via loader) 
         """
@@ -91,27 +96,38 @@ class PyTorchModelWrapper(GenericModelWrapper):
             self.model.parameters(),
             lr=train_config.learning_rate,
             weight_decay=train_config.weight_decay)
-        # TODO: Implement 'verbose' parameter
-        iterator = tqdm(range(1, train_config.epochs + 1))
+        iterator = range(1, train_config.epochs + 1)
+        verbose = train_config.verbose
+        if not verbose:
+            iterator = tqdm(iterator)
         for e in iterator:
             # Train
             avg_train_loss, avg_train_acc = self._train_epoch(
-                train_loader, optimizer, loss_function, acc_fn)
-            # Eval
+                train_loader, optimizer, verbose=verbose,
+                **kwargs)
+            # Eval if test loader provided
             avg_val_loss, avg_val_acc = self.eval(
-                val_loader, loss_function, acc_fn)
-            # Update
-            iterator.set_description("Epoch: {}, Train Loss: {:.4f}, Train Accuracy: {:.4f}, Val Loss: {:.4f}, Val Accuracy: {:.4f}".format(
-                e, avg_train_loss, avg_train_acc, avg_val_loss, avg_val_acc))
+                val_loader, verbose=verbose,
+                **kwargs)
+            if not verbose:
+                # Update
+                iterator.set_description("Epoch: {}, Train Loss: {:.4f}, Train Accuracy: {:.4f}, Val Loss: {:.4f}, Val Accuracy: {:.4f}".format(
+                    e, avg_train_loss, avg_train_acc, avg_val_loss, avg_val_acc))
+            else:
+                print("\n")
 
-    def eval(self, loader, loss_function, acc_fn, detach: bool = True, **kwargs):
+    def eval(self, loader, detach: bool = True, verbose: bool = False, **kwargs):
         """
             Evaluate model for given data (via loader)
         """
+        loss_function = kwargs.get("loss_function")
+        acc_fn = kwargs.get("acc_fn")
         loss_tracker, acc_tracker = AverageMeter(), AverageMeter()
         # Set model to eval model
         self.set_eval()
-        iterator = tqdm(loader)
+        iterator = loader
+        if verbose:
+            iterator = tqdm(iterator)
         for x, y in iterator:
             x, y = x.cuda(), y.cuda()
             with ch.set_grad_enabled(not detach):
@@ -121,6 +137,7 @@ class PyTorchModelWrapper(GenericModelWrapper):
                 accuracy = acc_fn(y_predicted, y)
             loss_tracker.update(loss, x.size(0))
             acc_tracker.update(accuracy, x.size(0))
-            iterator.set_description("Loss: {:.4f}, Accuracy: {:.4f}".format(
-                loss_tracker.avg, acc_tracker.avg))
+            if verbose:
+                iterator.set_description("Loss: {:.4f}, Accuracy: {:.4f}".format(
+                    loss_tracker.avg, acc_tracker.avg))
         return loss_tracker.avg, acc_tracker.avg

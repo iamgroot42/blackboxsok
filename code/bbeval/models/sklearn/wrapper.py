@@ -4,8 +4,9 @@
 """
 import numpy as np
 import torch as ch
-from bbeval.config import ModelConfig
+from bbeval.config import ModelConfig, TrainConfig
 from bbeval.models.core import GenericModelWrapper
+from bbeval.datasets.utils import collect_data_from_loader
 
 
 class SKLearnModelWrapper(GenericModelWrapper):
@@ -44,19 +45,23 @@ class SKLearnModelWrapper(GenericModelWrapper):
     def predict_label(self, x) -> int:
         return self.predict(x)
 
-    def train(self, train_loader, val_loader, **kwargs):
+    def train(self, train_loader, val_loader, train_config: TrainConfig, **kwargs):
+        # Need to first extract all data from dataloader
+        train_x, train_y = collect_data_from_loader(train_loader)
+        val_x, val_y = collect_data_from_loader(val_loader)
+
         # In the case of sklearn models, loaders are actually data
-        self.model.fit(train_loader)
-        train_acc = self.eval(train_loader, None, None)
-        val_acc = self.eval(val_loader, None, None)
-        print("Train acc: ", train_acc)
-        print("Val acc: ", val_acc)
+        self.model.fit(train_x, train_y)
+        train_acc = self.eval(train_x, train_y)
+        val_acc = self.eval(val_x, val_y)
+        print("Train acc: %.2f" % (100 * train_acc))
+        print("Val acc: %.2f" % (100 * val_acc))
         return train_acc, val_acc
 
-    def eval(self, loader, loss_function, acc_fn, **kwargs):
-        if loss_function is not None:
+    def eval(self, x, y, **kwargs):
+        if kwargs.get("loss_function", None) is not None:
             raise ValueError("Sklearn models only product accuracy scores")
-        return self.model.score(loader[0], loader[1])
+        return self.model.score(x, y)
 
     def zero_grad(self):
         pass

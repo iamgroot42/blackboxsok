@@ -2,6 +2,7 @@
     All model architectures can be wrapped inside this generic model wrapper. This helps ensure
     cross-attack and cross-platform compatibility.
 """
+from bbeval.config.core import TrainConfig
 import numpy as np
 import os
 from bbeval.config import ModelConfig
@@ -54,7 +55,7 @@ class GenericModelWrapper:
     def predict_label(self, x) -> int:
         return self.predict(x)
 
-    def train(self, train_loader, val_loader, **kwargs):
+    def train(self, train_loader, val_loader, train_config: TrainConfig, **kwargs):
         raise NotImplementedError(
             "This method must be implemented by the child class")
 
