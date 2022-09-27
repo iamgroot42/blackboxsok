@@ -3,3 +3,34 @@ local model: inceptionv3
 loss function: cross entropy
 epsilon: 8
 
+
+
+Target model: resnet50 
+Aux model: inceptionv3
+The transferbility of FGSM_transferBayesOpt is 87.0 %
+--- 660.6560595035553 seconds ---
+
+Target model: resnet50 
+Aux model: inceptionv3
+The transferbility of FGSM_transferBayesOpt is 87.0 %
+--- 657.5615313053131 seconds ---
+
+Target model: resnet50 
+Aux model: inceptionv3
+The transferbility of FGSM_transferBayesOpt is 87.0 %
+--- 670.6816041469574 seconds ---
+
+Target model: resnet50 
+Aux model: inceptionv3
+The transferbility of FGSM_transferBayesOpt is 90.0 %
+--- 72.08946466445923 seconds ---
+
+Target model: resnet50 
+Aux model: inceptionv3
+The transferbility of FGSM_transferBayesOpt is 90.0 %
+--- 72.37558102607727 seconds ---
+
+Target model: resnet50 
+Aux model: inceptionv3
+The transferbility of EMITIDIAIFGSM_transferBayesOpt is 87.0 %
+--- 1983.9592592716217 seconds ---

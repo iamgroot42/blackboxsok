@@ -9,11 +9,11 @@
             "name": "BayesOpt",
             "access_level": "no",
             "targeted": false,
-            "eps": 16,
+            "eps": 10,
             "query_budget": 1,
             "adv_model_config": {
                 "use_pretrained": true,
-                "name": "inceptionv3",
+                "name": "resnet50",
                 "dataset": "imagenet"
             },
             "aux_model_configs_dict": [

@@ -203,6 +203,7 @@ class BayesOpt(Attacker):
         return query_count, success, best_candidate, best_adv_added
 
     def attack(self, x_orig, x_adv,  y_label, x_target, y_target=None):
+       
         print(self.eps*255)
         suc_num = 0
         time_start = time.time()
@@ -233,6 +234,8 @@ class BayesOpt(Attacker):
             print(f"Image {idx:d}   Original label: {label:d}")
             predicted_label = torch.argmax(self.model.forward(image))
             print("Predicted label: ", predicted_label.item())
+            transfer_flag = False
+            success=0
             if predicted_label == label:
                 x += 1
             # ignore incorrectly classified images
@@ -249,9 +252,22 @@ class BayesOpt(Attacker):
                 else:
                     results_dict[int((y_label[idx]).detach())] = self.itr+1
                 x_sample_adv.append(adv_added_image)
+                self.logger.add_result(int(label.detach()), {
+                        "query": int(itr),
+                        "transfer_flag": int(transfer_flag),
+                        "attack_flag": int(success)
+                    })
+                
             else:
                 x_sample_adv.append(x_orig[idx])
                 results_dict[int((y_label[idx]).detach())] = 1
+                transfer_flag=True
+                self.logger.add_result(int(label.detach()), {
+                        "query": int(self.itr),
+                        "transfer_flag": int(transfer_flag),
+                        "attack_flag": int(success)
+                    })
+            
         #print(x,"images haven been successfully attacked")
         #print('RESULTS', results_dict)
 
@@ -270,5 +286,12 @@ class BayesOpt(Attacker):
             ave_query = query_count/len(x_orig)
         x_sample_adv.append(suc_num)
         print(x,"image untransfered,",suc_num," success under BayesOpt Attack, net average query of the entire attack is", query_count/self.itr," and average non-transfered image query is", (query_count-len(x_orig))/x)
+        
+        self.logger.add_result("Final Result", {
+                        "success": int(suc_num),
+                        "image_avai": int(x),
+                        "average query": int((query_count-len(x_orig))/x)
+                    })       
+        
         return x_sample_adv, query_count+len(x_orig),results_dict
 

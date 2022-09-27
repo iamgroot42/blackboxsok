@@ -70,7 +70,7 @@ if __name__ == "__main__":
     correctly_classified = 0
     num_processed = 0
     total_transfered=0
-    total_img =10
+    total_img =100
     batch_size = 10
     loss_function = get_loss_fn("ce")
     target_model_1.set_eval()  # Make sure model is in eval model

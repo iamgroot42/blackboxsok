@@ -200,8 +200,9 @@ class BayesOpt_full(Attacker):
         return query_count, success,best_candidate,best_adv_added
 
 
-    def attack(self, x_orig, x_adv_loc, y_label, y_target=None):
-
+def attack(self, x_orig, x_adv,  y_label, x_target, y_target=None):
+        print(self.eps*255)
+        suc_num = 0
         time_start = time.time()
         if self.sin and self.cos:
             self.latent_dim = self.dim * self.dim * 3 * 2
@@ -209,60 +210,63 @@ class BayesOpt_full(Attacker):
             self.latent_dim = self.dim * self.dim * 3
 
         self.bounds = torch.tensor([[-2.0] * self.latent_dim, [2.0] * self.latent_dim],
-                              device=self.device).float()
+                                   device=self.device).float()
 
         print("Length of sample_set: ", x_orig.size())
+        print("Length of y_label: ", y_label.size())
         results_dict = {}
-        adv_dic={}
-        x =0
-        size = x_orig.size(0)
-        for idx in tqdm(range(x_orig.size(0))):
-            #print("###################===================####################")
-            image, label = x_orig[idx],y_label[idx]
+
+        adv_dic = {}
+        x = 0
+        x_sample_adv=[]
+        for idx in range(len(x_orig)):
+            print("###################===================####################")
+            image, label = x_orig[idx], y_label[idx]
+
             #print(image,label)
             image = image.unsqueeze(0).to(self.device)
             #print(image, label)
             self.model.set_eval()
             self.model.zero_grad()
-            #####print(f"Image {idx:d}   Original label: {label:d}")
+            print(f"Image {idx:d}   Original label: {label:d}")
             predicted_label = torch.argmax(self.model.forward(image))
-            ######print("Predicted label: ", predicted_label.item())
-            if predicted_label==label:
-                x+=1
+            print("Predicted label: ", predicted_label.item())
+            if predicted_label == label:
+                x += 1
             # ignore incorrectly classified images
                 # itr, success = bayes_opt(image, label)
 
-                itr, success,adv,adv_added_image = self.bayes_opt(image, label)
+                itr, success, adv, adv_added_image = self.bayes_opt(
+                    image, label)
 
-                #print(itr, success)
+                print(itr, success)
                 if success:
-                    results_dict[idx] = itr
-                    adv_dic[idx]=adv,adv_added_image
+                    results_dict[int((y_label[idx]).detach())] = itr+1
+                    adv_dic[idx] = adv, adv_added_image
+                    suc_num+=1
                 else:
-                    results_dict[idx] = 0
-
-        print(x,"images haven been attacked")
-        print('RESULTS', results_dict)
-
-        best_query=2000
-        best_adv =[]
-        suc_num = 0
-        query_count=0
-        for idx in results_dict.keys():
-            if results_dict[idx]<best_query and results_dict[idx]!=0:
-                best_query=results_dict[idx]
-                best_adv=adv_dic[idx][0]
-            if results_dict[idx]!=0:
-                suc_num+=1
-                query_count+=results_dict[idx]
+                    results_dict[int((y_label[idx]).detach())] = self.itr+1
+                x_sample_adv.append(adv_added_image)
             else:
-                query_count+=self.itr
-        time_end = time.time()
-        print("\n\nTotal running time: %.4f seconds\n" % (time_end - time_start))
-        ave_query =0
-        if suc_num !=0:
-            ave_query=query_count/suc_num
+                x_sample_adv.append(x_orig[idx])
+                results_dict[int((y_label[idx]).detach())] = 1
+        #print(x,"images haven been successfully attacked")
+        #print('RESULTS', results_dict)
 
-        print("Out of ",x," available images,",suc_num," images are successfully attack", ", and the average query is ",ave_query," with eps of",self.eps)
-        return best_adv, best_query
+        
+        
+        query_count = 0
+        for idx in results_dict.keys():
+            query_count+=results_dict[idx]
+                
+
+        time_end = time.time()
+        print("\n\nTotal running time: %.4f seconds\n" %
+              (time_end - time_start))
+        ave_query = 0
+        if suc_num != 0:
+            ave_query = query_count/len(x_orig)
+        x_sample_adv.append(suc_num)
+        print(x,"image untransfered,",suc_num," success under BayesOpt Attack, net average query of the entire attack is", query_count/self.itr," and average non-transfered image query is", (query_count-len(x_orig))/x)
+        return x_sample_adv, query_count+len(x_orig),results_dict
 
