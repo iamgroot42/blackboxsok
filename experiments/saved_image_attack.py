@@ -134,3 +134,4 @@ if __name__ == "__main__":
                                                                                     y_target=y_target,
                                                                                     attacker_config=attacker_config_1,
                                                                                     experiment_config=config)
+        attacker_1.save_results()

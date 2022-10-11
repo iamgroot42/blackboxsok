@@ -23,8 +23,6 @@ class BayesOpt(Attacker):
 
         self.device ="cuda"
         self.eps=self.eps/255
-
-        self.arch = "inception_v3"
         self.inf_norm = True
         self.discrete = True
         self.hard_label = True
@@ -38,6 +36,7 @@ class BayesOpt(Attacker):
         self.cos = True
         self.beta = 1
         self.itr = 99
+        self.arch = "inception_v3"
 
     def obj_func(self, x, x0, y0):
         # evaluate objective function
@@ -56,10 +55,13 @@ class BayesOpt(Attacker):
         #success rates and average queries.
         if not self.hard_label:
             y = torch.log_softmax(y, dim=1)
+            print(y)
             max_score = y[:, y0]
+            print(max_score)
             y, index = torch.sort(y, dim=1, descending=True)
             select_index = (index[:, 0] == y0).long()
             next_max = y.gather(1, select_index.view(-1, 1)).squeeze()
+            print(next_max)
             f = torch.max(max_score - next_max, torch.zeros_like(max_score))
         else:
             index = torch.argmax(y, dim=1)
@@ -285,13 +287,15 @@ class BayesOpt(Attacker):
         if suc_num != 0:
             ave_query = query_count/len(x_orig)
         x_sample_adv.append(suc_num)
-        print(x,"image untransfered,",suc_num," success under BayesOpt Attack, net average query of the entire attack is", query_count/self.itr," and average non-transfered image query is", (query_count-len(x_orig))/x)
-        
+        if x!=0:
+            print(x,"image untransfered,",suc_num," success under BayesOpt Attack, net average query of the entire attack is", query_count/self.itr," and average non-transfered image query is", (query_count-len(x_orig))/x)
+        else: 
+            print("all transfered")
         self.logger.add_result("Final Result", {
                         "success": int(suc_num),
                         "image_avai": int(x),
                         "average query": int((query_count-len(x_orig))/x)
-                    })       
+                    })            
         
         return x_sample_adv, query_count+len(x_orig),results_dict
 

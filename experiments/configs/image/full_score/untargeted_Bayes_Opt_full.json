@@ -8,7 +8,7 @@
         {
             "name": "BayesOpt_full",
             "access_level": "no",
-            "targeted": true,
+            "targeted": false,
             "eps": 16,
             "query_budget": 1,
             "adv_model_config": {
@@ -16,9 +16,15 @@
                 "name": "inceptionv3",
                 "dataset": "imagenet"
             },
-
+            "aux_model_configs_dict": [
+                {
+                    "use_pretrained": true,
+                    "name": "inceptionv3",
+                    "dataset": "imagenet"
+                }
+            ],
             "attack_params": {
-                "n_iters": 100,
+                "n_iters": 10,
                 "image_resizes": [
                     330
                 ]
