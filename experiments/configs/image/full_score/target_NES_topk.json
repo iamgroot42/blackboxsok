@@ -1,12 +1,12 @@
 {
-    "experiment_name": "untargted_NES",
+    "experiment_name": "untargted_NES_topk",
     "dataset_config": {
         "name": "imagenet",
         "type": "image"
     },
     "attack_configs_dict": [
         {
-            "name": "NES",
+            "name": "NES_topk",
             "access_level": "no",
             "targeted": true,
             "eps": 16,

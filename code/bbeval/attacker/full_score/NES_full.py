@@ -12,7 +12,7 @@ from bbeval.attacker.transfer_methods._manipulate_input import clip_by_tensor
 np.set_printoptions(precision=5, suppress=True)
 
 
-class NES(Attacker):
+class NES_full(Attacker):
     def __init__(self, model: GenericModelWrapper, aux_models: dict, config: AttackerConfig,
                  experiment_config: ExperimentConfig):
         super().__init__(model, aux_models, config, experiment_config)

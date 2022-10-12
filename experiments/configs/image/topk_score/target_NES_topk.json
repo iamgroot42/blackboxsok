@@ -1,0 +1,30 @@
+{
+    "experiment_name": "untargted_NES_topk",
+    "dataset_config": {
+        "name": "imagenet",
+        "type": "image"
+    },
+    "attack_configs_dict": [
+        {
+            "name": "NES_topk",
+            "access_level": "no",
+            "targeted": true,
+            "eps": 16,
+            "query_budget": 1,
+            "adv_model_config": {
+                "use_pretrained": true,
+                "name": "resnet50",
+                "dataset": "imagenet"
+            },
+
+            "attack_params": {
+                "n_iters": 10000,
+                "image_resizes": [
+                    330
+                ]
+            }
+
+        }
+    ],
+    "batch_size": 10
+}
