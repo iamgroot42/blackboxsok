@@ -1,0 +1,34 @@
+{
+    "experiment_name": "untargeted_EMITIDIAIFGSM_transfer_imagenet",
+    "dataset_config": {
+        "name": "imagenet",
+        "type": "image"
+    },
+    "attack_configs_dict": [
+        {
+            "name": "EMITIDIAIFGSM_transfer",
+            "access_level": "no",
+            "targeted": false,
+            "eps": 4,
+            "query_budget": 1,
+            "adv_model_config": {
+                "use_pretrained": true,
+                "name": "inceptionresnetv2",
+                "dataset": "imagenet"
+            },
+            "aux_model_configs_dict": [
+                {
+                    "use_pretrained": true,
+                    "name": "inceptionv3",
+                    "dataset": "imagenet"
+                }
+            ],
+            "attack_params": {
+                "n_iters": 10,
+                "image_resizes": [
+                    330
+                ]
+            }
+        }
+    ]
+}

@@ -1,0 +1,6 @@
+
+epsilon: 16
+Target model: inceptionv3 
+Aux model: inceptionv3
+The transferbility of untargeted_FGSM_transfer_imagenet is 73.70000457763672 %
+--- 21.149020671844482 seconds ---

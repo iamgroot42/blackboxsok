@@ -69,9 +69,16 @@ if __name__ == "__main__":
     target_modal_name = attacker_config_1.adv_model_config.name
     correct_images_path = 'data/' + target_modal_name + '/correct_images.pt'
     correct_labels_path = 'data/' + target_modal_name + '/correct_labels.pt'
+    target_images_path = 'data/' + target_modal_name + '/target_images.pt'
+    target_labels_path = 'data/' + target_modal_name + '/target_labels.pt'
     try:
         correct_images = ch.load(correct_images_path)
         correct_labels = ch.load(correct_labels_path)
+        target_images = correct_images
+        target_labels = correct_labels
+        if attacker_config_1.targeted:
+            target_images = ch.load(target_images_path)
+            target_labels = ch.load(target_labels_path)
     except:
         raise NotImplementedError(f"The image of {target_modal_name} is not saved yet")
 
@@ -119,7 +126,7 @@ if __name__ == "__main__":
                                                                    experiment_config=config)
         total_queries_used += queries_used_1
         attacker_1.save_results()
-
+        x_sample_adv = x_sample_adv.to(device='cuda', dtype=ch.float)
         target_model_1.set_eval()  # Make sure model is in eval model
         target_model_1.zero_grad()  # Make sure no leftover gradients
         target_model_output = target_model_1.forward(x_sample_adv)
@@ -134,16 +141,21 @@ if __name__ == "__main__":
     print("Aux model: %s" % (str(attacker_config_1.aux_model_configs[0].name)))
     print("The transferability of %s is %s %%" % (str(attacker_config_1.name), str(transferability)))
 
-experiment_file_name=target_modal_name+'_eps_'+str(attacker_config_1.eps)+'.txt'
-# with open(experiment_file_name, 'a') as f:
-#     f.write('\n')
-#     f.write("epsilon: %s" % (str(attacker_config_1.eps)))
-#     f.write('\n')
-#     f.write("Target model: %s " % (str(attacker_config_1.adv_model_config.name)))
-#     f.write('\n')
-#     f.write("Aux model: %s" % (str(attacker_config_1.aux_model_configs[0].name)))
-#     f.write('\n')
-#     f.write("The transferbility of %s is %s %%" % (str(config.experiment_name), str(transferability)))
-#     f.write('\n')
-#     f.write("--- %s seconds ---" % (time.time() - start_time))
-#     f.write('\n')
+if attacker_config_1.targeted:
+    prefix="target"
+else:
+    prefix="untarget"
+    
+experiment_file_name=prefix+'_'+target_modal_name+'_eps'+str(attacker_config_1.eps)+'.txt'
+with open(experiment_file_name, 'a') as f:
+    f.write('\n')
+    f.write("epsilon: %s" % (str(attacker_config_1.eps)))
+    f.write('\n')
+    f.write("Target model: %s " % (str(attacker_config_1.adv_model_config.name)))
+    f.write('\n')
+    f.write("Aux model: %s" % (str(attacker_config_1.aux_model_configs[0].name)))
+    f.write('\n')
+    f.write("The transferbility of %s is %s %%" % (str(config.experiment_name), str(transferability)))
+    f.write('\n')
+    f.write("--- %s seconds ---" % (time.time() - start_time))
+    f.write('\n')
