@@ -141,13 +141,13 @@ class SparseEvoConfig(Serializable):
     scale: List[int] = field(default_factory=lambda: [1, 2, 4, 8, 16])
     """TODO: Check"""
 
+
 @dataclass
-class NES(Serializable):
+class NESConfig(Serializable):
     """
         Configuration for Sparse-EVO Attack
     """
-    n_pix: int = 4
-    """TODO: Check"""
+    max_queries: int
 
 
 @dataclass

@@ -1,12 +1,12 @@
 {
-    "experiment_name": "targted_NES",
+    "experiment_name": "targted_NES_full",
     "dataset_config": {
         "name": "imagenet",
         "type": "image"
     },
     "attack_configs_dict": [
         {
-            "name": "NES",
+            "name": "NES_full",
             "access_level": "no",
             "targeted": true,
             "eps": 16,
@@ -18,12 +18,10 @@
             },
 
             "attack_params": {
-                "n_iters": 100,
-                "image_resizes": [
-                    330
-                ]
+                "max_queries": 100000
             }
 
         }
-    ]
+    ],
+    "batch_size": 10
 }
