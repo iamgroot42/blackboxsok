@@ -151,6 +151,34 @@ class NES(Serializable):
 
 
 @dataclass
+class MalwareAttackerConfig(Serializable):
+    """
+        Configuration for malware-based attacler
+    """
+    name: str
+    """Which attack is this?"""
+    adv_model_config: ModelConfig
+    """Model config for adversary's model"""
+
+    aux_model_configs_dict: Optional[List[dict]] = None
+    """Model configs for adversary's leveraged auxiliary models"""
+    aux_model_configs: Optional[List] = None
+
+    attack_params: Optional[dict] = None
+    """Additional attack-specific parameters"""
+
+    access_level: str = field(choice(["only label", "top-k", "all", "none"]))
+    """What level of access does the attacker have?"""
+    query_budget: Optional[int] = np.inf
+    """Query budget"""
+
+    loss_type: Optional[str] = "ce"
+    """Loss type"""
+    seed: Optional[int] = None
+    """Seed for RNG"""
+
+
+@dataclass
 class AttackerConfig(Serializable):
     """
         Configuration for the attacker

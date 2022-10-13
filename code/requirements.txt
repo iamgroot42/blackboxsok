@@ -21,3 +21,4 @@ h5py
 GPy
 timm
 lief==0.12.1
+pefile
