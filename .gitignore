@@ -1,2 +1,5 @@
 .vscode/*
 .idea/
+
+# Repo-specific stuff
+fenil_codes/*

@@ -16,6 +16,7 @@ class CustomDatasetWrapper:
         self.root = os.path.join(data_config.root, data_config.name)
         self.train_transforms = None
         self.test_transforms = None
+        self.collate_fn = None
         self.num_classes = num_classes
         self.ds_train = None
         self.ds_val = None
@@ -42,6 +43,7 @@ class CustomDatasetWrapper:
                 shuffle=shuffle,
                 num_workers=num_workers,
                 worker_init_fn=worker_init_fn,
+                collate_fn=self.collate_fn,
                 prefetch_factor=prefetch_factor
             )
 
@@ -55,6 +57,7 @@ class CustomDatasetWrapper:
                 shuffle=eval_shuffle,
                 num_workers=num_workers,
                 worker_init_fn=worker_init_fn,
+                collate_fn=self.collate_fn,
                 prefetch_factor=prefetch_factor
             )
 
@@ -64,6 +67,7 @@ class CustomDatasetWrapper:
             shuffle=eval_shuffle,
             num_workers=num_workers,
             worker_init_fn=worker_init_fn,
+            collate_fn=self.collate_fn,
             prefetch_factor=prefetch_factor
         )
 
