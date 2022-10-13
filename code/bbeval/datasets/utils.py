@@ -42,7 +42,7 @@ def rand_int_gen_exclu(num_min, num_max, num_exclu, res_len):
 def get_target_label(mode, x_orig, model, num_class, y_label, batch_size):
     if mode == "easiest":
         target_model_output = model.forward(x_orig)
-        target_label = ch.kthvalue(target_model_output, num_class).indices
+        target_label = ch.kthvalue(target_model_output, num_class-1).indices
     if mode == "hardest":
         target_model_output = model.forward(x_orig)
         target_label = ch.min(target_model_output, 1).indices
