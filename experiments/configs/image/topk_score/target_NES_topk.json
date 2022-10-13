@@ -1,5 +1,5 @@
 {
-    "experiment_name": "untargted_NES_topk",
+    "experiment_name": "targted_NES_topk",
     "dataset_config": {
         "name": "imagenet",
         "type": "image"
@@ -18,10 +18,7 @@
             },
 
             "attack_params": {
-                "n_iters": 10000,
-                "image_resizes": [
-                    330
-                ]
+                "max_queries": 100000
             }
 
         }

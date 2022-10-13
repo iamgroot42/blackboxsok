@@ -100,3 +100,63 @@ Target model: inceptionv4
 Aux model: inceptionv3
 The transferbility of untargeted_SMIMIFGSM_transfer_imagenet is 46.29999923706055 %
 --- 1167.672086238861 seconds ---
+
+epsilon: 4
+Target model: inceptionv4 
+Aux model: inceptionv3
+The transferbility of untargeted_SMIMITIDISIFGSM_transfer_imagenet is 29.399999618530273 %
+--- 6065.237257480621 seconds ---
+
+epsilon: 4
+Target model: inceptionv4 
+Aux model: inceptionv3
+The transferbility of untargeted_VMIFGSM_transfer_imagenet is 27.80000114440918 %
+--- 2118.570695400238 seconds ---
+
+epsilon: 4
+Target model: inceptionv4 
+Aux model: inceptionv3
+The transferbility of untargeted_VMITIDISIFGSM_transfer_imagenet is 28.30000114440918 %
+--- 2509.8679208755493 seconds ---
+
+epsilon: 4
+Target model: inceptionv4 
+Aux model: inceptionv3
+The transferbility of untargeted_VNIFGSM_transfer_imagenet is 32.400001525878906 %
+--- 2086.215563058853 seconds ---
+
+epsilon: 4
+Target model: inceptionv4 
+Aux model: inceptionv3
+The transferbility of untargeted_VNITIDISIFGSM_transfer_imagenet is 29.700000762939453 %
+--- 2508.902446269989 seconds ---
+
+epsilon: 4
+Target model: inceptionv4 
+Aux model: inceptionv3
+The transferbility of untargeted_IFGSSM_transfer_imagenet is 15.199999809265137 %
+--- 135.4952290058136 seconds ---
+
+epsilon: 4
+Target model: inceptionv4 
+Aux model: inceptionv3
+The transferbility of untargeted_PITIDIFGSSM_transfer_imagenet is 14.90000057220459 %
+--- 190.16780376434326 seconds ---
+
+epsilon: 4
+Target model: inceptionv4 
+Aux model: inceptionv3
+The transferbility of untargeted_EMITIDIAIFGSM_transfer_imagenet is 29.899999618530273 %
+--- 16508.1099524498 seconds ---
+
+epsilon: 4
+Target model: inceptionv4 
+Aux model: inceptionv3
+The transferbility of untargeted_SMIMITIDIAIFGSM_transfer_imagenet is 29.600000381469727 %
+--- 18025.970798254013 seconds ---
+
+epsilon: 4
+Target model: inceptionv4 
+Aux model: inceptionv3
+The transferbility of untargeted_MIADMIXTIDIFGSSM_transfer_imagenet is 33.29999923706055 %
+--- 1505.3174126148224 seconds ---

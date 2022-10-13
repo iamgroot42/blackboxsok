@@ -178,8 +178,8 @@ if __name__ == "__main__":
         print("===============")
         print("y_target:",y_target.shape)
         print("x_target:",x_target.shape)
-        ch.save(y_target, 'data/'+model_name+'/y_target.pt')
-        ch.save(x_target, 'data/'+model_name+'/x_target.pt')
+        ch.save(y_target, 'data/'+model_name+'/target_labels.pt')
+        ch.save(x_target, 'data/'+model_name+'/target_images.pt')
 
 
 

@@ -63,7 +63,6 @@ if __name__ == "__main__":
     target_model_1.set_eval()  # Make sure model is in eval model
     target_model_1.zero_grad()  # Make sure no leftover gradients
 
-    x_target = 1
 
     ds_config = config.dataset_config
     target_modal_name = attacker_config_1.adv_model_config.name
@@ -82,12 +81,12 @@ if __name__ == "__main__":
     except:
         raise NotImplementedError(f"The image of {target_modal_name} is not saved yet")
 
-    n, i = 0, 0
+    n = 0, 0
     start_time = time.time()
 
     while n < 1000:
-        x_orig = correct_images[i:i + 10]
-        y_label = correct_labels[i:i + 10]
+        x_orig = correct_images[n:n + 10]
+        y_label = correct_labels[n:n + 10]
         x_orig, y_label = x_orig.cuda(), y_label.cuda()
         target_model_output = target_model_1.forward(x_orig)
         target_model_prediction = ch.max(target_model_output, 1).indices

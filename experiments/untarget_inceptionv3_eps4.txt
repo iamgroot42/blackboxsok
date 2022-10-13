@@ -40,3 +40,39 @@ Target model: inceptionv3
 Aux model: inceptionv3
 The transferbility of untargeted_EMIFGSM_transfer_imagenet is 99.0 %
 --- 1072.5504891872406 seconds ---
+
+epsilon: 4
+Target model: inceptionv3 
+Aux model: inceptionv3
+The transferbility of untargeted_FGSM_transfer_imagenet is 76.5 %
+--- 22.11336898803711 seconds ---
+
+epsilon: 4
+Target model: inceptionv3 
+Aux model: inceptionv3
+The transferbility of untargeted_IFGSM_transfer_imagenet is 99.0 %
+--- 132.52388787269592 seconds ---
+
+epsilon: 4
+Target model: inceptionv3 
+Aux model: inceptionv3
+The transferbility of untargeted_TIFGSM_transfer_imagenet is 95.4000015258789 %
+--- 134.36501026153564 seconds ---
+
+epsilon: 4
+Target model: inceptionv3 
+Aux model: inceptionv3
+The transferbility of untargeted_DIFGSM_transfer_imagenet is 96.4000015258789 %
+--- 138.23950028419495 seconds ---
+
+epsilon: 4
+Target model: inceptionv3 
+Aux model: inceptionv3
+The transferbility of untargeted_SIFGSM_transfer_imagenet is 83.30000305175781 %
+--- 626.5027365684509 seconds ---
+
+epsilon: 4
+Target model: inceptionv3 
+Aux model: inceptionv3
+The transferbility of untargeted_ADMIXFGSM_transfer_imagenet is 84.4000015258789 %
+--- 1837.6202418804169 seconds ---

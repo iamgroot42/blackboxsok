@@ -100,3 +100,57 @@ Target model: inceptionresnetv2
 Aux model: inceptionv3
 The transferbility of untargeted_SMIMIFGSM_transfer_imagenet is 41.5 %
 --- 1262.5226051807404 seconds ---
+
+epsilon: 4
+Target model: inceptionresnetv2 
+Aux model: inceptionv3
+The transferbility of untargeted_SMIMITIDISIFGSM_transfer_imagenet is 28.0 %
+--- 7054.660544633865 seconds ---
+
+epsilon: 4
+Target model: inceptionresnetv2 
+Aux model: inceptionv3
+The transferbility of untargeted_VMIFGSM_transfer_imagenet is 26.399999618530273 %
+--- 2224.377376794815 seconds ---
+
+epsilon: 4
+Target model: inceptionresnetv2 
+Aux model: inceptionv3
+The transferbility of untargeted_VMITIDISIFGSM_transfer_imagenet is 25.200000762939453 %
+--- 2672.2395236492157 seconds ---
+
+epsilon: 4
+Target model: inceptionresnetv2 
+Aux model: inceptionv3
+The transferbility of untargeted_VNIFGSM_transfer_imagenet is 28.399999618530273 %
+--- 2206.6524493694305 seconds ---
+
+epsilon: 4
+Target model: inceptionresnetv2 
+Aux model: inceptionv3
+The transferbility of untargeted_VNITIDISIFGSM_transfer_imagenet is 26.899999618530273 %
+--- 2658.2319836616516 seconds ---
+
+epsilon: 4
+Target model: inceptionresnetv2 
+Aux model: inceptionv3
+The transferbility of untargeted_IFGSSM_transfer_imagenet is 12.800000190734863 %
+--- 153.21940755844116 seconds ---
+
+epsilon: 4
+Target model: inceptionresnetv2 
+Aux model: inceptionv3
+The transferbility of untargeted_PITIDIFGSSM_transfer_imagenet is 10.600000381469727 %
+--- 238.3724958896637 seconds ---
+
+epsilon: 4
+Target model: inceptionresnetv2 
+Aux model: inceptionv3
+The transferbility of untargeted_EMITIDIAIFGSM_transfer_imagenet is 28.600000381469727 %
+--- 19423.923435926437 seconds ---
+
+epsilon: 4
+Target model: inceptionresnetv2 
+Aux model: inceptionv3
+The transferbility of untargeted_SMIMITIDIAIFGSM_transfer_imagenet is 29.5 %
+--- 21213.572872638702 seconds ---

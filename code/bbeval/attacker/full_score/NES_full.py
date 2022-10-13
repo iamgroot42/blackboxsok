@@ -57,7 +57,6 @@ class NES_full(Attacker):
         x_min_val, x_max_val = 0, 1.0
         momentum = 0.9
         samples_per_draw=50
-        is_preturbed = False
         sigma=1e-3
         batch_size=10
         max_queries=100000
@@ -89,10 +88,6 @@ class NES_full(Attacker):
                     adv = adv.to(device='cuda', dtype=ch.float)
                     target_model_output = self.model.forward(adv)
                     target_model_prediction = ch.max(target_model_output, 1).indices
-                if is_preturbed:
-                    num_queries+=sample_per_draw
-                    stop_queries+=sample_per_draw
-                else:
                     num_queries+=1
                     stop_queries+=1
                 if (targeted and target_model_prediction.item()==target_label.item())\
@@ -104,6 +99,8 @@ class NES_full(Attacker):
                     # return adv.detach(), stop_queries
                 prev_g = g
                 l, g = self.get_grad(adv, samples_per_draw, batch_size, target_label)
+                num_queries+=sample_per_draw
+                stop_queries+=sample_per_draw
                 print("Current label: "+str(target_model_prediction.item())+"   loss: "+str(l.item()))
                 # SIMPLE MOMENTUM
                 g = momentum * prev_g + (1.0 - momentum) * g
@@ -119,6 +116,9 @@ class NES_full(Attacker):
                 current_lr = max_lr
                 adv = adv - (targeted * current_lr * ch.sign(g)).cuda()
                 adv = clip_by_tensor(adv, lower, upper)
+
+            print("Out of queries!")
+            ret_adv.append(adv)
 
         return ret_adv.detach(), num_queries
 

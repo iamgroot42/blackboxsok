@@ -67,51 +67,34 @@ if __name__ == "__main__":
     target_model_1.zero_grad()  # Make sure no leftover gradients
 
     ds_config = config.dataset_config
-    if ds_config.name == 'imagenet':
-        if attacker_config_1.adv_model_config.name == 'inceptionv3':
-            correct_images = ch.load('data/inceptionv3/correct_images.pt')
-            correct_labels = ch.load('data/inceptionv3/correct_labels.pt')
-        if attacker_config_1.adv_model_config.name == 'inceptionv4':
-            correct_images = ch.load('data/inceptionv4/correct_images.pt')
-            correct_labels = ch.load('data/inceptionv4/correct_labels.pt')
-        if attacker_config_1.adv_model_config.name == 'inceptionresnetv2':
-            correct_images = ch.load('data/inceptionresnetv2/correct_images.pt')
-            correct_labels = ch.load('data/inceptionresnetv2/correct_labels.pt')
-        if attacker_config_1.adv_model_config.name == 'resnet101':
-            correct_images = ch.load('data/resnet101/correct_images.pt')
-            correct_labels = ch.load('data/resnet101/correct_labels.pt')
-        if attacker_config_1.adv_model_config.name == 'ensinceptionresnetv2':
-            correct_images = ch.load('data/ensinceptionresnetv2/correct_images.pt')
-            correct_labels = ch.load('data/ensinceptionresnetv2/correct_labels.pt')
-        if attacker_config_1.adv_model_config.name == 'advinceptionv3':
-            correct_images = ch.load('data/advinceptionv3/correct_images.pt')
-            correct_labels = ch.load('data/advinceptionv3/correct_labels.pt')
-        if attacker_config_1.adv_model_config.name == 'resnet50':
-            correct_images = ch.load('data/resnet50/correct_images.pt')
-            correct_labels = ch.load('data/resnet50/correct_labels.pt')
-        if attacker_config_1.adv_model_config.name == 'vgg16_bn':
-            correct_images = ch.load('data/vgg16_bn/correct_images.pt')
-            correct_labels = ch.load('data/vgg16_bn/correct_labels.pt')
-    # start_time = time.time()
+    target_modal_name = attacker_config_1.adv_model_config.name
+    correct_images_path = 'data/' + target_modal_name + '/correct_images.pt'
+    correct_labels_path = 'data/' + target_modal_name + '/correct_labels.pt'
+    target_images_path = 'data/' + target_modal_name + '/target_images.pt'
+    target_labels_path = 'data/' + target_modal_name + '/target_labels.pt'
+    try:
+        correct_images = ch.load(correct_images_path)
+        correct_labels = ch.load(correct_labels_path)
+        target_images = correct_images
+        target_labels = correct_labels
         if attacker_config_1.targeted:
-            target_images = ch.load('data/resnet50/x_target.pt')
-            target_labels = ch.load('data/resnet50/y_target.pt')
-        else:
-            target_images=correct_images
-            target_labels = correct_labels
+            target_images = ch.load(target_images_path)
+            target_labels = ch.load(target_labels_path)
+    except:
+        raise NotImplementedError(f"The image of {target_modal_name} is not saved yet")
 
-    n, i = 0, 0
+    n = 0
     start_time = time.time()
 
     while n < 100:
-        x_orig = correct_images[i:i + 10]
-        y_label = correct_labels[i:i + 10]
+        x_orig = correct_images[n:n + 10]
+        y_label = correct_labels[n:n + 10]
         x_orig, y_label = x_orig.cuda(), y_label.cuda()
         target_model_output = target_model_1.forward(x_orig)
         target_model_prediction = ch.max(target_model_output, 1).indices
         correctly_classified += ch.count_nonzero(target_model_prediction == y_label)
         n += 10
-    print("The clean accuracy is %s %%" % str(float(correctly_classified / 10)))
+    print("The clean accuracy is %s %%" % str(float(correctly_classified / 1)))
     #
     for i in range(int(1)):
         # the original dataset is normalized into the range of [0,1]
@@ -121,7 +104,6 @@ if __name__ == "__main__":
         x_orig, y_label = x_orig.cuda(), y_label.cuda()
         x_target, y_target = target_images[0:100], target_labels[0:100]
         x_target, y_target = x_target.cuda(), y_target.cuda()
-
         num_class = ds.num_classes
 
         # Perform attack
