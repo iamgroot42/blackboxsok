@@ -69,16 +69,16 @@ if __name__ == "__main__":
     target_modal_name = attacker_config_1.adv_model_config.name
     correct_images_path = 'data/' + target_modal_name + '/correct_images.pt'
     correct_labels_path = 'data/' + target_modal_name + '/correct_labels.pt'
-    target_images_path = 'data/' + target_modal_name + '/target_images.pt'
-    target_labels_path = 'data/' + target_modal_name + '/target_labels.pt'
+    # target_images_path = 'data/' + target_modal_name + '/target_images.pt'
+    # target_labels_path = 'data/' + target_modal_name + '/target_labels.pt'
     try:
         correct_images = ch.load(correct_images_path)
         correct_labels = ch.load(correct_labels_path)
-        target_images = correct_images
-        target_labels = correct_labels
-        if attacker_config_1.targeted:
-            target_images = ch.load(target_images_path)
-            target_labels = ch.load(target_labels_path)
+        # target_images = correct_images
+        # target_labels = correct_labels
+        # if attacker_config_1.targeted:
+        #     target_images = ch.load(target_images_path)
+        #     target_labels = ch.load(target_labels_path)
     except:
         raise NotImplementedError(f"The image of {target_modal_name} is not saved yet")
 
@@ -101,18 +101,18 @@ if __name__ == "__main__":
 
         x_orig, y_label = correct_images[i * 10:i * 10 + 10], correct_labels[i * 10:i * 10 + 10]
         x_orig, y_label = x_orig.cuda(), y_label.cuda()
-        x_target, y_target = target_images[i * 10:i * 10 + 10], target_labels[i * 10:i * 10 + 10]
-        x_target, y_target = x_target.cuda(), y_target.cuda()
+        # x_target, y_target = target_images[i * 10:i * 10 + 10], target_labels[i * 10:i * 10 + 10]
+        # x_target, y_target = x_target.cuda(), y_target.cuda()
         num_class = ds.num_classes
-        # if attacker_config_1.targeted:
-        #     # mode = "easiest"/"hardest"/"random"/"user"
-        #     # mode = attacker_config_1.target_label_selection_mode
-        #     mode = "random"
-        #     y_target = get_target_label(
-        #         mode, x_orig, target_model_1, num_class, y_label, 10)
-        #     y_target = y_target.cuda()
-        # else:
-        #     y_target = y_label
+        if attacker_config_1.targeted:
+            # mode = "easiest"/"hardest"/"random"/"user"
+            # mode = attacker_config_1.target_label_selection_mode
+            mode = "easiest"
+            y_target = get_target_label(
+                mode, x_orig, target_model_1, num_class, y_label, 10)
+            y_target = y_target.cuda()
+        else:
+            y_target = y_label
 
         # Perform attack
         (x_sample_adv, queries_used_1), attacker_1 = single_attack(target_model_1,
