@@ -78,10 +78,18 @@ if __name__ == "__main__":
         target_images = correct_images
         target_labels = correct_labels
         if attacker_config_1.targeted:
+<<<<<<< Updated upstream
             target_images = ch.load(target_images_path)
             target_labels = ch.load(target_labels_path)
     except:
         raise NotImplementedError(f"The image of {target_modal_name} is not saved yet")
+=======
+            target_images = ch.load('data/inceptionv3/x_target.pt')
+            target_labels = ch.load('data/inceptionv3/y_target.pt')
+        else:
+            target_images=correct_images
+            target_labels = correct_labels
+>>>>>>> Stashed changes
 
     n = 0
     start_time = time.time()
