@@ -20,7 +20,9 @@ class Padding(Attacker):
     
     def _attack(self, 
                 x_orig: List[MalwareDatumWrapper],
-                x_adv: List[MalwareDatumWrapper]):
+                x_adv: List[MalwareDatumWrapper],
+                y_label=None,
+                y_target=None):
         padding_bytes = self.params['how_many_padding_bytes'] # 2048
         iterations = self.params['iterations'] # 5
         epsilon = self.params['epsilon'] # 1.0
@@ -34,8 +36,8 @@ class Padding(Attacker):
             x_adv_i_feature = End2EndModel.bytes_to_numpy(
                 x_adv_i.bytes, self.model.model.get_input_max_length(), 256, False
             )
-
-            y_pred, adv_score, adv_ds, f_obj = fgsm.run(CArray(x_adv_i_feature), CArray(label[1]))
+            x_adv_i.feature = x_adv_i_feature
+            y_pred, adv_score, adv_ds, f_obj = fgsm.run(CArray(x_adv_i.feature), CArray(y_label))
             real_adv_x = fgsm.create_real_sample_from_adv(x_orig_i.path, adv_ds.X)
             x_adv_i_new: MalwareDatumWrapper  = copy.deepcopy(x_orig)
             x_adv_i_new.bytes = real_adv_x

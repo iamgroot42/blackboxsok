@@ -159,19 +159,15 @@ class MalwareAttackerConfig(Serializable):
     """Which attack is this?"""
     adv_model_config: ModelConfig
     """Model config for adversary's model"""
-
+    access_level: str = field(choice(["only label", "top-k", "all", "none"]))
+    """What level of access does the attacker have?"""
     aux_model_configs_dict: Optional[List[dict]] = None
     """Model configs for adversary's leveraged auxiliary models"""
     aux_model_configs: Optional[List] = None
-
     attack_params: Optional[dict] = None
     """Additional attack-specific parameters"""
-
-    access_level: str = field(choice(["only label", "top-k", "all", "none"]))
-    """What level of access does the attacker have?"""
     query_budget: Optional[int] = np.inf
     """Query budget"""
-
     loss_type: Optional[str] = "ce"
     """Loss type"""
     seed: Optional[int] = None
@@ -248,8 +244,15 @@ class ExperimentConfig(Serializable):
         if len(self.attack_configs_dict) > 2:
             raise ValueError("Only 2 attack configs supported")
         # Have to do this because SimpleParsing does not support list of dataclasses
-        self.attack_configs = [from_dict(
-            data_class=AttackerConfig, data=config_dict) for config_dict in self.attack_configs_dict]
+        self.attack_configs = []
+        if self.dataset_config.type == "malware":
+            class_to_use = MalwareAttackerConfig
+        else:
+            class_to_use = AttackerConfig
+
+        for config_dict in self.attack_configs_dict:
+            print("Use", class_to_use, "with", config_dict)
+            self.attack_configs.append(class_to_use.from_dict(config_dict))
 
 
 @dataclass
