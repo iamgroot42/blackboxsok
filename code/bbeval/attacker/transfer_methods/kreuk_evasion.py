@@ -31,19 +31,27 @@ class Padding(Attacker):
                              epsilon=epsilon,
                              iterations=iterations)
         x_adv_new = []
+        results = []
         for i, (x_orig_i, x_adv_i) in enumerate(zip(x_orig, x_adv)):
             x_adv_i_feature = End2EndModel.bytes_to_numpy(
                 x_adv_i.bytes, self.model.model.get_input_max_length(), 256, False
             )
             x_adv_i.feature = x_adv_i_feature
-            y_pred, adv_score, adv_ds, f_obj = fgsm.run(CArray(x_adv_i.feature), CArray(y_label[i][1]
-            .cpu()))
+            y_pred, adv_score, adv_ds, f_obj = fgsm.run(
+                CArray(x_adv_i.feature), CArray(y_label[i][1].cpu()))
+            results.append(adv_score.tondarray()[0][1])
             real_adv_x = fgsm.create_real_sample_from_adv(x_orig_i.path, adv_ds.X)
             x_adv_i_new: MalwareDatumWrapper  = copy.deepcopy(x_orig_i)
             x_adv_i_new.bytes = real_adv_x
             x_adv_new.append(x_adv_new)
 
         stop_queries = 1
+
+        self.logger.add_result(
+            queries_used=stop_queries,
+            result={
+                "adv_preds": results
+            })
 
         # TODO- Convert x_adv_new to appropriate batch
         return x_adv_new, stop_queries
