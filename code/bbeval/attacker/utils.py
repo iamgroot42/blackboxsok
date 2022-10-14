@@ -34,10 +34,13 @@ from bbeval.attacker.transfer_methods.EMITIDIAIFGSM import EMITIDIAIFGSM
 from bbeval.attacker.transfer_methods.SMIMITIDIAIFGSM import SMIMITIDIAIFGSM
 from bbeval.attacker.transfer_methods.VMITIDIAIFGSM import VMITIDIAIFGSM
 from bbeval.attacker.transfer_methods.VNITIDIAIFGSM import VNITIDIAIFGSM
+from bbeval.attacker.transfer_methods.kreuk_evasion import Padding
+from bbeval.config.core import MalwareAttackerConfig
 
 from bbeval.config import AttackerConfig, ExperimentConfig
 from bbeval.models.core import GenericModelWrapper
 
+from typing import Union
 
 ATTACK_WRAPPER_MAPPING = {
     "square_attack": Square_Attack,
@@ -75,11 +78,15 @@ ATTACK_WRAPPER_MAPPING = {
     "BayesOpt": BayesOpt,
     "NES_full": NES_full,
     "NES_topk": NES_topk,
-    "BayesOpt_full": BayesOpt_full
+    "BayesOpt_full": BayesOpt_full,
+    "kreuk_evasion": Padding
 }
 
 
-def get_attack_wrapper(model: GenericModelWrapper, aux_models: dict, attack_config: AttackerConfig, experiment_config: ExperimentConfig):
+def get_attack_wrapper(model: GenericModelWrapper,
+                       aux_models: dict,
+                       attack_config: Union[AttackerConfig, MalwareAttackerConfig],
+                       experiment_config: ExperimentConfig):
     """
         Create attack wrapper for given attakc-config
     """

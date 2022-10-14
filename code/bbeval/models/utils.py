@@ -16,7 +16,8 @@ MODEL_WRAPPER_MAPPING = {
     "imagenetrobust": image.ImageNetRobust,
     "cifar10robust": image.Cifar10Robust,
     "mlp3": malware.MLPClassifier,
-    "rf": malware_sklearn.RFWrapper
+    "rf": malware_sklearn.RFWrapper,
+    "malconv": malware.SecmlMalConv
 }
 
 
