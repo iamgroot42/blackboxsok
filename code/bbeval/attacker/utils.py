@@ -35,6 +35,7 @@ from bbeval.attacker.transfer_methods.SMIMITIDIAIFGSM import SMIMITIDIAIFGSM
 from bbeval.attacker.transfer_methods.VMITIDIAIFGSM import VMITIDIAIFGSM
 from bbeval.attacker.transfer_methods.VNITIDIAIFGSM import VNITIDIAIFGSM
 from bbeval.attacker.transfer_methods.kreuk_evasion import Padding
+from bbeval.attacker.transfer_methods.montemutacon import MonteMutacon
 from bbeval.config.core import MalwareAttackerConfig
 
 from bbeval.config import AttackerConfig, ExperimentConfig
@@ -79,7 +80,8 @@ ATTACK_WRAPPER_MAPPING = {
     "NES_full": NES_full,
     "NES_topk": NES_topk,
     "BayesOpt_full": BayesOpt_full,
-    "kreuk_evasion": Padding
+    "kreuk_evasion": Padding,
+    "montemutacon": MonteMutacon
 }
 
 
