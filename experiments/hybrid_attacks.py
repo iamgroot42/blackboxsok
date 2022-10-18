@@ -38,8 +38,8 @@ def single_attack(target_model, aux_models, x_orig, x_sample_adv, y_label, x_tar
 def second_attack(target_model, aux_models, x_orig, x_sample_adv, y_label, x_target, y_target, attacker_config: AttackerConfig,
                   experiment_config: ExperimentConfig):
     attacker = get_attack_wrapper(target_model, aux_models, attacker_config, experiment_config)
-    x_sample_adv, queries_used,compare_x = attacker.attack(x_orig=x_orig, x_adv=x_sample_adv, y_label=y_label, x_target=x_target, y_target=y_target)
-    return (x_sample_adv, queries_used,compare_x), attacker
+    x_sample_adv, queries_used = attacker.attack(x_orig=x_orig, x_adv=x_sample_adv, y_label=y_label, x_target=x_target, y_target=y_target)
+    return (x_sample_adv, queries_used), attacker
 
 
 # os.environ['TORCH_HOME'] = '/p/blackboxsok/models/imagenet_torch' # download imagenet models to project directory
@@ -184,7 +184,7 @@ if __name__ == "__main__":
             y_target = y_label
             target_model_2, aux_models_2 = get_model_and_aux_models(attacker_config_2)
             # Perform attack
-            (x_sample_adv, queries_used_2, compare_x), attacker_2 = second_attack(target_model_2,
+            (x_sample_adv, queries_used_2), attacker_2 = second_attack(target_model_2,
                                                                                     aux_models=aux_models_2,
                                                                                     x_orig=second_attack_x,
                                                                                     x_sample_adv=second_attack_x,
@@ -244,7 +244,7 @@ if __name__ == "__main__":
             else:
                 total_transfered += ch.count_nonzero(target_model_prediction != second_attack_y)
 
-    print(compare_x)
+
     '''
     untransfered_x=[]
     y_label=y_label.tolist()
