@@ -1,4 +1,3 @@
-from email.mime import image
 from bbeval.config.core import ExperimentConfig
 from bbeval.models.core import GenericModelWrapper
 from bbeval.config import MalwareAttackerConfig
@@ -11,7 +10,8 @@ import copy
 
 
 import scurve
-from scurve import progress, utils, draw
+import string
+from scurve import utils
 from PIL import Image, ImageDraw
 
 
@@ -112,20 +112,18 @@ class BestEffort(Attacker):
             raise ValueError('image_type must be specified')
         if image_type not in ['ce', 'ch']:
             raise ValueError('image_type must be one of [ce, ch]')
-        
 
-        iterations = self.params['iterations']  # 5
-        epsilon = self.params['epsilon']  # 1.0
         x_adv_new = []
         results = []
         for i, (x_orig_i, x_adv_i) in enumerate(zip(x_orig, x_adv)):
 
             block = None
             if image_type == 'ce':
-                csource = ColorEntropy(x_adv_i.bytes, block)
+                csource = ColorEntropy(list(x_adv_i.bytes), block)
             else:
-                csource = ColorHilbert(x_adv_i.bytes, block)
-            # drawmap_square("hilbert", 256, csource, 'somewhere.png')
+                csource = ColorHilbert(list(x_adv_i.bytes), block)
+            drawmap_square("hilbert", 256, csource, 'somewhere.png')
+            exit(0)
             fc=1
 
             x_adv_i_feature = End2EndModel.bytes_to_numpy(

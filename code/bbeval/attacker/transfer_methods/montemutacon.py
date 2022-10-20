@@ -93,7 +93,6 @@ class MonteMutacon(Attacker):
         # Transform the sample through the pipeline. Depending on your model you 
         # might not need this
         transform = self.pipeline.transform(df, ["imported_libs", "imported_funcs"])
-        print(self.model.predict(transform))
         return self.model.predict(transform)[0]
     
     def attack_single(self, sample):
