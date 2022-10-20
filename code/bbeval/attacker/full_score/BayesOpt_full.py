@@ -346,4 +346,4 @@ class BayesOpt_full(Attacker):
                         "average query": int((query_count-len(x_orig))/x)
                     })       
         
-        return x_sample_adv, query_count+len(x_orig),results_dict
+        return x_sample_adv, query_count+len(x_orig)
