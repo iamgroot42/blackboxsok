@@ -40,7 +40,7 @@ if __name__ == "__main__":
     config = ExperimentConfig.load(args.config, drop_extra_fields=False)
 
     ds_config = config.dataset_config
-    batch_size = 20
+    batch_size = 10
 
     # Get data-loader, make sure it works
     ds: CustomDatasetWrapper = get_dataset_wrapper(ds_config)
@@ -60,31 +60,17 @@ if __name__ == "__main__":
     target_model_1.set_eval()  # Make sure model is in eval model
     target_model_1.zero_grad()  # Make sure no leftover gradients
 
-    for i in range(50):
+    for i in range(100):
         # the original dataset is normalized into the range of [0,1]
         # specific attacks may have different ranges and should be handled case by case
+        print(i)
         x_orig, y_label = next(iter(test_loader))
         x_orig, y_label = x_orig.cuda(), y_label.cuda()
 
-        num_class = ds.num_classes
-        if attacker_config_1.targeted:
-            # mode = "easiest"/"hardest"/"random"/"user"
-            # mode = attacker_config_1.target_label_selection_mode
-            mode = "random"
-            y_target = get_target_label(
-                mode, x_orig, target_model_1, num_class, y_label, 20)
-            y_target = y_target.cuda()
-        else:
-            y_target = y_label
-
-        print(target_model_1)
-        print(x_orig.shape)
         # outputs the accuracy of the target model
         target_model_output = target_model_1.forward(x_orig)
         target_model_prediction = ch.max(target_model_output, 1).indices
-        batch_size = len(y_target)
         num_correct += ch.count_nonzero(target_model_prediction == y_label)
-        print(i)
 
     accuracy = float(num_correct / 1000) * 100
     print("The accuracy of the target model is %s %%" % str(accuracy))

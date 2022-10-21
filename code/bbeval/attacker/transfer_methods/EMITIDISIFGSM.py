@@ -107,11 +107,7 @@ class EMITIDISIFGSM(Attacker):
                     output_clone = output.clone()
                     loss = self.criterion(output_clone, y_target)
                     # print(loss)
-                    if i == 0:
-                        loss.backward(retain_graph=True)
-                    #     Trying to backward through the graph a second time
-                    else:
-                        loss.backward()
+                    loss.backward()
                     grad_bar += x_nes.grad.data / sampling_number / m
 
             grad = F.conv2d(grad_bar, gaussian_kernel, stride=1, padding='same', groups=3)

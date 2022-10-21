@@ -81,7 +81,7 @@ if __name__ == "__main__":
     except:
         raise NotImplementedError(f"The image of {target_modal_name} is not saved yet")
 
-    n = 0, 0
+    n = 0
     start_time = time.time()
 
     while n < 1000:
@@ -94,13 +94,13 @@ if __name__ == "__main__":
         n += 10
     print("The clean accuracy is %s %%" % str(float(correctly_classified / 10)))
     #
-    for i in tqdm(range(int(100))):
+    for i in tqdm(range(int(10))):
         # the original dataset is normalized into the range of [0,1]
         # specific attacks may have different ranges and should be handled case by case
 
         x_orig, y_label = correct_images[i * 10:i * 10 + 10], correct_labels[i * 10:i * 10 + 10]
         x_orig, y_label = x_orig.cuda(), y_label.cuda()
-        # x_target, y_target = target_images[i * 10:i * 10 + 10], target_labels[i * 10:i * 10 + 10]
+        x_target, y_target = correct_images[i * 10:i * 10 + 10], correct_labels[i * 10:i * 10 + 10]
         # x_target, y_target = x_target.cuda(), y_target.cuda()
         num_class = ds.num_classes
         if attacker_config_1.targeted:
@@ -135,7 +135,7 @@ if __name__ == "__main__":
         else:
             total_transfered += ch.count_nonzero(target_model_prediction != y_target)
 
-    transferability = float(total_transfered / 10)
+    transferability = float(total_transfered / 1)
     print("Target model: %s " % (str(attacker_config_1.adv_model_config.name)))
     print("Aux model: %s" % (str(attacker_config_1.aux_model_configs[0].name)))
     print("The transferability of %s is %s %%" % (str(attacker_config_1.name), str(transferability)))
@@ -145,7 +145,7 @@ if attacker_config_1.targeted:
 else:
     prefix="untarget"
     
-experiment_file_name=prefix+'_'+target_modal_name+'_eps'+str(attacker_config_1.eps)+'.txt'
+experiment_file_name=prefix+'_'+target_modal_name+'_eps'+str(int(attacker_config_1.eps))+'.txt'
 with open(experiment_file_name, 'a') as f:
     f.write('\n')
     f.write("epsilon: %s" % (str(attacker_config_1.eps)))

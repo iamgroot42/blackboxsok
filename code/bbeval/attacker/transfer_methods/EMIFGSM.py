@@ -97,11 +97,11 @@ class EMIFGSM(Attacker):
                 output_clone = output.clone()
                 loss = self.criterion(output_clone, y_target)
                 # print(loss)
-                if i == 0:
-                    loss.backward(retain_graph=True)
-                #     Trying to backward through the graph a second time
-                else:
-                    loss.backward()
+                # if i == 0:
+                #     loss.backward(retain_graph=True)
+                # #     Trying to backward through the graph a second time
+                # else:
+                loss.backward()
                 grad_bar += x_input.grad.data / sampling_number
 
             grad = momentum * decay + grad_bar / ch.mean(ch.abs(grad_bar), dim=(1, 2, 3), keepdim=True)

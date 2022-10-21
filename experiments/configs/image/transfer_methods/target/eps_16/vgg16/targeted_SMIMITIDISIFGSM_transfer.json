@@ -21,6 +21,16 @@
                     "use_pretrained": true,
                     "name": "resnet50",
                     "dataset": "imagenet"
+                },
+                {
+                    "use_pretrained": true,
+                    "name": "inceptionv3",
+                    "dataset": "imagenet"
+                },
+                {
+                    "use_pretrained": true,
+                    "name": "inceptionresnetv2",
+                    "dataset": "imagenet"
                 }
             ],
             "attack_params": {

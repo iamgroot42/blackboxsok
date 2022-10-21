@@ -24,17 +24,19 @@ class NES_topk(Attacker):
         self.norm = None
         self.k = 1
 
-    def get_grad(self, adv, samples_per_draw, batch_size, target_label):
+    def get_grad(self, adv, samples_per_draw, batch_size, target_label,upper, lowe):
         sigma = 1e-5
         num_batches = samples_per_draw // batch_size
         losses = []
         grads = []
         temp_label = ch.zeros(1000)
         temp_label[target_label] = 1
+        upper = upper.cpu().detach().numpy()
+        lower = lower.cpu().detach().numpy()
         for _ in range(num_batches):
             noise_pos = np.random.normal(size=(batch_size // 2,) + adv[0].shape)
             noise = np.concatenate([noise_pos, -noise_pos], axis=0)
-            eval_points = adv.cpu() + sigma * noise  # for scale
+            eval_points = adv.cpu() + sigma * noise  * (upper-lower) # for scale
             eval_points = eval_points.to(device='cuda', dtype=ch.float)
             loss_val, noise = self.partial_info_loss(eval_points, noise, target_label, batch_size, temp_label)
             losses_tiled = ch.tile(ch.reshape(loss_val, (-1, 1, 1, 1)), adv[0].shape)
@@ -93,17 +95,17 @@ class NES_topk(Attacker):
         last_ls = []
         g = 0
         num_queries = 0
-        ret_adv = []
+        ret_adv=x_orig
 
         adv_thresh = 0.2
         # adv_thresh = 1
-        temp_eps=1
         # temp_eps=0.1
         delta_epsilon=0.5
         conservative=2
 
 
         for idx in range(len(x_orig)):
+            temp_eps = 1
 
             print("###################===================####################")
             stop_queries = 0
@@ -115,6 +117,8 @@ class NES_topk(Attacker):
             self.model.zero_grad()  # Make sure no leftover gradients
             print(f"Image {idx:d}   Target label: {target_label:d}")
             iter = 0
+            success_flag=0
+            transfer_flag=0
             while num_queries < max_queries:
                 print("i------------" + str(iter))
                 iter += 1
@@ -122,22 +126,26 @@ class NES_topk(Attacker):
                     adv = adv.to(device='cuda', dtype=ch.float)
                     target_model_output = self.model.forward(adv)
                     target_model_prediction = ch.max(target_model_output, 1).indices
-                if is_preturbed:
-                    num_queries += sample_per_draw
-                    stop_queries += sample_per_draw
-                else:
-                    num_queries += 1
-                    stop_queries += 1
-
+                    num_queries+=1
+                    stop_queries+=1
                 if targeted and target_model_prediction.item() == target_label.item() and (temp_eps <= eps):
+                    if iter==1:
+                        transfer_flag=1
+                        num_transfer+=1
+                    success_flag=1
+                    num_success+=1
                     print("The image has been attacked! The attack used " + str(stop_queries) + " queries.")
                     ret_adv.append(adv)
+                    break
+                if stop_queries + samples_per_draw > max_queries:
+                    print("Out of queries!")
                     break
                     # print('[log] early stopping at iteration %d' % stop_queries)
                     # return adv.detach(), stop_queries
                 prev_g = g
                 l, g = self.get_grad(adv, samples_per_draw, batch_size, target_label)
-
+                num_queries+=samples_per_draw
+                stop_queries+=samples_per_draw
                 print("Current label: " + str(target_model_prediction.item()) + "   loss: " + str(l.item())+"   eps: "+ str(temp_eps))
                 # SIMPLE MOMENTUM
                 g = momentum * prev_g + (1.0 - momentum) * g
@@ -184,4 +192,17 @@ class NES_topk(Attacker):
                         current_lr = max_lr
                         print("[log] backtracking eps to %3f" % (temp_eps - prop_de,))
 
+            ret_adv[idx]=adv
+            self.logger.add_result(int(target_label.detach()), {
+                "query": int(stop_queries),
+                "transfer_flag": int(transfer_flag),
+                "attack_flag": int(success_flag)
+            })
+
+        self.logger.add_result("Final Result", {
+                        "success": int(num_success),
+                        "image_avai": int(len(x_orig)-num_transfer),
+                        "average query": int(num_queries/len(x_orig)),
+                        "target model": str(self.model)
+        })
         return ret_adv.detach(), num_queries

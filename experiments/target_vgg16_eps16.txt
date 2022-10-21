@@ -1,0 +1,162 @@
+
+epsilon: 16.0
+Target model: vgg16 
+Aux model: resnet50
+The transferbility of targeted_MITIDIFGSM_transfer_imagenet is 55.0 %
+--- 1039.7274901866913 seconds ---
+
+epsilon: 16.0
+Target model: vgg16 
+Aux model: resnet50
+The transferbility of targeted_FGSM_transfer_imagenet is 17.30000114440918 %
+--- 60.282737493515015 seconds ---
+
+epsilon: 16.0
+Target model: vgg16 
+Aux model: resnet50
+The transferbility of targeted_IFGSM_transfer_imagenet is 27.5 %
+--- 4450.38379406929 seconds ---
+
+epsilon: 16.0
+Target model: vgg16 
+Aux model: resnet50
+The transferbility of targeted_TIFGSM_transfer_imagenet is 30.5 %
+--- 4566.55696105957 seconds ---
+
+epsilon: 16.0
+Target model: vgg16 
+Aux model: resnet50
+The transferbility of targeted_DIFGSM_transfer_imagenet is 62.5 %
+--- 4642.369895935059 seconds ---
+
+epsilon: 16.0
+Target model: vgg16 
+Aux model: resnet50
+The transferbility of targeted_SIFGSM_transfer_imagenet is 44.79999923706055 %
+--- 20969.289950847626 seconds ---
+
+epsilon: 16.0
+Target model: vgg16 
+Aux model: resnet50
+The transferbility of targeted_ADMIXFGSM_transfer_imagenet is 59.10000228881836 %
+--- 51968.0928235054 seconds ---
+
+epsilon: 16.0
+Target model: vgg16 
+Aux model: resnet50
+The transferbility of targeted_MIFGSM_transfer_imagenet is 3.0 %
+--- 361.6475305557251 seconds ---
+
+epsilon: 16.0
+Target model: vgg16 
+Aux model: resnet50
+The transferbility of targeted_MIDIFGSM_transfer_imagenet is 6.700000286102295 %
+--- 379.00168013572693 seconds ---
+
+epsilon: 16.0
+Target model: vgg16 
+Aux model: resnet50
+The transferbility of targeted_MITIDIFGSM_transfer_imagenet is 4.800000190734863 %
+--- 383.35560154914856 seconds ---
+
+epsilon: 16.0
+Target model: vgg16 
+Aux model: resnet50
+The transferbility of targeted_MITIDISIFGSM_transfer_imagenet is 4.5 %
+--- 1879.8124377727509 seconds ---
+
+epsilon: 16.0
+Target model: vgg16 
+Aux model: resnet50
+The transferbility of targeted_MIADMIXTIDIFGSM_transfer_imagenet is 60.0 %
+--- 5547.036931276321 seconds ---
+
+epsilon: 16.0
+Target model: vgg16 
+Aux model: resnet50
+The transferbility of targeted_NIFGSM_transfer_imagenet is 11.0 %
+--- 367.2131767272949 seconds ---
+
+epsilon: 16.0
+Target model: vgg16 
+Aux model: resnet50
+The transferbility of targeted_NITIDISIFGSM_transfer_imagenet is 15.0 %
+--- 1871.9106149673462 seconds ---
+
+epsilon: 16.0
+Target model: vgg16 
+Aux model: resnet50
+The transferbility of targeted_SMIFGSM_transfer_imagenet is 41.0 %
+--- 4244.542907476425 seconds ---
+
+epsilon: 16.0
+Target model: vgg16 
+Aux model: resnet50
+The transferbility of targeted_SMIMIFGSM_transfer_imagenet is 37.0 %
+--- 4197.097373723984 seconds ---
+
+epsilon: 16.0
+Target model: vgg16 
+Aux model: resnet50
+The transferbility of targeted_VMIFGSM_transfer_imagenet is 0.0 %
+--- 7446.686323404312 seconds ---
+
+epsilon: 16.0
+Target model: vgg16 
+Aux model: resnet50
+The transferbility of targeted_VMITIDISIFGSM_transfer_imagenet is 0.0 %
+--- 8948.308114528656 seconds ---
+
+epsilon: 16.0
+Target model: vgg16 
+Aux model: resnet50
+The transferbility of targeted_VNIFGSM_transfer_imagenet is 0.0 %
+--- 7368.927107334137 seconds ---
+
+epsilon: 16.0
+Target model: vgg16 
+Aux model: resnet50
+The transferbility of targeted_VNITIDISIFGSM_transfer_imagenet is 0.0 %
+--- 8900.195585727692 seconds ---
+
+epsilon: 16.0
+Target model: vgg16 
+Aux model: resnet50
+The transferbility of targeted_IFGSSM_transfer_imagenet is 26.0 %
+--- 386.2055366039276 seconds ---
+
+epsilon: 16.0
+Target model: vgg16 
+Aux model: resnet50
+The transferbility of targeted_PITIDIFGSSM_transfer_imagenet is 47.0 %
+--- 452.0177676677704 seconds ---
+
+epsilon: 16.0
+Target model: vgg16 
+Aux model: resnet50
+The transferbility of targeted_MIADMIXTIDIFGSSM_transfer_imagenet is 58.0 %
+--- 5544.225341320038 seconds ---
+
+epsilon: 16.0
+Target model: vgg16 
+Aux model: resnet50
+The transferbility of targeted_VMITIDIAIFGSM_transfer_imagenet is 1.0 %
+--- 12568.507345438004 seconds ---
+
+epsilon: 16.0
+Target model: vgg16 
+Aux model: resnet50
+The transferbility of targeted_VNITIDIAIFGSM_transfer_imagenet is 0.0 %
+--- 13002.627885341644 seconds ---
+
+epsilon: 16.0
+Target model: vgg16 
+Aux model: resnet50
+The transferbility of targeted_EMIFGSM_transfer_imagenet is 18.0 %
+--- 4537.771266460419 seconds ---
+
+epsilon: 16.0
+Target model: vgg16 
+Aux model: resnet50
+The transferbility of targeted_EMITIDISIFGSM_transfer_imagenet is 39.0 %
+--- 22983.19531059265 seconds ---

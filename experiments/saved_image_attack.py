@@ -38,8 +38,8 @@ def single_attack(target_model, aux_models, x_orig, x_sample_adv, y_label, x_tar
 def second_attack(target_model, aux_models, x_orig, x_sample_adv, y_label, x_target, y_target, attacker_config: AttackerConfig,
                   experiment_config: ExperimentConfig):
     attacker = get_attack_wrapper(target_model, aux_models, attacker_config, experiment_config)
-    x_sample_adv, queries_used,compare_x = attacker.attack(x_orig=x_orig, x_adv=x_sample_adv, y_label=y_label, x_target=x_target, y_target=y_target)
-    return (x_sample_adv, queries_used,compare_x), attacker
+    x_sample_adv, queries_used = attacker.attack(x_orig=x_orig, x_adv=x_sample_adv, y_label=y_label, x_target=x_target, y_target=y_target)
+    return (x_sample_adv, queries_used), attacker
 
 # os.environ['TORCH_HOME'] = '/p/blackboxsok/models/imagenet_torch' # download imagenet models to project directory
 if __name__ == "__main__":
@@ -78,18 +78,13 @@ if __name__ == "__main__":
         target_images = correct_images
         target_labels = correct_labels
         if attacker_config_1.targeted:
-<<<<<<< Updated upstream
             target_images = ch.load(target_images_path)
             target_labels = ch.load(target_labels_path)
+        else:
+            target_images = correct_images
+            target_labels = correct_labels
     except:
         raise NotImplementedError(f"The image of {target_modal_name} is not saved yet")
-=======
-            target_images = ch.load('data/inceptionv3/x_target.pt')
-            target_labels = ch.load('data/inceptionv3/y_target.pt')
-        else:
-            target_images=correct_images
-            target_labels = correct_labels
->>>>>>> Stashed changes
 
     n = 0
     start_time = time.time()
@@ -107,7 +102,6 @@ if __name__ == "__main__":
     for i in range(int(1)):
         # the original dataset is normalized into the range of [0,1]
         # specific attacks may have different ranges and should be handled case by case
-
         x_orig, y_label = correct_images[0:100], correct_labels[0:100]
         x_orig, y_label = x_orig.cuda(), y_label.cuda()
         x_target, y_target = target_images[0:100], target_labels[0:100]
@@ -115,7 +109,7 @@ if __name__ == "__main__":
         num_class = ds.num_classes
 
         # Perform attack
-        (x_sample_adv, queries_used_1, compare_x), attacker_1 = second_attack(target_model_1,
+        (x_sample_adv, queries_used_1), attacker_1 = second_attack(target_model_1,
                                                                                     aux_models=aux_models_1,
                                                                                     x_orig=x_orig,
                                                                                     x_sample_adv=x_orig,

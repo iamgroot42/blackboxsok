@@ -17,15 +17,15 @@ class Padding(Attacker):
                  config: MalwareAttackerConfig,
                  experiment_config: ExperimentConfig):
         super().__init__(model, aux_models, config, experiment_config)
-    
-    def _attack(self, 
+
+    def _attack(self,
                 x_orig: List[MalwareDatumWrapper],
                 x_adv: List[MalwareDatumWrapper],
                 y_label=None,
                 y_target=None):
-        padding_bytes = self.params['how_many_padding_bytes'] # 2048
-        iterations = self.params['iterations'] # 5
-        epsilon = self.params['epsilon'] # 1.0
+        padding_bytes = self.params['how_many_padding_bytes']  # 2048
+        iterations = self.params['iterations']  # 5
+        epsilon = self.params['epsilon']  # 1.0
         fgsm = CKreukEvasion(self.model.model,
                              how_many_padding_bytes=padding_bytes,
                              epsilon=epsilon,
@@ -41,7 +41,7 @@ class Padding(Attacker):
                 CArray(x_adv_i.feature), CArray(y_label[i][1].cpu()))
             results.append(adv_score.tondarray()[0][1])
             real_adv_x = fgsm.create_real_sample_from_adv(x_orig_i.path, adv_ds.X)
-            x_adv_i_new: MalwareDatumWrapper  = copy.deepcopy(x_orig_i)
+            x_adv_i_new: MalwareDatumWrapper = copy.deepcopy(x_orig_i)
             x_adv_i_new.bytes = real_adv_x
             x_adv_new.append(x_adv_new)
 

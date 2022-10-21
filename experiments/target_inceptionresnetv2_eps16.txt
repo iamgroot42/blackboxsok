@@ -1,0 +1,144 @@
+
+epsilon: 16.0
+Target model: inceptionresnetv2 
+Aux model: vgg16
+The transferbility of targeted_FGSM_transfer_imagenet is 23.0 %
+--- 13.583744287490845 seconds ---
+
+epsilon: 16.0
+Target model: inceptionresnetv2 
+Aux model: vgg16
+The transferbility of targeted_IFGSM_transfer_imagenet is 16.0 %
+--- 332.18080139160156 seconds ---
+
+epsilon: 16.0
+Target model: inceptionresnetv2 
+Aux model: vgg16
+The transferbility of targeted_TIFGSM_transfer_imagenet is 19.0 %
+--- 332.9464590549469 seconds ---
+
+epsilon: 16.0
+Target model: inceptionresnetv2 
+Aux model: vgg16
+The transferbility of targeted_DIFGSM_transfer_imagenet is 39.0 %
+--- 349.4297585487366 seconds ---
+
+epsilon: 16.0
+Target model: inceptionresnetv2 
+Aux model: vgg16
+The transferbility of targeted_SIFGSM_transfer_imagenet is 37.0 %
+--- 1616.3573038578033 seconds ---
+
+epsilon: 16.0
+Target model: inceptionresnetv2 
+Aux model: vgg16
+The transferbility of targeted_ADMIXFGSM_transfer_imagenet is 49.0 %
+--- 4829.119151353836 seconds ---
+
+epsilon: 16.0
+Target model: inceptionresnetv2 
+Aux model: vgg16
+The transferbility of targeted_MIFGSM_transfer_imagenet is 37.0 %
+--- 331.9694209098816 seconds ---
+
+epsilon: 16.0
+Target model: inceptionresnetv2 
+Aux model: vgg16
+The transferbility of targeted_MIDIFGSM_transfer_imagenet is 59.0 %
+--- 349.9268229007721 seconds ---
+
+epsilon: 16.0
+Target model: inceptionresnetv2 
+Aux model: vgg16
+The transferbility of targeted_MITIDIFGSM_transfer_imagenet is 44.0 %
+--- 351.1695897579193 seconds ---
+
+epsilon: 16.0
+Target model: inceptionresnetv2 
+Aux model: vgg16
+The transferbility of targeted_MITIDISIFGSM_transfer_imagenet is 54.0 %
+--- 1701.039119720459 seconds ---
+
+epsilon: 16.0
+Target model: inceptionresnetv2 
+Aux model: vgg16
+The transferbility of targeted_MIADMIXTIDIFGSM_transfer_imagenet is 58.0 %
+--- 5068.136510133743 seconds ---
+
+epsilon: 16.0
+Target model: inceptionresnetv2 
+Aux model: vgg16
+The transferbility of targeted_NIFGSM_transfer_imagenet is 22.0 %
+--- 331.898894071579 seconds ---
+
+epsilon: 16.0
+Target model: inceptionresnetv2 
+Aux model: vgg16
+The transferbility of targeted_NITIDISIFGSM_transfer_imagenet is 26.0 %
+--- 1697.5941541194916 seconds ---
+
+epsilon: 16.0
+Target model: inceptionresnetv2 
+Aux model: vgg16
+The transferbility of targeted_SMIFGSM_transfer_imagenet is 51.0 %
+--- 3892.377506017685 seconds ---
+
+epsilon: 16.0
+Target model: inceptionresnetv2 
+Aux model: vgg16
+The transferbility of targeted_SMIMIFGSM_transfer_imagenet is 49.0 %
+--- 3899.1295731067657 seconds ---
+
+epsilon: 16.0
+Target model: inceptionresnetv2 
+Aux model: vgg16
+The transferbility of targeted_VMIFGSM_transfer_imagenet is 0.0 %
+--- 6760.0260355472565 seconds ---
+
+epsilon: 16.0
+Target model: inceptionresnetv2 
+Aux model: vgg16
+The transferbility of targeted_VMITIDISIFGSM_transfer_imagenet is 0.0 %
+--- 8126.653138399124 seconds ---
+
+epsilon: 16.0
+Target model: inceptionresnetv2 
+Aux model: vgg16
+The transferbility of targeted_VNIFGSM_transfer_imagenet is 0.0 %
+--- 6725.209439754486 seconds ---
+
+epsilon: 16.0
+Target model: inceptionresnetv2 
+Aux model: vgg16
+The transferbility of targeted_VNITIDISIFGSM_transfer_imagenet is 0.0 %
+--- 8226.863097667694 seconds ---
+
+epsilon: 16.0
+Target model: inceptionresnetv2 
+Aux model: vgg16
+The transferbility of targeted_IFGSSM_transfer_imagenet is 19.0 %
+--- 354.9708502292633 seconds ---
+
+epsilon: 16.0
+Target model: inceptionresnetv2 
+Aux model: vgg16
+The transferbility of targeted_PITIDIFGSSM_transfer_imagenet is 38.0 %
+--- 428.50103092193604 seconds ---
+
+epsilon: 16.0
+Target model: inceptionresnetv2 
+Aux model: vgg16
+The transferbility of targeted_MIADMIXTIDIFGSSM_transfer_imagenet is 57.0 %
+--- 5241.611737251282 seconds ---
+
+epsilon: 16.0
+Target model: inceptionresnetv2 
+Aux model: vgg16
+The transferbility of targeted_VMITIDIAIFGSM_transfer_imagenet is 0.0 %
+--- 11856.360276699066 seconds ---
+
+epsilon: 16.0
+Target model: inceptionresnetv2 
+Aux model: vgg16
+The transferbility of targeted_VNITIDIAIFGSM_transfer_imagenet is 0.0 %
+--- 11853.361968755722 seconds ---
