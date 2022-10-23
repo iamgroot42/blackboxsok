@@ -28,6 +28,7 @@ from bbeval.attacker.transfer_methods.RAPFGSM import RAPFGSM
 from bbeval.attacker.top1_score.BayesOpt import BayesOpt
 from bbeval.attacker.topk_score.NES_topk import NES_topk
 from bbeval.attacker.full_score.NES_full import NES_full
+from bbeval.attacker.topk_score.NES_square import NES_square
 from bbeval.attacker.topk_score.NES_bayes import NES_bayes
 from bbeval.attacker.full_score.BayesOpt_full import BayesOpt_full
 from bbeval.attacker.transfer_methods.MITIDIAIFGSSM import MITIDIAIFGSSM

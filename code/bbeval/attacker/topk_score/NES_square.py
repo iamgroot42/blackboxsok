@@ -57,7 +57,8 @@ class NES_square(Attacker):
         g = 0
         num_queries = 0
         ret_adv=x_orig
-
+        num_transfer=0
+        num_success=0
         adv_thresh = 0.2
         # adv_thresh = 1
         # temp_eps=0.1
@@ -98,7 +99,6 @@ class NES_square(Attacker):
                     success_flag=1
                     num_success+=1
                     print("The image has been attacked! The attack used " + str(stop_queries) + " queries.")
-                    ret_adv.append(adv)
                     break
                 if stop_queries + 1 > max_queries:
                     print("Out of queries!")
