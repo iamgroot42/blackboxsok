@@ -1,7 +1,7 @@
-"""
-    Based on https://github.com/iamgroot42/montemutacon
-"""
-
+# """
+#     Based on https://github.com/iamgroot42/montemutacon
+# """
+#
 from bbeval.config.core import ExperimentConfig
 from bbeval.models.core import GenericModelWrapper
 from bbeval.config import MalwareAttackerConfig
@@ -16,21 +16,21 @@ from typing import List
 
 import os
 import copy
-
-
-from mml.mcts.tree_policy import MctsTreePolicy
-from mml.mcts.simulation_policy import MctsSimulationPolicy
-from mml.mcts.expansion_policy import MctsExpansionPolicy
-from mml.mcts.mcts_mutator import MctsMutator
-
-from mml.tables import mutations_table
-
-from mml.utils.pipeline import Pipeline as CustomPipeline
-
-import dill as pickle
-import pandas as pd
-
-
+#
+#
+# from mml.mcts.tree_policy import MctsTreePolicy
+# from mml.mcts.simulation_policy import MctsSimulationPolicy
+# from mml.mcts.expansion_policy import MctsExpansionPolicy
+# from mml.mcts.mcts_mutator import MctsMutator
+#
+# from mml.tables import mutations_table
+#
+# from mml.utils.pipeline import Pipeline as CustomPipeline
+#
+# import dill as pickle
+# import pandas as pd
+#
+#
 class MonteMutacon(Attacker):
     def __init__(self,
                  model: GenericModelWrapper,
@@ -42,7 +42,7 @@ class MonteMutacon(Attacker):
         base_path = get_models_save_path()
         self.pipeline = CustomPipeline(
             os.path.join(base_path, "montemutacon/surrogate/full_pipeline_surrogate.dat"),
-            [   
+            [
                 os.path.join(base_path,"montemutacon/surrogate/libs_vectorizer_surrogate.dat"),
                 os.path.join(base_path,"montemutacon/surrogate/funcs_vectorizer_surrogate.dat")]
         )
@@ -82,7 +82,7 @@ class MonteMutacon(Attacker):
             "imported_funcs",
         ]
         # Add 'y' as well: 1 for malicious, 0 for benign
-    
+
     def _classification_function(self, model, sample) -> int:
         to_convert = sample.copy()
         to_convert["imported_libs"] = [[*to_convert["imported_libs"]]]
@@ -90,11 +90,11 @@ class MonteMutacon(Attacker):
         df = pd.DataFrame.from_dict(to_convert)
         df.drop(columns=["y"], inplace=True)
 
-        # Transform the sample through the pipeline. Depending on your model you 
+        # Transform the sample through the pipeline. Depending on your model you
         # might not need this
         transform = self.pipeline.transform(df, ["imported_libs", "imported_funcs"])
         return self.model.predict(transform)[0]
-    
+
     def attack_single(self, sample):
         tried_combinations = {}
 
@@ -115,9 +115,9 @@ class MonteMutacon(Attacker):
             result = [node.serialized_option for node in path]
         else:
             result = []
-        
+
         return result
-    
+
     def _get_relevant_features(self, sample):
         json_features = process_with_lief(sample.bytes, want_json=True)
         json_dict = {
@@ -139,12 +139,12 @@ class MonteMutacon(Attacker):
         }
         return json_dict
 
-    def _attack(self, 
+    def _attack(self,
                 x_orig: List[MalwareDatumWrapper],
                 x_adv: List[MalwareDatumWrapper],
                 y_label=None,
                 y_target=None):
-        
+
         mutations = []
         for sample in x_adv:
             # TODO: Extract "feature" from sample's datum

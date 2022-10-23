@@ -24,7 +24,7 @@ class NES_topk(Attacker):
         self.norm = None
         self.k = 1
 
-    def get_grad(self, adv, samples_per_draw, batch_size, target_label,upper, lowe):
+    def get_grad(self, adv, samples_per_draw, batch_size, target_label,upper, lower):
         sigma = 1e-5
         num_batches = samples_per_draw // batch_size
         losses = []
@@ -108,8 +108,10 @@ class NES_topk(Attacker):
             temp_eps = 1
 
             print("###################===================####################")
+            print(idx)
+
             stop_queries = 0
-            x_image, initial_adv, target_label = x_orig[idx].unsqueeze(0),x_target[idx].unsqueeze(0), y_target[idx]
+            x_image, initial_adv, target_label = x_orig[idx].unsqueeze(0),x_target[idx].unsqueeze(0), y_target[idx].int()
             lower = clip_by_tensor(x_image - temp_eps, x_min_val, x_max_val)
             upper = clip_by_tensor(x_image + temp_eps, x_min_val, x_max_val)
             adv = clip_by_tensor(initial_adv, lower, upper)
@@ -119,7 +121,7 @@ class NES_topk(Attacker):
             iter = 0
             success_flag=0
             transfer_flag=0
-            while num_queries < max_queries:
+            while num_queries+1 < max_queries:
                 print("i------------" + str(iter))
                 iter += 1
                 with ch.no_grad():
@@ -143,7 +145,7 @@ class NES_topk(Attacker):
                     # print('[log] early stopping at iteration %d' % stop_queries)
                     # return adv.detach(), stop_queries
                 prev_g = g
-                l, g = self.get_grad(adv, samples_per_draw, batch_size, target_label)
+                l, g = self.get_grad(adv, samples_per_draw, batch_size, target_label,upper,lower)
                 num_queries+=samples_per_draw
                 stop_queries+=samples_per_draw
                 print("Current label: " + str(target_model_prediction.item()) + "   loss: " + str(l.item())+"   eps: "+ str(temp_eps))
@@ -179,7 +181,6 @@ class NES_topk(Attacker):
                             last_ls = []
                         adv = proposed_adv
                         temp_eps = max(temp_eps - prop_de / conservative, eps)
-                        print("yes")
                         break
                     elif current_lr >= min_lr * 2:
                         current_lr = current_lr / 2

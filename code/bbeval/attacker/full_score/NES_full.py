@@ -24,7 +24,7 @@ class NES_full(Attacker):
         self.norm = None
 
     def get_grad(self, adv, samples_per_draw, batch_size, target_label,upper, lower):
-        sigma = 1e-3
+        sigma = 1e-2
         num_batches = samples_per_draw // batch_size
         losses = []
         grads = []
@@ -62,7 +62,7 @@ class NES_full(Attacker):
         sigma=1e-3
         batch_size=10
         max_queries=100000
-        min_lr = 5e-5
+        min_lr = 1e-3
         max_lr = 1e-2
         plateau_length = 5
         plateau_drop = 2.0
@@ -76,6 +76,7 @@ class NES_full(Attacker):
         for idx in range(len(x_orig)):
 
             print("###################===================####################")
+            print(idx)
             stop_queries = 0
             initial_img, target_label = x_orig[idx].unsqueeze(0), y_target[idx].int()
             lower = clip_by_tensor(initial_img - eps, x_min_val, x_max_val)
@@ -87,7 +88,7 @@ class NES_full(Attacker):
             iter=0
             success_flag=0
             transfer_flag=0
-            while True:
+            while num_queries+1 < max_queries:
                 print("i------------" + str(iter))
                 iter+=1
                 with ch.no_grad():

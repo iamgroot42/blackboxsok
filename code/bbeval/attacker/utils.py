@@ -82,6 +82,7 @@ ATTACK_WRAPPER_MAPPING = {
     "NES_full": NES_full,
     "NES_topk": NES_topk,
     "NES_bayes": NES_bayes,
+    "NES_square": NES_square,
     "BayesOpt_full": BayesOpt_full,
     "kreuk_evasion": Padding,
     "montemutacon": MonteMutacon,

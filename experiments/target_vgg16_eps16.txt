@@ -160,3 +160,9 @@ Target model: vgg16
 Aux model: resnet50
 The transferbility of targeted_EMITIDISIFGSM_transfer_imagenet is 39.0 %
 --- 22983.19531059265 seconds ---
+
+epsilon: 16.0
+Target model: vgg16 
+Aux model: resnet50
+The transferbility of targeted_EMITIDIAIFGSM_transfer_imagenet is 45.0 %
+--- 68828.79494953156 seconds ---
