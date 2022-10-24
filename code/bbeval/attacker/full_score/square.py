@@ -16,6 +16,8 @@ class Square_Attack(Attacker):
         super().__init__(model, aux_models, config, experiment_config)
         # Parse params dict into SquareAttackConfig
         self.params = SquareAttackConfig(**self.params)
+        self.norm_type = np.inf
+        self.loss_type = "ce"
     
     def _workaround_choice(self, shape, eps=1.0):
         """
@@ -292,9 +294,13 @@ class Square_Attack(Attacker):
                 '{}: asr={:.2%} asr_corr={:.2%} avg#q_ae={:.1f} med#q_ae={:.1f} {}, n_ex={}, {:.0f}s, loss={:.3f}, max_pert={:.1f}, impr={:.0f}'.
                 format(i_iter + 1, asr, asr_corr, mean_nq_ae, median_nq_ae, hps_str, x.shape[0], time_total,
                        ch.mean(margin_min), ch.amax(curr_norms_image), ch.sum(idx_improved)))
+            
+            '''
             print('{}: asr={:.2%} asr_corr={:.2%} avg#q_ae={:.1f} med#q_ae={:.1f} {}, n_ex={}, {:.0f}s, loss={:.3f}, max_pert={:.1f}, impr={:.0f}'.
                 format(i_iter + 1, asr, asr_corr, mean_nq_ae, median_nq_ae, hps_str, x.shape[0], time_total,
                        ch.mean(margin_min), ch.amax(curr_norms_image), ch.sum(idx_improved)))
+
+            '''
             if (i_iter <= 500 and i_iter % 500) or (i_iter > 100 and i_iter % 500) or i_iter + 1 == n_iters or asr == 1:
                 # TODO: Make sure right things are being logged
                 self.logger.add_result(i_iter + 1, {
@@ -317,8 +323,10 @@ class Square_Attack(Attacker):
             ch.sum((x_best - x) ** 2, dim=(1, 2, 3), keepdim=True))
         self.logger.log('Maximal norm of the perturbations: {:.5f}'.format(
             ch.amax(curr_norms_image)))
+        '''
         print('Maximal norm of the perturbations: {:.5f}'.format(
             ch.amax(curr_norms_image)))
+        '''
         return n_queries, x_best
 
     def square_attack_linf(self, x, x_adv_loc, y, corr_classified, n_iters, p_init, rand_start=True):
@@ -411,9 +419,10 @@ class Square_Attack(Attacker):
             time_total = time.time() - time_start
             self.logger.log('{}: asr={:.2%} asr_corr={:.2%} avg#q_ae={:.2f} med#q={:.1f}, avg_margin={:.2f} (n_ex={}, eps={:.3f}, {:.2f}s)'.
                   format(i_iter+1, asr, asr_corr, mean_nq_ae, median_nq_ae, avg_margin_min, x.shape[0], eps, time_total))
+            '''
             print('{}: asr={:.2%} asr_corr={:.2%} avg#q_ae={:.2f} med#q={:.1f}, avg_margin={:.2f} (n_ex={}, eps={:.3f}, {:.2f}s)'.
                   format(i_iter+1, asr, asr_corr, mean_nq_ae, median_nq_ae, avg_margin_min, x.shape[0], eps, time_total))
-
+            '''    
             if (i_iter <= 500 and i_iter % 500) or (i_iter > 100 and i_iter % 500) or i_iter + 1 == n_iters or asr == 1:
                 self.logger.add_result(i_iter + 1, {
                     "asr": asr,

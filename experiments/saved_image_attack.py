@@ -29,11 +29,11 @@ def get_model_and_aux_models(attacker_config: AttackerConfig):
     return target_model, aux_models
 
 
-def single_attack(target_model, aux_models, x_orig, x_sample_adv, y_label, x_target, y_target, attacker_config: AttackerConfig,
-                  experiment_config: ExperimentConfig):
-    attacker = get_attack_wrapper(target_model, aux_models, attacker_config, experiment_config)
-    x_sample_adv, queries_used = attacker.attack(x_orig=x_orig, x_adv=x_sample_adv, y_label=y_label, x_target=x_target, y_target=y_target)
+def single_attack(target_model, aux_models, x_orig, x_sample_adv, y_label, y_target, attacker_config: AttackerConfig, experiment_config: ExperimentConfig):
+    attacker = get_attack_wrapper( target_model, aux_models, attacker_config, experiment_config)
+    x_sample_adv, queries_used = attacker.attack(x_orig, x_sample_adv, y_label, y_target)
     return (x_sample_adv, queries_used), attacker
+
 
 def second_attack(target_model, aux_models, x_orig, x_sample_adv, y_label, x_target, y_target, attacker_config: AttackerConfig,
                   experiment_config: ExperimentConfig):
@@ -80,9 +80,6 @@ if __name__ == "__main__":
         if attacker_config_1.targeted:
             target_images = ch.load(target_images_path)
             target_labels = ch.load(target_labels_path)
-        else:
-            target_images = correct_images
-            target_labels = correct_labels
     except:
         raise NotImplementedError(f"The image of {target_modal_name} is not saved yet")
 
@@ -109,13 +106,13 @@ if __name__ == "__main__":
         num_class = ds.num_classes
 
         # Perform attack
-        (x_sample_adv, queries_used_1), attacker_1 = second_attack(target_model_1,
-                                                                                    aux_models=aux_models_1,
-                                                                                    x_orig=x_orig,
-                                                                                    x_sample_adv=x_orig,
-                                                                                    x_target=x_target,
-                                                                                    y_label=y_label,
-                                                                                    y_target=y_target,
-                                                                                    attacker_config=attacker_config_1,
-                                                                                    experiment_config=config)
+        (x_sample_adv, queries_used_1), attacker_1 = single_attack(target_model_1,
+                  aux_models=aux_models_1,
+                  x_orig=x_orig,
+                  x_sample_adv=x_orig,
+                  y_label=y_label,
+                  y_target=y_target,
+                  attacker_config=attacker_config_1,
+                  experiment_config=config)
+        total_queries_used += queries_used_1
         attacker_1.save_results()
