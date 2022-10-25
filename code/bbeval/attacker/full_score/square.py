@@ -18,6 +18,7 @@ class Square_Attack(Attacker):
         self.params = SquareAttackConfig(**self.params)
         self.norm_type = np.inf
         self.loss_type = "ce"
+
     
     def _workaround_choice(self, shape, eps=1.0):
         """
@@ -29,36 +30,54 @@ class Square_Attack(Attacker):
         return y
 
     def attack(self, x_orig, x_adv_loc, y_label, y_target=None):
-        # important to set the model to evaluation mode for square attack
-        self.model.set_eval()
-        # TODO: Add support for x_adv
-        n_iters = self.params.n_iters
-        p_init = self.params.p_init
-        # Don't need gradients for the attack, detach x if it has gradient collection on
-        x_orig_, x_adv_loc_ = x_orig.detach(), x_adv_loc.detach()
 
-        # distinguish between correctly classified and misclassified samples
-        logits_clean = self.model.forward(x_orig_, detach=True)
-        corr_classified = ch.argmax(logits_clean,dim=1) == y_label
-        print('Clean accuracy of candidate samples: {:.2%}'.format(ch.mean(1.* corr_classified).item()))
+        #print(x_orig.shape[0])
+        batch_num = int(x_orig.shape[0]/10)
+        for batch in range(batch_num):
+            x_orig_ = x_orig[batch*10: batch*10+10]
+            x_adv_loc_ = x_adv_loc[batch*10: batch*10+10]
+            y_label_ = y_label[batch*10: batch*10+10]
+            y_target_ = y_target[batch*10: batch*10+10]
+            
 
-        # the logic is untargeted attack does not have target labels, so y_target = y_label
-        # y_label is mainly used for the purpose of measuring clean model performance.
+            # important to set the model to evaluation mode for square attack
+            self.model.set_eval()
+            # TODO: Add support for x_adv
+            n_iters = self.params.n_iters
+            p_init = self.params.p_init
+            # Don't need gradients for the attack, detach x if it has gradient collection on
+            x_orig_, x_adv_loc_ = x_orig_.detach(), x_adv_loc_.detach()
 
-        # # Use appropriate labels for the attack
-        # if self.targeted:
-        #     y_use = y_target
-        # else:
-        #     y_use = y_label
+            # distinguish between correctly classified and misclassified samples
+            logits_clean = self.model.forward(x_orig_, detach=True)
+            
+            corr_classified = ch.argmax(logits_clean,dim=1) == y_label_
+            print('Clean accuracy of candidate samples: {:.2%}'.format(ch.mean(1.* corr_classified).item()))
 
-        if self.norm_type == 2:
-            x_perturbed, num_queries = self.square_attack_l2(
-                x_orig_, x_adv_loc_, y_target, corr_classified, n_iters, p_init)
-        elif self.norm_type ==  np.inf:
-            x_perturbed, num_queries = self.square_attack_linf(
-                x_orig_, x_adv_loc_, y_target, corr_classified, n_iters, p_init)
-        else:
-            raise NotImplementedError("Unsupported Norm Type!")
+            # the logic is untargeted attack does not have target labels, so y_target = y_label
+            # y_label is mainly used for the purpose of measuring clean model performance.
+
+            # # Use appropriate labels for the attack
+            # if self.targeted:
+            #     y_use = y_target
+            # else:
+            #     y_use = y_label
+            #print(x_orig_.shape)
+            if self.norm_type == 2:
+                x_perturbed, num_queries = self.square_attack_l2(
+                    x_orig_, x_adv_loc_, y_target_, corr_classified, n_iters, p_init)
+                print(num_queries.shape[0])
+            elif self.norm_type ==  np.inf:
+                x_perturbed, num_queries = self.square_attack_linf(
+                    x_orig_, x_adv_loc_, y_target_, corr_classified, n_iters, p_init)
+                print(num_queries.shape[0])
+                for idx in range(10):
+                    #print(x_perturbed[idx].unsqueeze(0).shape)
+                    label = ch.argmax(self.model.forward(x_orig_[idx].unsqueeze(0)))
+                    label_af  = ch.argmax(self.model.forward(x_perturbed[idx].unsqueeze(0)))
+                    #print(label, label_af,num_queries[idx])
+            else:
+                raise NotImplementedError("Unsupported Norm Type!")
         return x_perturbed, num_queries
 
     def p_selection(self, p_init, it, n_iters):
@@ -167,8 +186,8 @@ class Square_Attack(Attacker):
 
         logits = self.model.forward(x_best, detach=True)
         # probs = ch.softmax(logits, 1)
-        loss_min = get_loss_fn(self.loss_type, 'none')(logits, y, self.targeted)
-        margin_min = get_loss_fn('margin', 'none')(logits, y, self.targeted)
+        loss_min = get_loss_fn(self.loss_type, 'none')(logits, y)
+        margin_min = get_loss_fn('margin', 'none')(logits, y)
         # ones because we have already used 1 query
         n_queries = ch.ones(x.shape[0]).cuda()
 
@@ -267,8 +286,8 @@ class Square_Attack(Attacker):
 
             logits = self.model.forward(x_new, detach=True)
             # probs = ch.softmax(logits, 1)
-            loss = get_loss_fn(self.loss_type, 'none')(logits, y_curr, self.targeted)
-            margin = get_loss_fn('margin', 'none')(logits, y_curr, self.targeted)
+            loss = get_loss_fn(self.loss_type, 'none')(logits, y_curr)
+            margin = get_loss_fn('margin', 'none')(logits, y_curr)
 
             idx_improved = loss < loss_min_curr
             loss_min[idx_to_fool] = idx_improved * \
@@ -349,10 +368,10 @@ class Square_Attack(Attacker):
             init_delta = ch.zeros([x.shape[0], c, 1, w])
         # x_best = ch.clip(x + init_delta, x_min, x_max)
         x_best = ch.clip(ch.clip(x_adv_loc + init_delta, x - eps, x + eps), x_min, x_max)
+        print(x_best.shape)
         logits = self.model.forward(x_best, detach=True)
-
         # probs = ch.softmax(logits, 1)
-        loss_min = get_loss_fn(self.loss_type, 'none')(logits, y, self.targeted)
+        loss_min = get_loss_fn(self.loss_type, 'none')(logits, y)
         margin_min = get_loss_fn('margin', 'none')(logits, y, self.targeted)
         # ones because we have already used 1 query
         n_queries = ch.ones(x.shape[0]).cuda()
@@ -360,12 +379,15 @@ class Square_Attack(Attacker):
         time_start = time.time()
         for i_iter in range(n_iters - 1):
             idx_to_fool = margin_min > 0
+            #print(margin_min,idx_to_fool)
             x_curr, x_adv_loc_curr, x_best_curr, y_curr = x[idx_to_fool], x_adv_loc[idx_to_fool], x_best[idx_to_fool], y[idx_to_fool]
+            #print("x_best_occ",x_best_curr)
             loss_min_curr, margin_min_curr = loss_min[idx_to_fool], margin_min[idx_to_fool]
             # deltas = x_best_curr - x_curr
             deltas = x_best_curr - x_adv_loc_curr
 
             p = self.p_selection(p_init, i_iter, n_iters)
+            #print("A",x_best_curr.shape)
             for i_img in range(x_best_curr.shape[0]):
                 s = int(round(np.sqrt(p * n_features / c)))
                 # at least c x 1 x 1 window is taken and at most c x h-1 x h-1
@@ -394,7 +416,7 @@ class Square_Attack(Attacker):
 
             logits = self.model.forward(x_new, detach=True)
             # probs = ch.softmax(logits, 1)
-            loss = get_loss_fn(self.loss_type, 'none')(logits, y_curr, self.targeted)
+            loss = get_loss_fn(self.loss_type, 'none')(logits, y_curr)
             margin = get_loss_fn('margin', 'none')(logits, y_curr, self.targeted)
 
             idx_improved = loss < loss_min_curr
@@ -417,8 +439,10 @@ class Square_Attack(Attacker):
                 n_queries[margin_min <= 0]).item(), ch.median(n_queries[margin_min <= 0]).item()
             avg_margin_min = ch.mean(margin_min).item()
             time_total = time.time() - time_start
+
             self.logger.log('{}: asr={:.2%} asr_corr={:.2%} avg#q_ae={:.2f} med#q={:.1f}, avg_margin={:.2f} (n_ex={}, eps={:.3f}, {:.2f}s)'.
                   format(i_iter+1, asr, asr_corr, mean_nq_ae, median_nq_ae, avg_margin_min, x.shape[0], eps, time_total))
+
             '''
             print('{}: asr={:.2%} asr_corr={:.2%} avg#q_ae={:.2f} med#q={:.1f}, avg_margin={:.2f} (n_ex={}, eps={:.3f}, {:.2f}s)'.
                   format(i_iter+1, asr, asr_corr, mean_nq_ae, median_nq_ae, avg_margin_min, x.shape[0], eps, time_total))
@@ -435,6 +459,8 @@ class Square_Attack(Attacker):
                 })
             if asr == 1:
                 break
+        #print(x_best)
+        #print(n_queries)
         return n_queries, x_best
 
 

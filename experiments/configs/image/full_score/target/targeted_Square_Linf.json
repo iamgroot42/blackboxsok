@@ -1,16 +1,15 @@
 {
-    "experiment_name": "targted_NES_bayes",
+    "experiment_name": "targted_Bayes_Opt_full",
     "dataset_config": {
         "name": "imagenet",
         "type": "image"
     },
     "attack_configs_dict": [
         {
-            "name": "NES_bayes",
+            "name": "square_attack",
             "access_level": "no",
             "targeted": true,
             "eps": 16,
-            "query_budget": 1,
             "adv_model_config": {
                 "use_pretrained": true,
                 "name": "inceptionv3",
@@ -24,10 +23,12 @@
                 }
             ],
             "attack_params": {
-                "max_queries": 100000
+                "n_iters": 10,
+                "image_resizes": [
+                    330
+                ]
             }
 
         }
-    ],
-    "batch_size": 10
+    ]
 }

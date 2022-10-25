@@ -13,6 +13,7 @@ import torch as ch
 
 ch.manual_seed(2)
 
+image_attack = 100
 
 def get_model_and_aux_models(attacker_config: AttackerConfig):
     model_config = attacker_config.adv_model_config
@@ -31,7 +32,7 @@ def get_model_and_aux_models(attacker_config: AttackerConfig):
 
 def single_attack(target_model, aux_models, x_orig, x_sample_adv, y_label, y_target, attacker_config: AttackerConfig, experiment_config: ExperimentConfig):
     attacker = get_attack_wrapper( target_model, aux_models, attacker_config, experiment_config)
-    x_sample_adv, queries_used = attacker.attack(x_orig, x_sample_adv, y_label, y_target)
+    x_sample_adv, queries_used = attacker.attack(x_orig, x_sample_adv, y_label,x_target, y_target)
     return (x_sample_adv, queries_used), attacker
 
 
@@ -86,7 +87,7 @@ if __name__ == "__main__":
     n = 0
     start_time = time.time()
 
-    while n < 100:
+    while n < image_attack:
         x_orig = correct_images[n:n + 10]
         y_label = correct_labels[n:n + 10]
         x_orig, y_label = x_orig.cuda(), y_label.cuda()
@@ -99,9 +100,9 @@ if __name__ == "__main__":
     for i in range(int(1)):
         # the original dataset is normalized into the range of [0,1]
         # specific attacks may have different ranges and should be handled case by case
-        x_orig, y_label = correct_images[0:100], correct_labels[0:100]
+        x_orig, y_label = correct_images[0:image_attack], correct_labels[0:image_attack]
         x_orig, y_label = x_orig.cuda(), y_label.cuda()
-        x_target, y_target = target_images[0:100], target_labels[0:100]
+        x_target, y_target = target_images[0:image_attack], target_labels[0:image_attack]
         x_target, y_target = x_target.cuda(), y_target.cuda()
         num_class = ds.num_classes
 

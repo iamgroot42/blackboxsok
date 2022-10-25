@@ -1,0 +1,16 @@
+{
+    "name": "untargted_Square_Linf",
+    "start time": "2022-10-25 01:03:59.731522",
+    "result": {
+        "1": {
+            "asr": 1.0,
+            "asr_corr": 1.0,
+            "mean_nq": 1.0,
+            "mean_nq_ae": 1.0,
+            "median_nq_ae": 1.0,
+            "mean_margin_min": -6.375178813934326,
+            "time_total": 0.01504063606262207
+        }
+    },
+    "save time": "2022-10-25 01:04:00.283868"
+}
