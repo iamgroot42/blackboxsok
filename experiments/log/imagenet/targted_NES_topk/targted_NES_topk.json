@@ -1,503 +1,503 @@
 {
     "name": "targted_NES_topk",
-    "start time": "2022-10-23 17:02:18.847243",
+    "start time": "2022-10-23 17:19:41.872558",
     "result": {
         "601": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 98980,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "203": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "653": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "196": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "265": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "776": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "541": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "223": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "15": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "782": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "49": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "959": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "850": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "853": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "662": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "910": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "119": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "439": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "330": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "791": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "634": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "570": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "533": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "930": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "724": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "13": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "335": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "590": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "40": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "688": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "45": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "275": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "66": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "356": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "345": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "164": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "600": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "655": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "861": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "538": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "138": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "686": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "421": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "965": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "518": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "208": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "646": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "323": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "912": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "152": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "285": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "508": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "684": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "492": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "866": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "598": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "434": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "352": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "512": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "595": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "697": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "659": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "551": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "774": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "987": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "785": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "312": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "58": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "257": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "963": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "415": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "581": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "908": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "964": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "755": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "125": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "159": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "209": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "273": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "117": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "650": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "582": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "967": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "289": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "338": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "936": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "779": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "146": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "888": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "411": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "414": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "412": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "305": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "82": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "586": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "605": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "820": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "123": {
-            "query": 1,
-            "transfer_flag": 1,
-            "attack_flag": 1
+            "query": 0,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
         "Final Result": {
-            "success": 100,
-            "image_avai": 0,
-            "average query": 1,
-            "target model": "<bbeval.models.pytorch.image.Inceptionv3 object at 0x7f71f39ca350>"
+            "success": 0,
+            "image_avai": 100,
+            "average query": 1000,
+            "target model": "<bbeval.models.pytorch.image.Inceptionv3 object at 0x7f92a17533d0>"
         }
     },
-    "save time": "2022-10-23 17:02:20.710644"
+    "save time": "2022-10-23 17:43:55.350604"
 }

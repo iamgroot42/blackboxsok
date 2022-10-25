@@ -16,21 +16,21 @@ from typing import List
 
 import os
 import copy
-#
-#
-# from mml.mcts.tree_policy import MctsTreePolicy
-# from mml.mcts.simulation_policy import MctsSimulationPolicy
-# from mml.mcts.expansion_policy import MctsExpansionPolicy
-# from mml.mcts.mcts_mutator import MctsMutator
-#
-# from mml.tables import mutations_table
-#
-# from mml.utils.pipeline import Pipeline as CustomPipeline
-#
-# import dill as pickle
-# import pandas as pd
-#
-#
+
+
+from mml.mcts.tree_policy import MctsTreePolicy
+from mml.mcts.simulation_policy import MctsSimulationPolicy
+from mml.mcts.expansion_policy import MctsExpansionPolicy
+from mml.mcts.mcts_mutator import MctsMutator
+
+from mml.tables import mutations_table
+
+from mml.utils.pipeline import Pipeline as CustomPipeline
+
+import dill as pickle
+import pandas as pd
+
+
 class MonteMutacon(Attacker):
     def __init__(self,
                  model: GenericModelWrapper,

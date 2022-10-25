@@ -94,13 +94,13 @@ if __name__ == "__main__":
         n += 10
     print("The clean accuracy is %s %%" % str(float(correctly_classified / 10)))
     #
-    for i in tqdm(range(int(10))):
+    for i in tqdm(range(int(20))):
         # the original dataset is normalized into the range of [0,1]
         # specific attacks may have different ranges and should be handled case by case
 
-        x_orig, y_label = correct_images[i * 10:i * 10 + 10], correct_labels[i * 10:i * 10 + 10]
+        x_orig, y_label = correct_images[i * 5:i * 5 + 5], correct_labels[i * 5:i * 5 + 5]
         x_orig, y_label = x_orig.cuda(), y_label.cuda()
-        x_target, y_target = correct_images[i * 10:i * 10 + 10], correct_labels[i * 10:i * 10 + 10]
+        x_target, y_target = correct_images[i * 5:i * 5 + 5], correct_labels[i * 5:i * 5 + 5]
         # x_target, y_target = x_target.cuda(), y_target.cuda()
         num_class = ds.num_classes
         if attacker_config_1.targeted:

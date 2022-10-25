@@ -8,6 +8,7 @@ MODEL_WRAPPER_MAPPING = {
     "resnet50": image.ResNet50,
     "vgg16": image.VGG16,
     "vgg16_bn": image.VGG16_bn,
+    "vgg19": image.VGG19,
     "resnet101": image.ResNet101,
     "inceptionv4": image.Inceptionv4,
     "inceptionresnetv2": image.InceptionResNetv2,
@@ -17,7 +18,9 @@ MODEL_WRAPPER_MAPPING = {
     "cifar10robust": image.Cifar10Robust,
     "mlp3": malware.MLPClassifier,
     "rf": malware_sklearn.RFWrapper,
-    "malconv": malware.SecmlMalConv
+    "malconv": malware.SecmlMalConv,
+    "densenet121": image.DenseNet121,
+    "densenet201": image.DenseNet201
 }
 
 

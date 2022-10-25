@@ -88,7 +88,7 @@ class NES_full(Attacker):
             iter=0
             success_flag=0
             transfer_flag=0
-            while num_queries+1 < max_queries:
+            while stop_queries+1<=max_queries:
                 print("i------------" + str(iter))
                 iter+=1
                 with ch.no_grad():

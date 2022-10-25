@@ -84,10 +84,9 @@ class NES_topk(Attacker):
         x_min_val, x_max_val = 0, 1.0
         momentum = 0.9
         samples_per_draw = 100
-        is_preturbed = False
         sigma = 1e-3
         batch_size = 10
-        max_queries = 100000
+        max_queries = 500000
         min_lr = 1e-3
         max_lr = 1e-2
         plateau_length = 20
@@ -109,8 +108,10 @@ class NES_topk(Attacker):
 
         for idx in range(len(x_orig)):
             temp_eps = 1
+            converge=1
 
             print("###################===================####################")
+            print(idx)
             stop_queries = 0
             x_image, initial_adv, target_label = x_orig[idx].unsqueeze(0),x_target[idx].unsqueeze(0), y_target[idx].int()
             lower = clip_by_tensor(x_image - temp_eps, x_min_val, x_max_val)
@@ -122,7 +123,7 @@ class NES_topk(Attacker):
             iter = 0
             success_flag=0
             transfer_flag=0
-            while num_queries < max_queries:
+            while stop_queries+1 <= max_queries:
                 print("i------------" + str(iter))
                 iter += 1
                 with ch.no_grad():
@@ -139,7 +140,7 @@ class NES_topk(Attacker):
                     num_success+=1
                     print("The image has been attacked! The attack used " + str(stop_queries) + " queries.")
                     break
-                if stop_queries + samples_per_draw > max_queries:
+                if stop_queries + 1 > max_queries:
                     print("Out of queries!")
                     break
                     # print('[log] early stopping at iteration %d' % stop_queries)
@@ -181,18 +182,22 @@ class NES_topk(Attacker):
                             last_ls = []
                         adv = proposed_adv
                         temp_eps = max(temp_eps - prop_de / conservative, eps)
-                        print("yes")
                         break
                     elif current_lr >= min_lr * 2:
                         current_lr = current_lr / 2
                     else:
                         prop_de = prop_de / 2
                         if prop_de == 0:
-                            raise ValueError("Did not converge.")
+                            converge=0
+                            print("Did not converge.")
+                            break
                         if prop_de < 2e-3:
                             prop_de = 0
                         current_lr = max_lr
                         print("[log] backtracking eps to %3f" % (temp_eps - prop_de,))
+
+                if converge == 0:
+                    break
 
             ret_adv[idx]=adv
             self.logger.add_result(int(target_label.detach()), {

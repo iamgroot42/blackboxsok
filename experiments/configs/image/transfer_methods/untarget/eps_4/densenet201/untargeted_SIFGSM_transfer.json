@@ -1,0 +1,49 @@
+{
+    "experiment_name": "untargeted_SIFGSM_transfer_imagenet",
+    "dataset_config": {
+        "name": "imagenet",
+        "type": "image"
+    },
+    "attack_configs_dict": [
+        {
+            "name": "SIFGSM_transfer",
+            "access_level": "no",
+            "targeted": false,
+            "eps": 4,
+            "query_budget": 1,
+            "adv_model_config": {
+                "use_pretrained": true,
+                "name": "densenet201",
+                "dataset": "imagenet"
+            },
+            "aux_model_configs_dict": [
+                {
+                    "use_pretrained": true,
+                    "name": "inceptionv4",
+                    "dataset": "imagenet"
+                },
+                {
+                    "use_pretrained": true,
+                    "name": "resnet50",
+                    "dataset": "imagenet"
+                },
+                {
+                    "use_pretrained": true,
+                    "name": "vgg19",
+                    "dataset": "imagenet"
+                },
+                {
+                    "use_pretrained": true,
+                    "name": "densenet121",
+                    "dataset": "imagenet"
+                }
+            ],
+            "attack_params": {
+                "n_iters": 10,
+                "image_resizes": [
+                    330
+                ]
+            }
+        }
+    ]
+}

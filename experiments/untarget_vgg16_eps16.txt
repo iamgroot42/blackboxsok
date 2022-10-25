@@ -1,0 +1,18 @@
+
+epsilon: 16.0
+Target model: vgg16 
+Aux model: inceptionv4
+The transferbility of untargeted_FGSM_transfer_imagenet is 74.0 %
+--- 10.38420033454895 seconds ---
+
+epsilon: 16.0
+Target model: vgg16 
+Aux model: inceptionv4
+The transferbility of untargeted_FGSM_transfer_imagenet is 78.0 %
+--- 11.428515672683716 seconds ---
+
+epsilon: 16.0
+Target model: vgg16 
+Aux model: inceptionv4
+The transferbility of untargeted_FGSM_transfer_imagenet is 78.0 %
+--- 13.50175666809082 seconds ---
