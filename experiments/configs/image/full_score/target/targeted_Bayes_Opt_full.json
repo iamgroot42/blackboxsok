@@ -13,13 +13,13 @@
             "query_budget": 1,
             "adv_model_config": {
                 "use_pretrained": true,
-                "name": "inceptionv3",
+                "name": "advinceptionv3",
                 "dataset": "imagenet"
             },
             "aux_model_configs_dict": [
                 {
                     "use_pretrained": true,
-                    "name": "inceptionv3",
+                    "name": "advinceptionv3",
                     "dataset": "imagenet"
                 }
             ],

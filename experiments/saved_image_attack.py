@@ -32,7 +32,7 @@ def get_model_and_aux_models(attacker_config: AttackerConfig):
 
 def single_attack(target_model, aux_models, x_orig, x_sample_adv, y_label, y_target, attacker_config: AttackerConfig, experiment_config: ExperimentConfig):
     attacker = get_attack_wrapper( target_model, aux_models, attacker_config, experiment_config)
-    x_sample_adv, queries_used = attacker.attack(x_orig, x_sample_adv, y_label,x_target, y_target)
+    x_sample_adv, queries_used = attacker.attack(x_orig, x_sample_adv, y_label, y_target)
     return (x_sample_adv, queries_used), attacker
 
 

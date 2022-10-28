@@ -55,38 +55,55 @@ class BayesOpt_full(Attacker):
         #for small query budgets and report
         #success rates and average queries.
         if self.targeted:
-            if not self.hard_label:
-                y = torch.log_softmax(y, dim=1)
-                #print(y)
-                max_score = y[:, target_label]
-                #print(max_score)
-                y, index = torch.sort(y, dim=1, descending=True)
-                select_index = (index[:, 0] == target_label).long()
-                next_max = y.gather(1, select_index.view(-1, 1)).squeeze()
-                #print(next_max)
-                f = torch.max(max_score - next_max, torch.zeros_like(max_score))
-            else:
-                index = torch.argmax(y, dim=1)
-                f = torch.where(index == target_label, torch.ones_like(index),
-                                torch.zeros_like(index)).float()
+
+            y = torch.log_softmax(y, dim=1)
+            #print(y)
+            #max_score = y[:, 0]
+           
+
+            #print(max_score)
+            y, index = torch.sort(y, dim=1, descending=True)
+            max_score = y[:, 0]
+            #print(y)
+            #print(index)
+            #elect_index = (index[:, 0] == target_label).long()
+            
+            idx = (index == target_label).nonzero().flatten()
+            #print ("index of target",idx.tolist()[-1]) # [2]
+
+
+            #next_max = y.gather(1, select_index.view(-1, 1)).squeeze()
+            next_max =y[0][idx.tolist()[-1]]
+            #print("max score",max_score)
+            #print("max index",index[:, 0])
+            #print("target score",next_max)
+            #print(next_max)
+            f = torch.max(max_score-next_max,torch.zeros_like(next_max))
+            '''
+            train_obj1=[]
+            train_obj1.append(f)
+            f=torch.tensor(train_obj1)
+            f.cuda()
+            '''
+            #print("f",-f)
             # inverse to maxize the negative value
-            return f
+            #print(f.device())
+            return -f
         else:
-            if not self.hard_label:
-                y = torch.log_softmax(y, dim=1)
-                print(y)
-                max_score = y[:, y0]
-                print(max_score)
-                y, index = torch.sort(y, dim=1, descending=True)
-                select_index = (index[:, 0] == y0).long()
-                next_max = y.gather(1, select_index.view(-1, 1)).squeeze()
-                print(next_max)
-                f = torch.max(max_score - next_max, torch.zeros_like(max_score))
-            else:
-                index = torch.argmax(y, dim=1)
-                f = torch.where(index == y0, torch.ones_like(index),
-                                torch.zeros_like(index)).float()
-            # inverse to maxize the negative value
+
+            y = torch.log_softmax(y, dim=1)
+            
+            max_score = y[:, y0]
+            print(max_score)
+            y, index = torch.sort(y, dim=1, descending=True)
+            select_index = (index[:, 0] == y0).long()
+            print(y)
+            print(index[:, y0])
+            next_max = y.gather(1, select_index.view(-1, 1)).squeeze()
+            print(next_max)
+            #print(next_max)
+            f = torch.max(max_score - next_max, torch.zeros_like(max_score))
+            print(-f)
             return -f
 
     def initialize_model(self,x0, y0, target_label=None,n=1):
@@ -96,6 +113,12 @@ class BayesOpt_full(Attacker):
         if not self.inf_norm:
             train_x = latent_proj(train_x, self.eps)
         train_obj = self.obj_func(train_x, x0, y0,target_label)
+        '''
+        train_obj1=[]
+        train_obj1.append(train_obj)
+        train_obj=torch.tensor(train_obj1)
+        '''
+        #print(train_obj,train_obj.shape)
         mean= train_obj.mean()
         std =torch.std(train_obj, unbiased=False)
         '''
@@ -167,7 +190,7 @@ class BayesOpt_full(Attacker):
 
         #run self.itr rounds for simplicity
         for i in range(self.itr):
-
+            #mll.cuda()
             # fit the model
             fit_gpytorch_model(mll)
             # define the qNEI acquisition module
@@ -187,6 +210,7 @@ class BayesOpt_full(Attacker):
             '''
             # updates data points
             train_x = torch.cat((train_x, new_x))
+            print(train_x.shape,new_obj.shape)
             train_obj = torch.cat((train_obj, new_obj))
 
             best_value, best_index = train_obj.max(0)
@@ -233,8 +257,8 @@ class BayesOpt_full(Attacker):
         return query_count, success,best_candidate,best_adv_added
 
 
-    def attack(self, x_orig, x_adv,  y_label, x_target, y_target=None):
-       
+    def attack(self, x_orig, x_adv,  y_label, x_target, y_target):
+        print(y_target)
         suc_num = 0
         time_start = time.time()
         if self.sin and self.cos:
@@ -274,6 +298,7 @@ class BayesOpt_full(Attacker):
             # ignore incorrectly classified images
                 # itr, success = bayes_opt(image, label)
                 if self.targeted:
+                    print(image.shape)
                     itr, success, adv, adv_added_image = self.bayes_opt(
                         image, label,target_label)
 

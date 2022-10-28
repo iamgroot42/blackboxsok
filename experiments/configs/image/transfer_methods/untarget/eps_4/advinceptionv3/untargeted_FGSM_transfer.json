@@ -29,7 +29,7 @@
                 },
                 {
                     "use_pretrained": true,
-                    "name": "vgg19",
+                    "name": "vgg16",
                     "dataset": "imagenet"
                 },
                 {

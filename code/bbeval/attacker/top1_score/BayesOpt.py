@@ -55,37 +55,20 @@ class BayesOpt(Attacker):
         #for small query budgets and report
         #success rates and average queries.
         if self.targeted:
-            if not self.hard_label:
-                y = torch.log_softmax(y, dim=1)
-                #print(y)
-                max_score = y[:, target_label]
-                #print(max_score)
-                y, index = torch.sort(y, dim=1, descending=True)
-                select_index = (index[:, 0] == target_label).long()
-                next_max = y.gather(1, select_index.view(-1, 1)).squeeze()
-                #print(next_max)
-                f = torch.max(max_score - next_max, torch.zeros_like(max_score))
-            else:
-                index = torch.argmax(y, dim=1)
-                f = torch.where(index == target_label, torch.ones_like(index),
-                                torch.zeros_like(index)).float()
+
+            index = torch.argmax(y, dim=1)
+            print(index)
+            f = torch.where(index == target_label, torch.ones_like(index),
+                            torch.zeros_like(index)).float()
             # inverse to maxize the negative value
+            print(f)
             return f
         else:
-            if not self.hard_label:
-                y = torch.log_softmax(y, dim=1)
-                print(y)
-                max_score = y[:, y0]
-                print(max_score)
-                y, index = torch.sort(y, dim=1, descending=True)
-                select_index = (index[:, 0] == y0).long()
-                next_max = y.gather(1, select_index.view(-1, 1)).squeeze()
-                print(next_max)
-                f = torch.max(max_score - next_max, torch.zeros_like(max_score))
-            else:
-                index = torch.argmax(y, dim=1)
-                f = torch.where(index == y0, torch.ones_like(index),
-                                torch.zeros_like(index)).float()
+
+            index = torch.argmax(y, dim=1)
+            print(index)
+            f = torch.where(index == y0, torch.ones_like(index),
+                            torch.zeros_like(index)).float()
             # inverse to maxize the negative value
             return -f
 

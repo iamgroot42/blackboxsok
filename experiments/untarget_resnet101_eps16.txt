@@ -1,0 +1,42 @@
+
+epsilon: 16.0
+Target model: resnet101 
+Aux model: inceptionv4
+The transferbility of untargeted_FGSM_transfer_imagenet is 63.0 %
+--- 17.597079038619995 seconds ---
+
+epsilon: 16.0
+Target model: resnet101 
+Aux model: inceptionv4
+The transferbility of untargeted_IFGSM_transfer_imagenet is 96.0 %
+--- 96.81611824035645 seconds ---
+
+epsilon: 16.0
+Target model: resnet101 
+Aux model: inceptionv4
+The transferbility of untargeted_TIFGSM_transfer_imagenet is 83.0 %
+--- 103.87199139595032 seconds ---
+
+epsilon: 16.0
+Target model: resnet101 
+Aux model: inceptionv4
+The transferbility of untargeted_DIFGSM_transfer_imagenet is 98.0 %
+--- 107.52985882759094 seconds ---
+
+epsilon: 16.0
+Target model: resnet101 
+Aux model: inceptionv4
+The transferbility of untargeted_SIFGSM_transfer_imagenet is 97.0 %
+--- 460.7242577075958 seconds ---
+
+epsilon: 16.0
+Target model: resnet101 
+Aux model: inceptionv4
+The transferbility of untargeted_ADMIXFGSM_transfer_imagenet is 96.0 %
+--- 1211.0927505493164 seconds ---
+
+epsilon: 16.0
+Target model: resnet101 
+Aux model: inceptionv4
+The transferbility of untargeted_EMIFGSM_transfer_imagenet is 98.0 %
+--- 560.9889845848083 seconds ---

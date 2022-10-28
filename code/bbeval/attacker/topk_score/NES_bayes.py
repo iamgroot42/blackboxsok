@@ -47,7 +47,7 @@ class NES_bayes(Attacker):
         self.criterion = get_loss_fn("scel")
         self.norm = None
         self.k = 1
-    def obj_func(self, x, x0, y0,target_label=None):
+    def obj_func(self, x,x0,target_label=None):
         # evaluate objective function
         # if hard label: -1 if image is correctly classified, 0 otherwise
         # (done this way because BayesOpt assumes we want to maximize)
@@ -58,51 +58,49 @@ class NES_bayes(Attacker):
         with ch.no_grad():
             #self.model.set_eval()
             #self.model.zero_grad()
-            y = self.model.forward(x + x0)
+            y = self.model.forward(x +x0)
         #hard-labelblack-box attacks
         #for small query budgets and report
         #success rates and average queries.
 
-
         y = ch.log_softmax(y, dim=1)
-        print(y)
-        max_score = y[:, target_label]
-        print(max_score)
+        #print(y)
+        #max_score = y[:, 0]
+        
+
+        #print(max_score)
         y, index = ch.sort(y, dim=1, descending=True)
-        select_index = (index[:, 0] == target_label).long()
-        next_max = y.gather(1, select_index.view(-1, 1)).squeeze()
-        print(next_max)
-        f = ch.max(max_score - next_max, ch.zeros_like(max_score))
-
-        return f
-
-    def obj_func_nes(self, x,target_label=None):
-
-        with ch.no_grad():
-
-            y = self.model.forward(x )
+        max_score = y[:, 0]
+        #print(y)
+        #rint(index)
+        #elect_index = (index[:, 0] == target_label).long()
+        
+        idx = (index == target_label).nonzero().flatten()
+        #print ("index of target",idx.tolist()[-1]) # [2]
 
 
+        #next_max = y.gather(1, select_index.view(-1, 1)).squeeze()
+        next_max =y[0][idx.tolist()[-1]]
+        #print("max score",max_score)
+        #print("max index",index[:, 0])
+        #print("target score",next_max)
+        #print(next_max)
+        f = ch.max(max_score-next_max,ch.zeros_like(next_max))
+        
+        #print("f",-f)
 
-        y = ch.log_softmax(y, dim=1)
-        print(y)
-        max_score = y[:, target_label]
-        print(max_score)
-        y, index = ch.sort(y, dim=1, descending=True)
-        select_index = (index[:, 0] == target_label).long()
-        next_max = y.gather(1, select_index.view(-1, 1)).squeeze()
-        print(next_max)
-        f = ch.max(max_score - next_max, ch.zeros_like(max_score))
+        return -f
 
-        return f
-
-    def initialize_model(self,x0, y0, target_label=None,n=1):
+    def initialize_model(self,x0,target_label=None,n=1):
         # initialize botorch GP model
         # generate prior xs and ys for GP
+        
         train_x = 2 * ch.rand(n, self.latent_dim, device=self.device).float() - 1
         if not self.inf_norm:
             train_x = latent_proj(train_x, self.eps)
-        train_obj = self.obj_func(train_x, x0, y0,target_label)
+        
+
+        train_obj = self.obj_func(train_x,x0,target_label)
         mean= train_obj.mean()
         std =ch.std(train_obj, unbiased=False)
         '''
@@ -117,7 +115,7 @@ class NES_bayes(Attacker):
         mll = mll.to(train_x)
         return train_x, train_obj, mll, model, best_observed_value, mean, std
 
-    def optimize_acqf_and_get_observation(self,acq_func, x0, y0,target_label=None):
+    def optimize_acqf_and_get_observation(self,x0,acq_func,target_label=None):
         # Optimizes the acquisition function, returns new candidate new_x
         # and its objective function value new_obj
 
@@ -153,7 +151,7 @@ class NES_bayes(Attacker):
         new_x = candidates.detach()
         if not self.inf_norm:
             new_x = latent_proj(new_x, self.eps)
-        new_obj = self.obj_func(new_x, x0, y0,target_label)
+        new_obj = self.obj_func(new_x,x0,target_label)
         return new_x, new_obj
 
     def robust_in_top_k(self, target_class, proposed_adv):
@@ -177,11 +175,11 @@ class NES_bayes(Attacker):
         momentum = 0.9
         samples_per_draw = 100
         is_preturbed = False
-        sigma = 1e-3
+        sigma = 1e-5
         batch_size = 10
         max_queries = 100000
         min_lr = 1e-3
-        max_lr = 1e-2
+        max_lr = 5
         plateau_length = 20
         plateau_drop = 2.0
         last_ls = []
@@ -203,6 +201,10 @@ class NES_bayes(Attacker):
         self.bounds = ch.tensor([[-2.0] * self.latent_dim, [2.0] * self.latent_dim],
                                    device=self.device).float()
 
+        
+
+        
+
         for idx in range(len(x_orig)):
             temp_eps = 1
 
@@ -211,12 +213,23 @@ class NES_bayes(Attacker):
 
             stop_queries = 0
             x_image, initial_adv, target_label = x_orig[idx].unsqueeze(0),x_target[idx].unsqueeze(0), y_target[idx].int()
+            print(x_image.shape)
             lower = clip_by_tensor(x_image - temp_eps, x_min_val, x_max_val)
             upper = clip_by_tensor(x_image + temp_eps, x_min_val, x_max_val)
             adv = clip_by_tensor(initial_adv, lower, upper)
             self.model.set_eval()  # Make sure model is in eval model
             self.model.zero_grad()  # Make sure no leftover gradients
             predicted_label = ch.argmax(self.model.forward(x_image))
+
+
+
+            best_observed = []
+            query_count, success = 0, 0
+            best_candidate,best_adv_added =[],[]
+            #initialization of the GP model
+            train_x, train_obj, mll, model, best_value, mean, std = self.initialize_model(
+                x_image, target_label,n=1)
+            best_observed.append(best_value)
 
             print(f"Image {idx:d}   Target label: {target_label:d}")
             iter = 0
@@ -245,19 +258,9 @@ class NES_bayes(Attacker):
                 num_queries+=1
                 stop_queries+=1
 
-                l= self.obj_func_nes(adv,target_label)
-                print(l)
-                print("Current label: " + str(target_model_prediction.item()) + "   loss: " + str(l.item())+"   eps: "+ str(temp_eps))
 
-                best_observed = []
-                query_count, success = 0, 0
-                best_candidate,best_adv_added =[],[]
-                #initialization of the GP model
-                train_x, train_obj, mll, model, best_value, mean, std = self.initialize_model(
-                    x_image, predicted_label, target_label,n=1)
-                best_observed.append(best_value)
 
-                    
+
                 # fit the model
                 fit_gpytorch_model(mll)
                 # define the qNEI acquisition module
@@ -270,8 +273,13 @@ class NES_bayes(Attacker):
                 elif self.acqf == 'UCB':
                     qEI = UpperConfidenceBound(model, beta=self.beta)
                 # optimize and get new observation
-                new_x, new_obj = self.optimize_acqf_and_get_observation(qEI, x_image, predicted_label,target_label)    
+                new_x, new_obj = self.optimize_acqf_and_get_observation(x_image,qEI, target_label)    
                     
+                l= new_obj
+                print(l)
+                print("Current label: " + str(target_model_prediction.item()) + "   loss: " + str(l.item())+"   eps: "+ str(temp_eps))
+
+
                 train_x = ch.cat((train_x, new_x))
                 train_obj = ch.cat((train_obj, new_obj))
 
@@ -290,7 +298,7 @@ class NES_bayes(Attacker):
 
 
                 perturbation=best_candidate
-                print(perturbation)
+                #print(perturbation)
 
                 # PLATEAU LR ANNEALING
                 last_ls.append(l)
@@ -304,7 +312,7 @@ class NES_bayes(Attacker):
                 current_lr = max_lr
                 prop_de = 0.0
 
-                adv_thresh=None#need to modify
+                adv_thresh=0#need to modify
                 if l < adv_thresh and temp_eps > eps:
                     prop_de = delta_epsilon
 
@@ -314,7 +322,7 @@ class NES_bayes(Attacker):
                     lower = clip_by_tensor(x_image - proposed_epsilon, x_min_val, x_max_val)
                     upper = clip_by_tensor(x_image + proposed_epsilon, x_min_val, x_max_val)
                     # GENERAL LINE SEARCH
-                    proposed_adv = adv.cpu() - targeted * current_lr * perturbation
+                    proposed_adv = adv.cpu() - targeted * current_lr * perturbation.cpu()
                     proposed_adv = clip_by_tensor(proposed_adv.cuda(), lower, upper)
                     num_queries += 1
                     if self.robust_in_top_k(target_label, proposed_adv):

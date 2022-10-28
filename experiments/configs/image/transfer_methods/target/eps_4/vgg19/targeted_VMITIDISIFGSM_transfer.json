@@ -13,7 +13,7 @@
             "query_budget": 1,
             "adv_model_config": {
                 "use_pretrained": true,
-                "name": "vgg19",
+                "name": "vgg16",
                 "dataset": "imagenet"
             },
             "aux_model_configs_dict": [
@@ -29,7 +29,7 @@
                 },
                 {
                     "use_pretrained": true,
-                    "name": "vgg19",
+                    "name": "vgg16",
                     "dataset": "imagenet"
                 },
                 {
