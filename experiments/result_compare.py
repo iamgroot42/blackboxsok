@@ -44,8 +44,31 @@ def compare(attack_name='untargeted_EMITIDIAIFGSM_BayesOpt',blackbox_method='unt
 
     print("query_avg_blackbox:",query_avg_blackbox)
 
+
+
+def count(attack_name='untargeted_EMITIDIAIFGSM_BayesOpt'):
+    f = open('log/imagenet/'+attack_name+'/'+attack_name+'.json')
+    data = json.load(f)
+    result = data["result"]
+    del result["Final Result"]
+    
+    query_count = 0
+    attack_succ=0
+    for label in result:
+        query_count += result[label]["query"]
+        if result[label]["attack_flag"] ==1:
+            attack_succ+=1
+
+    query_avg= query_count/len(result)
+    print("query_avg:", query_avg)
+    print("Succ:", attack_succ)
+
 if __name__ == "__main__":
     args = sys.argv
-    compare(args[1],args[2])
+    if len(args)==3:
+
+        compare(args[1],args[2])
+    else:
+        count(args(1))
 
 

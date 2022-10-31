@@ -13,7 +13,7 @@ import torch as ch
 
 ch.manual_seed(2)
 
-image_attack = 100
+image_attack = 1000
 
 def get_model_and_aux_models(attacker_config: AttackerConfig):
     model_config = attacker_config.adv_model_config
@@ -103,6 +103,7 @@ if __name__ == "__main__":
         x_orig, y_label = correct_images[0:image_attack], correct_labels[0:image_attack]
         x_orig, y_label = x_orig.cuda(), y_label.cuda()
         x_target, y_target = target_images[0:image_attack], target_labels[0:image_attack]
+        #print("asdsadadsa",y_target)
         x_target, y_target = x_target.cuda(), y_target.cuda()
         num_class = ds.num_classes
 

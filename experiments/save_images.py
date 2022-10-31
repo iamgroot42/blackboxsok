@@ -138,7 +138,7 @@ if __name__ == "__main__":
                     while True:
                         new_label = random.randint(0, 999)
                         if new_label!=y_label[l_ind]:
-                            break;
+                            break
                     if y_target[l_ind] in correct_labels:
                         y_ind = correct_labels.index(y_target[l_ind])
                         x_target[l_ind] = correct_images[y_ind]
@@ -172,6 +172,7 @@ if __name__ == "__main__":
     if attacker_config_1.targeted:
         y_target = y_target.type(ch.float)
         y_target = ch.Tensor(y_target)
+        y_target = y_target.type(ch.LongTensor)
         x_target = ch.Tensor(x_target)
 
 

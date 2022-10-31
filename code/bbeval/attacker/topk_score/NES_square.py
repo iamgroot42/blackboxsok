@@ -64,6 +64,8 @@ class NES_square(Attacker):
         # temp_eps=0.1
         delta_epsilon=0.5
         conservative=2
+        self.loss_type = "ce"
+        self.succ =0
 
 
         for idx in range(len(x_orig)):
@@ -107,11 +109,42 @@ class NES_square(Attacker):
                 stop_queries+=1
                 print("Current label: " + str(target_model_prediction.item()) + "   loss: " + str(l.item())+"   eps: "+ str(temp_eps))
 
+                ##Square Part
+                x_min, x_max = 0, 1 if adv.max() <= 1 else 255
+                c, h, w = adv.shape[0:]
+                n_features = c*h*w
+                init_delta = ch.zeros([adv.shape[0], c, 1, w])
+                x_best = ch.clip(ch.clip(adv + init_delta, x_image - eps, x_image + eps), x_min, x_max)
+                
+                deltas = x_best - adv
+                p = self.p_selection(0.05, 0, max_queries)
+                s = int(round(np.sqrt(p * n_features / c)))
+                s = min(max(s, 1), h-1)
+                center_h = np.random.randint(0, h - s)
+                center_w = np.random.randint(0, w - s)
+
+                x_curr_window = x_image[center_h:center_h+s, center_w:center_w+s]
+                x_adv_loc_curr_window = adv[center_h:center_h+s, center_w:center_w+s] 
+                x_best_curr_window = x_best[center_h:center_h+s, center_w:center_w+s]
+                # prevent trying out a delta if it doesn't change x_curr (e.g. an overlapping patch)
+                """
+                while ch.sum(ch.abs(ch.clip(x_curr_window + deltas[i_img, :, center_h:center_h+s, center_w:center_w+s], x_min, x_max) - x_best_curr_window) < 10**-7) == c*s*s:
+                    deltas[i_img, :, center_h:center_h+s, center_w:center_w +
+                           s] = self._workaround_choice([c, 1, 1], eps)
+                """
+                while ch.sum(ch.abs(ch.clip(ch.clip(x_adv_loc_curr_window + deltas[ center_h:center_h+s, center_w:center_w+s],x_curr_window-eps,x_curr_window+eps), x_min, x_max) - x_best_curr_window) < 10**-7) == c*s*s:
+                    deltas[ center_h:center_h+s, center_w:center_w +
+                           s] = self._workaround_choice([c, 1, 1], eps)
+                x_new = ch.clip(ch.clip(adv+deltas,x_image-eps,x_image+eps), x_min, x_max)
+                logits = self.model.forward(x_new, detach=True)
+                
+                margin = get_loss_fn('margin', 'none')(logits, target_label, self.targeted)
+
 
 ###             TO DO: get the loss value(object function)
-                l= self.objection_function()
-                print(loss)
-                perturbation=self.calculate_perturbation()
+                l = get_loss_fn(self.loss_type, 'none')(logits, target_label)
+                print(l)
+                perturbation=deltas
 
 
                 # PLATEAU LR ANNEALING
@@ -171,3 +204,82 @@ class NES_square(Attacker):
                         "target model": str(self.model)
         })
         return ret_adv.detach(), num_queries
+
+
+    
+
+    def _workaround_choice(self, shape, eps=1.0):
+        """
+            Trick to generate numbers out of [-eps, eps]
+            using numbers generated in [0, 1)
+        """
+        y = 2*(ch.rand(shape).cuda() - 0.5)
+        y = ch.sign(y) * ch.abs(y) * eps
+        return y
+
+    def p_selection(self, p_init, it, n_iters):
+        """ Piece-wise constant schedule for p (the fraction of pixels changed on every iteration). """
+        it = int(it / n_iters * 10000)
+
+        if 10 < it <= 50:
+            p = p_init / 2
+        elif 50 < it <= 200:
+            p = p_init / 4
+        elif 200 < it <= 500:
+            p = p_init / 8
+        elif 500 < it <= 1000:
+            p = p_init / 16
+        elif 1000 < it <= 2000:
+            p = p_init / 32
+        elif 2000 < it <= 4000:
+            p = p_init / 64
+        elif 4000 < it <= 6000:
+            p = p_init / 128
+        elif 6000 < it <= 8000:
+            p = p_init / 256
+        elif 8000 < it <= 10000:
+            p = p_init / 512
+        else:
+            p = p_init
+
+        return p
+
+    def pseudo_gaussian_pert_rectangles(self, x, y):
+        delta = ch.zeros([x, y]).cuda()
+        x_c, y_c = x // 2 + 1, y // 2 + 1
+
+        counter2 = [x_c - 1, y_c - 1]
+        for counter in range(0, max(x_c, y_c)):
+            delta[max(counter2[0], 0):min(counter2[0] + (2 * counter + 1), x),
+                    max(0, counter2[1]):min(counter2[1] + (2 * counter + 1), y)] += 1.0 / (counter + 1) ** 2
+
+            counter2[0] -= 1
+            counter2[1] -= 1
+
+        delta /= ch.sqrt(ch.sum(delta ** 2, dim=(0, 1), keepdim=True))
+
+        return delta
+
+    def meta_pseudo_gaussian_pert(self, s):
+        delta = ch.zeros([s, s]).cuda()
+        n_subsquares = 2
+        if n_subsquares == 2:
+            delta[:s // 2] = self.pseudo_gaussian_pert_rectangles(s // 2, s)
+            delta[s //
+                    2:] = self.pseudo_gaussian_pert_rectangles(s - s // 2, s) * (-1)
+            delta /= ch.sqrt(ch.sum(delta ** 2, dim=(0, 1), keepdim=True))
+            if ch.rand(1).item() > 0.5:
+                delta = delta.T
+
+        elif n_subsquares == 4:
+            delta[:s // 2, :s // 2] = self.pseudo_gaussian_pert_rectangles(
+                s // 2, s // 2) * self._workaround_choice(1)
+            delta[s // 2:, :s // 2] = self.pseudo_gaussian_pert_rectangles(
+                s - s // 2, s // 2) * self._workaround_choice(1)
+            delta[:s // 2, s // 2:] = self.pseudo_gaussian_pert_rectangles(
+                s // 2, s - s // 2) * self._workaround_choice(1)
+            delta[s // 2:, s // 2:] = self.pseudo_gaussian_pert_rectangles(
+                s - s // 2, s - s // 2) * self._workaround_choice(1)
+            delta /= ch.sqrt(ch.sum(delta ** 2, dim=(0, 1), keepdim=True))
+
+        return delta

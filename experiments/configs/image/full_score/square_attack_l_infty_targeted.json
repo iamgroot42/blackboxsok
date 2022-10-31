@@ -8,16 +8,15 @@
         {
             "name": "square_attack",
             "access_level": "all",
-            "eps": 0.05,
-            "targeted": false,
-            "query_budget": 10000,
+            "eps": 16,
+            "targeted": true,
             "adv_model_config": {
                 "use_pretrained": true,
                 "name": "inceptionv3",
                 "dataset": "imagenet"
             },
             "attack_params": {
-            "n_iters": 100
+            "n_iters": 20000
             }
         }
     ]

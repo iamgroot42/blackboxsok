@@ -18,6 +18,7 @@ class Square_Attack(Attacker):
         self.params = SquareAttackConfig(**self.params)
         self.norm_type = np.inf
         self.loss_type = "ce"
+        self.succ =0
 
     
     def _workaround_choice(self, shape, eps=1.0):
@@ -33,13 +34,12 @@ class Square_Attack(Attacker):
 
         #print(x_orig.shape[0])
         batch_num = int(x_orig.shape[0]/10)
+        suc_num =0
         for batch in range(batch_num):
             x_orig_ = x_orig[batch*10: batch*10+10]
             x_adv_loc_ = x_adv_loc[batch*10: batch*10+10]
             y_label_ = y_label[batch*10: batch*10+10]
             y_target_ = y_target[batch*10: batch*10+10]
-            
-
             # important to set the model to evaluation mode for square attack
             self.model.set_eval()
             # TODO: Add support for x_adv
@@ -64,8 +64,9 @@ class Square_Attack(Attacker):
             # else:
             #     y_use = y_label
             #print(x_orig_.shape)
-            suc_num =0
+            
             query_count = 0
+            
             if self.norm_type == 2:
                 num_queries,x_perturbed  = self.square_attack_l2(
                     x_orig_, x_adv_loc_, y_target_, corr_classified, n_iters, p_init)
@@ -76,8 +77,6 @@ class Square_Attack(Attacker):
                     query_c = int(num_queries[idx])
                     #print(label,x_perturbed[idx])
                     transfer_flag = False
-                    if query_c<n_iters:
-                        suc_num+=1
                     query_count!=query_c
                     self.logger.add_result(int(label.detach()), {
                             "query": int(query_c),
@@ -85,36 +84,46 @@ class Square_Attack(Attacker):
                             "attack_flag": int(query_c<n_iters)
                         })
                 self.logger.add_result("Final Result", {
-                        "success": int(suc_num),
+                        "success": int(self.succ),
                         "image_avai": int(len(x_orig)),
                         "average query": int((query_count/int(len(x_orig))))
                     })  
             elif self.norm_type ==  np.inf:
-                num_queries,x_perturbed = self.square_attack_linf(
-                    x_orig_, x_adv_loc_, y_target_, corr_classified, n_iters, p_init)
+                if not self.targeted:
+                    num_queries,x_perturbed,idx_t,loss = self.square_attack_linf(
+                        x_orig_, x_adv_loc_, y_label_, corr_classified, n_iters, p_init)
+                else:
+
+                    num_queries,x_perturbed,idx_t,loss = self.square_attack_linf(
+                        x_orig_, x_adv_loc_, y_target_, corr_classified, n_iters, p_init)
                 print(num_queries.shape[0])
+
                 for idx in range(10):
                     #print(x_perturbed[idx].unsqueeze(0).shape)
                     label = ch.argmax(self.model.forward(x_orig_[idx].unsqueeze(0)))
                     query_c = int(num_queries[idx])
-                    print(label,num_queries[idx])
+                    loss_ = float(loss[idx])
+                    #print(label,num_queries[idx])
                     transfer_flag = False
-                    if query_c<n_iters:
+                    if not idx_t[idx] :
                         suc_num+=1
-                    query_count!=query_c
+                        attack_flag =1
+                    else:
+                        attack_flag=0
+                    query_count+=query_c
                     self.logger.add_result(int(label.detach()), {
                             "query": int(query_c),
                             "transfer_flag": int(transfer_flag),
-                            "attack_flag": int(query_c<n_iters)
+                            "attack_flag": int(attack_flag),
+                            "loss_at_succ": float(loss_)
                         })
-                self.logger.add_result("Final Result", {
-                        "success": int(suc_num),
-                        "image_avai": int(len(x_orig)),
-                        "average query": int((query_count/int(len(x_orig))))
-                    })  
             else:
                 raise NotImplementedError("Unsupported Norm Type!")
-                
+        self.logger.add_result("Final Result", {
+        "success": int(suc_num),
+        "image_avai": int(len(x_orig)),
+        "average query": float((query_count/int(len(x_orig))))
+        })          
         return x_perturbed, num_queries
 
     def p_selection(self, p_init, it, n_iters):
@@ -388,7 +397,8 @@ class Square_Attack(Attacker):
     def square_attack_linf(self, x, x_adv_loc, y, corr_classified, n_iters, p_init, rand_start=True):
         """ The Linf square attack """
         eps = self.eps/255
-        print(eps)
+        
+        #print(eps)
         if self.seed is not None:
             ch.random.seed(self.seed)
             # ch.random.seed(0)  # important to leave it here as well
@@ -397,7 +407,7 @@ class Square_Attack(Attacker):
         #print(c,h,w)
         n_features = c*h*w
         n_ex_total = x.shape[0]
-
+        #print(y)
         x, x_adv_loc, y = x[corr_classified], x_adv_loc[corr_classified], y[corr_classified]
 
         # [c, 1, w], i.e. vertical stripes work best for untargeted attacks
@@ -411,13 +421,18 @@ class Square_Attack(Attacker):
         logits = self.model.forward(x_best, detach=True)
         # probs = ch.softmax(logits, 1)
         loss_min = get_loss_fn(self.loss_type, 'none')(logits, y)
+        if not self.targeted:
+            loss_min =loss_min * -1
+        #print(loss_min)
         margin_min = get_loss_fn('margin', 'none')(logits, y, self.targeted)
         # ones because we have already used 1 query
         n_queries = ch.ones(x.shape[0]).cuda()
-
+        loss_=loss_min
         time_start = time.time()
         for i_iter in tqdm(range(n_iters - 1)):
             idx_to_fool = margin_min > 0
+            
+
             #print(idx_to_fool)
             #print(margin_min,idx_to_fool)
             x_curr, x_adv_loc_curr, x_best_curr, y_curr = x[idx_to_fool], x_adv_loc[idx_to_fool], x_best[idx_to_fool], y[idx_to_fool]
@@ -450,6 +465,9 @@ class Square_Attack(Attacker):
                 while ch.sum(ch.abs(ch.clip(ch.clip(x_adv_loc_curr_window + deltas[i_img, :, center_h:center_h+s, center_w:center_w+s],x_curr_window-eps,x_curr_window+eps), x_min, x_max) - x_best_curr_window) < 10**-7) == c*s*s:
                     deltas[i_img, :, center_h:center_h+s, center_w:center_w +
                            s] = self._workaround_choice([c, 1, 1], eps)
+                for id in range(10):
+                    if not idx_to_fool[id]:
+                        loss_[id]=loss_min[id]
             # modified to work with x_adv_loc
             # x_new = ch.clip(x_curr + deltas, x_min, x_max)
             x_new = ch.clip(ch.clip(x_adv_loc_curr+deltas,x_curr-eps,x_curr+eps), x_min, x_max)
@@ -459,6 +477,7 @@ class Square_Attack(Attacker):
             loss = get_loss_fn(self.loss_type, 'none')(logits, y_curr)
             if not self.targeted:
                 loss =loss * -1
+            #print(loss)
             margin = get_loss_fn('margin', 'none')(logits, y_curr, self.targeted)
             #print(margin)
 
@@ -501,11 +520,15 @@ class Square_Attack(Attacker):
                     "time_total": time_total
                 })
             '''
+            for id in range(10):
+                if idx_to_fool[id]:
+                    loss_[id]=loss_min[id]
+
             if asr == 1:
                 break
         #print(x_best)
         #print(n_queries)
-        return n_queries, x_best
+        return n_queries, x_best,idx_to_fool,loss_
 
 
 # if __name__ == '__main__':

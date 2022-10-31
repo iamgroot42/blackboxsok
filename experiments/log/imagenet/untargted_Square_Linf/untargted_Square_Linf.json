@@ -1,512 +1,72 @@
 {
     "name": "untargted_Square_Linf",
-    "start time": "2022-10-28 18:54:36.912590",
+    "start time": "2022-10-31 17:11:31.940287",
     "result": {
-        "787": {
+        "676": {
             "query": 1000,
             "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "803": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "347": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "581": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "258": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "139": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "580": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "141": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "996": {
-            "query": 1,
-            "transfer_flag": 0,
-            "attack_flag": 1
-        },
-        "903": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "Final Result": {
-            "success": 2,
-            "image_avai": 100,
-            "average query": 0
-        },
-        "923": {
-            "query": 1,
-            "transfer_flag": 0,
-            "attack_flag": 1
-        },
-        "393": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "955": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "463": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "380": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "910": {
-            "query": 1,
-            "transfer_flag": 0,
-            "attack_flag": 1
-        },
-        "1": {
-            "query": 1,
-            "transfer_flag": 0,
-            "attack_flag": 1
-        },
-        "375": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "419": {
-            "query": 1,
-            "transfer_flag": 0,
-            "attack_flag": 1
-        },
-        "591": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "806": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "877": {
-            "query": 1,
-            "transfer_flag": 0,
-            "attack_flag": 1
-        },
-        "412": {
-            "query": 1,
-            "transfer_flag": 0,
-            "attack_flag": 1
-        },
-        "621": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "42": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "355": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "862": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "11": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "612": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "282": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "746": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "821": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "840": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "106": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "267": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "747": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "285": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "610": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "2": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "454": {
-            "query": 1,
-            "transfer_flag": 0,
-            "attack_flag": 1
-        },
-        "579": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "808": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "337": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "768": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "839": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "750": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "533": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "584": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "611": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "86": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "58": {
-            "query": 1,
-            "transfer_flag": 0,
-            "attack_flag": 1
-        },
-        "474": {
-            "query": 1,
-            "transfer_flag": 0,
-            "attack_flag": 1
-        },
-        "409": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "725": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "722": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "72": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "814": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "95": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "202": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
+            "attack_flag": 0,
+            "loss_at_succ": -1.3068642616271973
         },
         "295": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "256": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "176": {
             "query": 1,
             "transfer_flag": 0,
-            "attack_flag": 1
+            "attack_flag": 1,
+            "loss_at_succ": -1.9182066917419434
         },
-        "149": {
+        "16": {
             "query": 1000,
             "transfer_flag": 0,
-            "attack_flag": 0
+            "attack_flag": 0,
+            "loss_at_succ": -1.3404816389083862
         },
-        "890": {
-            "query": 1000,
+        "450": {
+            "query": 104,
             "transfer_flag": 0,
-            "attack_flag": 0
+            "attack_flag": 1,
+            "loss_at_succ": -0.9504834413528442
         },
-        "115": {
-            "query": 1,
+        "202": {
+            "query": 2,
             "transfer_flag": 0,
-            "attack_flag": 1
+            "attack_flag": 1,
+            "loss_at_succ": -1.5103607177734375
         },
-        "511": {
-            "query": 1000,
+        "456": {
+            "query": 124,
             "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "992": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "56": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "559": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "352": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "65": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "130": {
-            "query": 1,
-            "transfer_flag": 0,
-            "attack_flag": 1
-        },
-        "861": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "907": {
-            "query": 1,
-            "transfer_flag": 0,
-            "attack_flag": 1
-        },
-        "350": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "113": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "913": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "233": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "137": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
+            "attack_flag": 1,
+            "loss_at_succ": -1.631778359413147
         },
         "635": {
             "query": 1,
             "transfer_flag": 0,
-            "attack_flag": 1
+            "attack_flag": 1,
+            "loss_at_succ": -2.8435187339782715
         },
-        "131": {
-            "query": 1000,
+        "77": {
+            "query": 3,
             "transfer_flag": 0,
-            "attack_flag": 0
+            "attack_flag": 1,
+            "loss_at_succ": -1.000023603439331
         },
-        "860": {
-            "query": 1000,
+        "490": {
+            "query": 23,
             "transfer_flag": 0,
-            "attack_flag": 0
+            "attack_flag": 1,
+            "loss_at_succ": -1.3978630304336548
         },
-        "738": {
-            "query": 1000,
+        "954": {
+            "query": 41,
             "transfer_flag": 0,
-            "attack_flag": 0
+            "attack_flag": 1,
+            "loss_at_succ": -1.3761106729507446
         },
-        "642": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "232": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "554": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "336": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "363": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "869": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "157": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "13": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "766": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "121": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "427": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "187": {
-            "query": 1,
-            "transfer_flag": 0,
-            "attack_flag": 1
-        },
-        "151": {
-            "query": 1,
-            "transfer_flag": 0,
-            "attack_flag": 1
-        },
-        "364": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "51": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "450": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
-        },
-        "779": {
-            "query": 1000,
-            "transfer_flag": 0,
-            "attack_flag": 0
+        "Final Result": {
+            "success": 8,
+            "image_avai": 10,
+            "average query": 229.9
         }
     },
-    "save time": "2022-10-28 18:58:11.181199"
+    "save time": "2022-10-31 17:11:46.382316"
 }

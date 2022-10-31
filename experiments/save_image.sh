@@ -1,2 +1,2 @@
 
-python save_images.py  --config configs/image/transfer_methods/target/eps_8/densenet201/targeted_ADMIXFGSM_transfer.json
+python save_images.py  --config configs/image/full_score/square_attack_l_infty_targeted.json

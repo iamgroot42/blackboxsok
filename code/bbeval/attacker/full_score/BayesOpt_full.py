@@ -47,10 +47,11 @@ class BayesOpt_full(Attacker):
         # in both cases, successful adversarial perturbation iff objective function >= 0
         x = transform(x, self.arch, self.cos, self.sin).to(self.device)
         x = proj(x, self.eps, self.inf_norm, self.discrete)
+        x_a=torch.clip(torch.clip(x+x0 , x0 - self.eps, x0 + self.eps), 0, 1)
         with torch.no_grad():
             #self.model.set_eval()
             #self.model.zero_grad()
-            y = self.model.forward(x + x0)
+            y = self.model.forward(x_a)
         #hard-labelblack-box attacks
         #for small query budgets and report
         #success rates and average queries.
@@ -225,11 +226,12 @@ class BayesOpt_full(Attacker):
                 best_candidate,  self.arch, self.cos, self.sin).to(self.device)
             best_candidate = proj(best_candidate, self.eps,
                                   self.inf_norm, self.discrete)
+            x_=torch.clip(torch.clip(x0+best_candidate , x0 - self.eps, x0 + self.eps), 0, 1)
             with torch.no_grad():
                 #self.model.set_eval()
                 #self.model.zero_grad()
                 adv_label = torch.argmax(
-                    self.model.forward(best_candidate + x0))
+                    self.model.forward(x_))
             if self.targeted:
                 if adv_label == target_label:
                     success = 1
