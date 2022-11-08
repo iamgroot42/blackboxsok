@@ -26,8 +26,8 @@ class Shift(Attacker):
         preferable_extension_amount = self.params['preferable_extension_amount']  # 512
         iterations = self.params['iterations']  # 100
         shift = CFormatExploitEvasion(self.model.model,
-                             preferable_extension_amount=preferable_extension_amount,
-                             iterations=iterations)
+                                      preferable_extension_amount=preferable_extension_amount,
+                                      iterations=iterations)
         x_adv_new = []
         results = []
         for i, (x_orig_i, x_adv_i) in enumerate(zip(x_orig, x_adv)):

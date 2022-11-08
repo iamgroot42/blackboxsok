@@ -9,7 +9,6 @@ import numpy as np
 from typing import List
 import copy
 
-from secml_malware.attack.blackbox.c_wrapper_phi import CEnd2EndWrapperPhi
 from secml_malware.attack.blackbox.ga.c_base_genetic_engine import CGeneticAlgorithm
 
 
@@ -21,7 +20,8 @@ class SectionInjection(Attacker):
                  experiment_config: ExperimentConfig):
         super().__init__(model, aux_models, config, experiment_config)
         self.goodware_path = "/p/blackboxsok/datasets/phd-dataset/combined"
-        self.phi_net = CEnd2EndWrapperPhi(self.model.model)
+        wrapper = self.model.get_phi_wrapper_class()
+        self.phi_net = wrapper(self.model.model)
     
     def _prepare_goodware(self):
         section_population, what_from_who = CGammaSectionsEvasionProblem.create_section_population_from_folder(self.goodware_path, how_many=10, sections_to_extract=['.rdata'])
@@ -54,7 +54,6 @@ class SectionInjection(Attacker):
             y_pred, adv_score, adv_ds, f_obj = engine.run(
                 x_adv_i.feature, CArray(y_label[i][1].cpu()))
             results.append(adv_score.tondarray()[0][1])
-            print("Huh!")
             real_adv_x = adv_ds.X[0, :].tolist()[0]
             real_adv_x = b''.join([bytes([i]) for i in real_adv_x])
             x_adv_i_new: MalwareDatumWrapper = copy.deepcopy(x_orig_i)
