@@ -1,0 +1,174 @@
+
+epsilon: 8.0
+Target model: vgg19 
+Aux model: inceptionv4
+The transferbility of untargeted_FGSM_transfer_imagenet is 91.0 %
+--- 11.195906400680542 seconds ---
+
+epsilon: 8.0
+Target model: vgg19 
+Aux model: inceptionv4
+The transferbility of untargeted_IFGSM_transfer_imagenet is 100.0 %
+--- 55.183326721191406 seconds ---
+
+epsilon: 8.0
+Target model: vgg19 
+Aux model: inceptionv4
+The transferbility of untargeted_TIFGSM_transfer_imagenet is 100.0 %
+--- 56.543771743774414 seconds ---
+
+epsilon: 8.0
+Target model: vgg19 
+Aux model: inceptionv4
+The transferbility of untargeted_DIFGSM_transfer_imagenet is 100.0 %
+--- 62.34118890762329 seconds ---
+
+epsilon: 8.0
+Target model: vgg19 
+Aux model: inceptionv4
+The transferbility of untargeted_SIFGSM_transfer_imagenet is 100.0 %
+--- 269.32764315605164 seconds ---
+
+epsilon: 8.0
+Target model: vgg19 
+Aux model: inceptionv4
+The transferbility of untargeted_ADMIXFGSM_transfer_imagenet is 100.0 %
+--- 794.6124150753021 seconds ---
+
+epsilon: 8.0
+Target model: vgg19 
+Aux model: inceptionv4
+The transferbility of untargeted_EMIFGSM_transfer_imagenet is 100.0 %
+--- 585.936222076416 seconds ---
+
+epsilon: 8.0
+Target model: vgg19 
+Aux model: inceptionv4
+The transferbility of untargeted_EMITIDISIFGSM_transfer_imagenet is 100.0 %
+--- 3074.3854484558105 seconds ---
+
+epsilon: 8.0
+Target model: vgg19 
+Aux model: inceptionv4
+The transferbility of untargeted_MIFGSM_transfer_imagenet is 100.0 %
+--- 58.71326684951782 seconds ---
+
+epsilon: 8.0
+Target model: vgg19 
+Aux model: inceptionv4
+The transferbility of untargeted_MIDIFGSM_transfer_imagenet is 100.0 %
+--- 59.53944802284241 seconds ---
+
+epsilon: 8.0
+Target model: vgg19 
+Aux model: inceptionv4
+The transferbility of untargeted_MITIDIFGSM_transfer_imagenet is 99.0 %
+--- 62.34584045410156 seconds ---
+
+epsilon: 8.0
+Target model: vgg19 
+Aux model: inceptionv4
+The transferbility of untargeted_MITIDISIFGSM_transfer_imagenet is 99.0 %
+--- 274.8709316253662 seconds ---
+
+epsilon: 8.0
+Target model: vgg19 
+Aux model: inceptionv4
+The transferbility of untargeted_MIADMIXTIDIFGSM_transfer_imagenet is 100.0 %
+--- 834.6278212070465 seconds ---
+
+epsilon: 8.0
+Target model: vgg19 
+Aux model: inceptionv4
+The transferbility of untargeted_NIFGSM_transfer_imagenet is 100.0 %
+--- 58.78054857254028 seconds ---
+
+epsilon: 8.0
+Target model: vgg19 
+Aux model: inceptionv4
+The transferbility of untargeted_NITIDISIFGSM_transfer_imagenet is 98.0 %
+--- 283.9800982475281 seconds ---
+
+epsilon: 8.0
+Target model: vgg19 
+Aux model: inceptionv4
+The transferbility of untargeted_SMIFGSM_transfer_imagenet is 100.0 %
+--- 644.1848392486572 seconds ---
+
+epsilon: 8.0
+Target model: vgg19 
+Aux model: inceptionv4
+The transferbility of untargeted_SMIMIFGSM_transfer_imagenet is 100.0 %
+--- 644.591108083725 seconds ---
+
+epsilon: 8.0
+Target model: vgg19 
+Aux model: inceptionv4
+The transferbility of untargeted_SMIMITIDISIFGSM_transfer_imagenet is 92.0 %
+--- 3372.8693675994873 seconds ---
+
+epsilon: 8.0
+Target model: vgg19 
+Aux model: inceptionv4
+The transferbility of untargeted_VMIFGSM_transfer_imagenet is 100.0 %
+--- 1093.8234446048737 seconds ---
+
+epsilon: 8.0
+Target model: vgg19 
+Aux model: inceptionv4
+The transferbility of untargeted_VMITIDISIFGSM_transfer_imagenet is 100.0 %
+--- 1324.7996859550476 seconds ---
+
+epsilon: 8.0
+Target model: vgg19 
+Aux model: inceptionv4
+The transferbility of untargeted_VNIFGSM_transfer_imagenet is 100.0 %
+--- 1111.6181104183197 seconds ---
+
+epsilon: 8.0
+Target model: vgg19 
+Aux model: inceptionv4
+The transferbility of untargeted_VNITIDISIFGSM_transfer_imagenet is 95.0 %
+--- 1324.6609961986542 seconds ---
+
+epsilon: 8.0
+Target model: vgg19 
+Aux model: inceptionv4
+The transferbility of untargeted_IFGSSM_transfer_imagenet is 100.0 %
+--- 60.613885164260864 seconds ---
+
+epsilon: 8.0
+Target model: vgg19 
+Aux model: inceptionv4
+The transferbility of untargeted_PITIDIFGSSM_transfer_imagenet is 99.0 %
+--- 68.91224384307861 seconds ---
+
+epsilon: 8.0
+Target model: vgg19 
+Aux model: inceptionv4
+The transferbility of untargeted_EMITIDIAIFGSM_transfer_imagenet is 100.0 %
+--- 9140.525985717773 seconds ---
+
+epsilon: 8.0
+Target model: vgg19 
+Aux model: inceptionv4
+The transferbility of untargeted_SMIMITIDIAIFGSM_transfer_imagenet is 94.0 %
+--- 10179.007358312607 seconds ---
+
+epsilon: 8.0
+Target model: vgg19 
+Aux model: inceptionv4
+The transferbility of untargeted_MIADMIXTIDIFGSSM_transfer_imagenet is 100.0 %
+--- 845.7830746173859 seconds ---
+
+epsilon: 8.0
+Target model: vgg19 
+Aux model: inceptionv4
+The transferbility of untargeted_VMITIDIAIFGSM_transfer_imagenet is 100.0 %
+--- 1883.0718295574188 seconds ---
+
+epsilon: 8.0
+Target model: vgg19 
+Aux model: inceptionv4
+The transferbility of untargeted_VNITIDIAIFGSM_transfer_imagenet is 100.0 %
+--- 1894.933782339096 seconds ---

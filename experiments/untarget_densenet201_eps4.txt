@@ -1,0 +1,180 @@
+
+epsilon: 4.0
+Target model: densenet201 
+Aux model: inceptionv4
+The transferbility of untargeted_FGSM_transfer_imagenet is 40.1 %
+--- 10.136574506759644 seconds ---
+
+epsilon: 4.0
+Target model: densenet201 
+Aux model: inceptionv4
+The transferbility of untargeted_IFGSM_transfer_imagenet is 49.9 %
+--- 55.1449773311615 seconds ---
+
+epsilon: 4.0
+Target model: densenet201 
+Aux model: inceptionv4
+The transferbility of untargeted_TIFGSM_transfer_imagenet is 42.4 %
+--- 55.389177083969116 seconds ---
+
+epsilon: 4.0
+Target model: densenet201 
+Aux model: inceptionv4
+The transferbility of untargeted_DIFGSM_transfer_imagenet is 58.5 %
+--- 58.23433327674866 seconds ---
+
+epsilon: 4.0
+Target model: densenet201 
+Aux model: inceptionv4
+The transferbility of untargeted_SIFGSM_transfer_imagenet is 57.1 %
+--- 259.30713152885437 seconds ---
+
+epsilon: 4.0
+Target model: densenet201 
+Aux model: inceptionv4
+The transferbility of untargeted_ADMIXFGSM_transfer_imagenet is 61.2 %
+--- 759.4322168827057 seconds ---
+
+epsilon: 4.0
+Target model: densenet201 
+Aux model: inceptionv4
+The transferbility of untargeted_EMIFGSM_transfer_imagenet is 72.7 %
+--- 562.5067465305328 seconds ---
+
+epsilon: 4.0
+Target model: densenet201 
+Aux model: inceptionv4
+The transferbility of untargeted_EMITIDISIFGSM_transfer_imagenet is 62.3 %
+--- 2977.0506343841553 seconds ---
+
+epsilon: 4.0
+Target model: densenet201 
+Aux model: inceptionv4
+The transferbility of untargeted_MIFGSM_transfer_imagenet is 67.6 %
+--- 56.32159233093262 seconds ---
+
+epsilon: 4.0
+Target model: densenet201 
+Aux model: inceptionv4
+The transferbility of untargeted_MIDIFGSM_transfer_imagenet is 78.4 %
+--- 59.22799849510193 seconds ---
+
+epsilon: 4.0
+Target model: densenet201 
+Aux model: inceptionv4
+The transferbility of untargeted_MITIDIFGSM_transfer_imagenet is 46.0 %
+--- 58.6233549118042 seconds ---
+
+epsilon: 4.0
+Target model: densenet201 
+Aux model: inceptionv4
+The transferbility of untargeted_MITIDISIFGSM_transfer_imagenet is 52.8 %
+--- 276.69084644317627 seconds ---
+
+epsilon: 4.0
+Target model: densenet201 
+Aux model: inceptionv4
+The transferbility of untargeted_MIADMIXTIDIFGSM_transfer_imagenet is 65.1 %
+--- 820.3036386966705 seconds ---
+
+epsilon: 4.0
+Target model: densenet201 
+Aux model: inceptionv4
+The transferbility of untargeted_NIFGSM_transfer_imagenet is 64.2 %
+--- 56.53921294212341 seconds ---
+
+epsilon: 4.0
+Target model: densenet201 
+Aux model: inceptionv4
+The transferbility of untargeted_NITIDISIFGSM_transfer_imagenet is 57.7 %
+--- 275.6814088821411 seconds ---
+
+epsilon: 4.0
+Target model: densenet201 
+Aux model: inceptionv4
+The transferbility of untargeted_SMIFGSM_transfer_imagenet is 90.3 %
+--- 619.6962556838989 seconds ---
+
+epsilon: 4.0
+Target model: densenet201 
+Aux model: inceptionv4
+The transferbility of untargeted_SMIMIFGSM_transfer_imagenet is 86.5 %
+--- 617.900298833847 seconds ---
+
+epsilon: 4.0
+Target model: densenet201 
+Aux model: inceptionv4
+The transferbility of untargeted_VMIFGSM_transfer_imagenet is 80.3 %
+--- 1075.3441092967987 seconds ---
+
+epsilon: 4.0
+Target model: densenet201 
+Aux model: inceptionv4
+The transferbility of untargeted_VMITIDISIFGSM_transfer_imagenet is 63.7 %
+--- 1290.1737689971924 seconds ---
+
+epsilon: 4.0
+Target model: densenet201 
+Aux model: inceptionv4
+The transferbility of untargeted_VNIFGSM_transfer_imagenet is 78.9 %
+--- 1041.6241822242737 seconds ---
+
+epsilon: 4.0
+Target model: densenet201 
+Aux model: inceptionv4
+The transferbility of untargeted_VNITIDISIFGSM_transfer_imagenet is 65.1 %
+--- 1290.5734000205994 seconds ---
+
+epsilon: 4.0
+Target model: densenet201 
+Aux model: inceptionv4
+The transferbility of untargeted_IFGSSM_transfer_imagenet is 53.0 %
+--- 58.71799874305725 seconds ---
+
+epsilon: 4.0
+Target model: densenet201 
+Aux model: inceptionv4
+The transferbility of untargeted_PITIDIFGSSM_transfer_imagenet is 41.3 %
+--- 67.21736741065979 seconds ---
+
+epsilon: 4.0
+Target model: densenet201 
+Aux model: inceptionv4
+The transferbility of untargeted_EMITIDIAIFGSM_transfer_imagenet is 62.6 %
+--- 8944.865510463715 seconds ---
+
+epsilon: 4.0
+Target model: densenet201 
+Aux model: inceptionv4
+The transferbility of untargeted_MIADMIXTIDIFGSSM_transfer_imagenet is 65.7 %
+--- 808.5620715618134 seconds ---
+
+epsilon: 4.0
+Target model: densenet201 
+Aux model: inceptionv4
+The transferbility of untargeted_VMITIDIAIFGSM_transfer_imagenet is 64.9 %
+--- 1851.2976264953613 seconds ---
+
+epsilon: 4.0
+Target model: densenet201 
+Aux model: inceptionv4
+The transferbility of untargeted_VNITIDIAIFGSM_transfer_imagenet is 72.8 %
+--- 1842.2246851921082 seconds ---
+
+epsilon: 4.0
+Target model: densenet201 
+Aux model: inceptionv4
+The transferbility of untargeted_MIADMIXTIDIFGSSM_transfer_imagenet is 65.0 %
+--- 824.5074405670166 seconds ---
+
+epsilon: 4.0
+Target model: densenet201 
+Aux model: inceptionv4
+The transferbility of untargeted_VMITIDIAIFGSM_transfer_imagenet is 64.0 %
+--- 1834.379566669464 seconds ---
+
+epsilon: 4.0
+Target model: densenet201 
+Aux model: inceptionv4
+The transferbility of untargeted_VNITIDIAIFGSM_transfer_imagenet is 72.0 %
+--- 1801.734291791916 seconds ---

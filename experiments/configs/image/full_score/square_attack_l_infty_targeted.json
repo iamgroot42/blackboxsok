@@ -16,7 +16,7 @@
                 "dataset": "imagenet"
             },
             "attack_params": {
-            "n_iters": 20000
+            "n_iters": 50000
             }
         }
     ]

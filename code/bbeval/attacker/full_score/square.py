@@ -16,6 +16,7 @@ class Square_Attack(Attacker):
         super().__init__(model, aux_models, config, experiment_config)
         # Parse params dict into SquareAttackConfig
         self.params = SquareAttackConfig(**self.params)
+        
         self.norm_type = np.inf
         self.loss_type = "ce"
         self.succ =0
@@ -30,8 +31,8 @@ class Square_Attack(Attacker):
         y = ch.sign(y) * ch.abs(y) * eps
         return y
 
-    def attack(self, x_orig, x_adv_loc, y_label,y_target=None):
-
+    def attack(self, x_orig, x_adv, y_label,x_target=None,y_target=None):
+        x_adv_loc = x_adv
         #print(x_orig.shape[0])
         batch_num = int(x_orig.shape[0]/10)
         suc_num =0
@@ -43,7 +44,8 @@ class Square_Attack(Attacker):
             # important to set the model to evaluation mode for square attack
             self.model.set_eval()
             # TODO: Add support for x_adv
-            n_iters = self.params.n_iters
+            #n_iters = self.params.n_iters
+            n_iters = 10000
             p_init = self.params.p_init
             # Don't need gradients for the attack, detach x if it has gradient collection on
             x_orig_, x_adv_loc_ = x_orig_.detach(), x_adv_loc_.detach()
@@ -66,7 +68,7 @@ class Square_Attack(Attacker):
             #print(x_orig_.shape)
             
             query_count = 0
-            
+            #x_final = []
             if self.norm_type == 2:
                 num_queries,x_perturbed  = self.square_attack_l2(
                     x_orig_, x_adv_loc_, y_target_, corr_classified, n_iters, p_init)
@@ -77,7 +79,7 @@ class Square_Attack(Attacker):
                     query_c = int(num_queries[idx])
                     #print(label,x_perturbed[idx])
                     transfer_flag = False
-                    query_count!=query_c
+                    query_count+=query_c
                     self.logger.add_result(int(label.detach()), {
                             "query": int(query_c),
                             "transfer_flag": int(transfer_flag),
@@ -96,8 +98,9 @@ class Square_Attack(Attacker):
 
                     num_queries,x_perturbed,idx_t,loss = self.square_attack_linf(
                         x_orig_, x_adv_loc_, y_target_, corr_classified, n_iters, p_init)
-                print(num_queries.shape[0])
-
+                print(num_queries)
+                print(idx_t)
+                #x_final.append(x_perturbed)
                 for idx in range(10):
                     #print(x_perturbed[idx].unsqueeze(0).shape)
                     label = ch.argmax(self.model.forward(x_orig_[idx].unsqueeze(0)))
@@ -105,11 +108,11 @@ class Square_Attack(Attacker):
                     loss_ = float(loss[idx])
                     #print(label,num_queries[idx])
                     transfer_flag = False
+                    attack_flag=0
                     if not idx_t[idx] :
                         suc_num+=1
                         attack_flag =1
-                    else:
-                        attack_flag=0
+
                     query_count+=query_c
                     self.logger.add_result(int(label.detach()), {
                             "query": int(query_c),
@@ -413,12 +416,15 @@ class Square_Attack(Attacker):
         # [c, 1, w], i.e. vertical stripes work best for untargeted attacks
         if rand_start:
             init_delta = self._workaround_choice([x.shape[0], c, 1, w], eps)
+            #print(init_delta,init_delta.shape)
         else:
             init_delta = ch.zeros([x.shape[0], c, 1, w])
+            
         # x_best = ch.clip(x + init_delta, x_min, x_max)
         x_best = ch.clip(ch.clip(x_adv_loc + init_delta, x - eps, x + eps), x_min, x_max)
         #print(x_best.shape)
         logits = self.model.forward(x_best, detach=True)
+        #print(logits.shape,y.shape)
         # probs = ch.softmax(logits, 1)
         loss_min = get_loss_fn(self.loss_type, 'none')(logits, y)
         if not self.targeted:
@@ -430,7 +436,7 @@ class Square_Attack(Attacker):
         loss_=loss_min
         time_start = time.time()
         for i_iter in tqdm(range(n_iters - 1)):
-            idx_to_fool = margin_min > 0
+            idx_to_fool = margin_min >0
             
 
             #print(idx_to_fool)
@@ -450,44 +456,50 @@ class Square_Attack(Attacker):
                 center_h = np.random.randint(0, h - s)
                 center_w = np.random.randint(0, w - s)
 
-                x_curr_window = x_curr[i_img, :,
-                                       center_h:center_h+s, center_w:center_w+s]
-                x_adv_loc_curr_window = x_adv_loc_curr[i_img, :,
-                                       center_h:center_h+s, center_w:center_w+s] 
-                x_best_curr_window = x_best_curr[i_img, :,
-                                                 center_h:center_h+s, center_w:center_w+s]
+                x_curr_window = x_curr[i_img, :,center_h:center_h+s, center_w:center_w+s]
+                #print(x_curr_window,x_curr_window.shape)
+                x_adv_loc_curr_window = x_adv_loc_curr[i_img, :,center_h:center_h+s, center_w:center_w+s] 
+                x_best_curr_window = x_best_curr[i_img, :,center_h:center_h+s, center_w:center_w+s]
                 # prevent trying out a delta if it doesn't change x_curr (e.g. an overlapping patch)
                 """
                 while ch.sum(ch.abs(ch.clip(x_curr_window + deltas[i_img, :, center_h:center_h+s, center_w:center_w+s], x_min, x_max) - x_best_curr_window) < 10**-7) == c*s*s:
                     deltas[i_img, :, center_h:center_h+s, center_w:center_w +
                            s] = self._workaround_choice([c, 1, 1], eps)
                 """
+                #print((x_adv_loc_curr_window + deltas[i_img, :, center_h:center_h+s, center_w:center_w+s]).shape)
+
                 while ch.sum(ch.abs(ch.clip(ch.clip(x_adv_loc_curr_window + deltas[i_img, :, center_h:center_h+s, center_w:center_w+s],x_curr_window-eps,x_curr_window+eps), x_min, x_max) - x_best_curr_window) < 10**-7) == c*s*s:
                     deltas[i_img, :, center_h:center_h+s, center_w:center_w +
                            s] = self._workaround_choice([c, 1, 1], eps)
+                    #print(deltas,deltas.shape)
                 for id in range(10):
                     if not idx_to_fool[id]:
                         loss_[id]=loss_min[id]
             # modified to work with x_adv_loc
             # x_new = ch.clip(x_curr + deltas, x_min, x_max)
+            #print(deltas[0].sum())
             x_new = ch.clip(ch.clip(x_adv_loc_curr+deltas,x_curr-eps,x_curr+eps), x_min, x_max)
 
             logits = self.model.forward(x_new, detach=True)
             # probs = ch.softmax(logits, 1)
             loss = get_loss_fn(self.loss_type, 'none')(logits, y_curr)
+            #print(y_curr)
             if not self.targeted:
                 loss =loss * -1
+            #print(loss)
             #print(loss)
             margin = get_loss_fn('margin', 'none')(logits, y_curr, self.targeted)
             #print(margin)
 
             idx_improved = loss < loss_min_curr
+
             loss_min[idx_to_fool] = idx_improved * \
                 loss + ~idx_improved * loss_min_curr
             margin_min[idx_to_fool] = idx_improved * \
                 margin + ~idx_improved * margin_min_curr
             idx_improved = ch.reshape(
                 idx_improved, [-1, *[1]*len(x.shape[:-1])])
+            #print(idx_improved)
             x_best[idx_to_fool] = idx_improved * \
                 x_new + ~idx_improved * x_best_curr
             n_queries[idx_to_fool] += 1
@@ -521,7 +533,7 @@ class Square_Attack(Attacker):
                 })
             '''
             for id in range(10):
-                if idx_to_fool[id]:
+                if not idx_to_fool[id]:
                     loss_[id]=loss_min[id]
 
             if asr == 1:

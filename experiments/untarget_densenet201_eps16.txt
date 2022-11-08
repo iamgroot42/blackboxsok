@@ -160,3 +160,9 @@ Target model: densenet201
 Aux model: inceptionv4
 The transferbility of untargeted_VNITIDIAIFGSM_transfer_imagenet is 100.0 %
 --- 1832.415360212326 seconds ---
+
+epsilon: 16.0
+Target model: densenet201 
+Aux model: inceptionv4
+The transferbility of untargeted_MIADMIXTIDIFGSSM_transfer_imagenet is 100.0 %
+--- 817.6541996002197 seconds ---
