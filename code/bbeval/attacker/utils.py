@@ -39,6 +39,7 @@ from bbeval.attacker.transfer_methods.VNITIDIAIFGSM import VNITIDIAIFGSM
 from bbeval.attacker.transfer_methods.kreuk_evasion import Padding
 from bbeval.attacker.transfer_methods.montemutacon import MonteMutacon
 from bbeval.attacker.full_score.best_effort import BestEffort
+from bbeval.attacker.full_score.section_injection import SectionInjection
 from bbeval.config.core import MalwareAttackerConfig
 
 from bbeval.config import AttackerConfig, ExperimentConfig
@@ -87,7 +88,8 @@ ATTACK_WRAPPER_MAPPING = {
     "BayesOpt_full": BayesOpt_full,
     "kreuk_evasion": Padding,
     "montemutacon": MonteMutacon,
-    "best_effort": BestEffort
+    "best_effort": BestEffort,
+    "section_injection": SectionInjection
 }
 
 
