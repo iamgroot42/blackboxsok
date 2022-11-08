@@ -37,6 +37,8 @@ from bbeval.attacker.transfer_methods.SMIMITIDIAIFGSM import SMIMITIDIAIFGSM
 from bbeval.attacker.transfer_methods.VMITIDIAIFGSM import VMITIDIAIFGSM
 from bbeval.attacker.transfer_methods.VNITIDIAIFGSM import VNITIDIAIFGSM
 from bbeval.attacker.transfer_methods.kreuk_evasion import Padding
+from bbeval.attacker.transfer_methods.shift_evasion import Shift
+from bbeval.attacker.transfer_methods.extend_evasion import Extend
 from bbeval.attacker.transfer_methods.montemutacon import MonteMutacon
 from bbeval.attacker.full_score.best_effort import BestEffort
 from bbeval.attacker.full_score.section_injection import SectionInjection
@@ -87,6 +89,8 @@ ATTACK_WRAPPER_MAPPING = {
     "NES_square": NES_square,
     "BayesOpt_full": BayesOpt_full,
     "kreuk_evasion": Padding,
+    "shift_evasion": Shift,
+    "extend_evasion": Extend,
     "montemutacon": MonteMutacon,
     "best_effort": BestEffort,
     "section_injection": SectionInjection
