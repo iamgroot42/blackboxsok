@@ -19,6 +19,7 @@ MODEL_WRAPPER_MAPPING = {
     "mlp3": malware.MLPClassifier,
     "rf": malware_sklearn.RFWrapper,
     "malconv": malware.SecmlMalConv,
+    "gbt": malware.SecmlGBT,
     "densenet121": image.DenseNet121,
     "densenet201": image.DenseNet201
 }
