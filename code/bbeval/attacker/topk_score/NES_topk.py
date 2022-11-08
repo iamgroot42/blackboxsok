@@ -99,7 +99,7 @@ class NES_topk(Attacker):
 
         ret_adv=x_orig
 
-        adv_thresh = 0.2
+        adv_thresh = 0.5
         # adv_thresh = 1
         # temp_eps=0.1
         delta_epsilon=0.5
@@ -109,7 +109,7 @@ class NES_topk(Attacker):
         for idx in range(len(x_orig)):
             temp_eps = 1
             converge=1
-
+            idx+=1
             print("###################===================####################")
             print(idx)
             stop_queries = 0

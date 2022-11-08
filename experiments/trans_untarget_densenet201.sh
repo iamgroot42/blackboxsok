@@ -1,0 +1,2 @@
+python transferred_attack_experiment.py --config configs/image/transfer_methods/untarget/eps_4/densenet201/untargeted_SMIMITIDISIFGSM_transfer.json
+python transferred_attack_experiment.py --config configs/image/transfer_methods/untarget/eps_4/densenet201/untargeted_SMIMITIDIAIFGSM_transfer.json

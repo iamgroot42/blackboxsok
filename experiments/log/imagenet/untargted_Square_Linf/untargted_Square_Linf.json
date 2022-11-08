@@ -1,12 +1,12 @@
 {
     "name": "untargted_Square_Linf",
-    "start time": "2022-10-31 17:11:31.940287",
+    "start time": "2022-11-05 14:33:08.069480",
     "result": {
         "676": {
-            "query": 1000,
+            "query": 797,
             "transfer_flag": 0,
-            "attack_flag": 0,
-            "loss_at_succ": -1.3068642616271973
+            "attack_flag": 1,
+            "loss_at_succ": -1.9950227737426758
         },
         "295": {
             "query": 1,
@@ -15,28 +15,28 @@
             "loss_at_succ": -1.9182066917419434
         },
         "16": {
-            "query": 1000,
+            "query": 830,
             "transfer_flag": 0,
             "attack_flag": 0,
-            "loss_at_succ": -1.3404816389083862
+            "loss_at_succ": -3.123053550720215
         },
         "450": {
-            "query": 104,
+            "query": 25,
             "transfer_flag": 0,
             "attack_flag": 1,
-            "loss_at_succ": -0.9504834413528442
+            "loss_at_succ": -1.3362077474594116
         },
         "202": {
-            "query": 2,
+            "query": 3,
             "transfer_flag": 0,
             "attack_flag": 1,
-            "loss_at_succ": -1.5103607177734375
+            "loss_at_succ": -1.5137321949005127
         },
         "456": {
-            "query": 124,
+            "query": 160,
             "transfer_flag": 0,
             "attack_flag": 1,
-            "loss_at_succ": -1.631778359413147
+            "loss_at_succ": -1.7703454494476318
         },
         "635": {
             "query": 1,
@@ -45,28 +45,568 @@
             "loss_at_succ": -2.8435187339782715
         },
         "77": {
-            "query": 3,
+            "query": 14,
             "transfer_flag": 0,
             "attack_flag": 1,
-            "loss_at_succ": -1.000023603439331
+            "loss_at_succ": -0.916324257850647
         },
         "490": {
-            "query": 23,
+            "query": 15,
             "transfer_flag": 0,
             "attack_flag": 1,
-            "loss_at_succ": -1.3978630304336548
+            "loss_at_succ": -1.8330175876617432
         },
         "954": {
-            "query": 41,
+            "query": 61,
             "transfer_flag": 0,
             "attack_flag": 1,
-            "loss_at_succ": -1.3761106729507446
+            "loss_at_succ": -1.9630780220031738
+        },
+        "230": {
+            "query": 1,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -0.8360047936439514
+        },
+        "923": {
+            "query": 1,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -2.5844318866729736
+        },
+        "337": {
+            "query": 945,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -1.5362844467163086
+        },
+        "348": {
+            "query": 6,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -1.9856152534484863
+        },
+        "159": {
+            "query": 158,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -1.7247438430786133
+        },
+        "983": {
+            "query": 48,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -1.9920333623886108
+        },
+        "177": {
+            "query": 62,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -0.8645604848861694
+        },
+        "190": {
+            "query": 3695,
+            "transfer_flag": 0,
+            "attack_flag": 0,
+            "loss_at_succ": -2.6832468509674072
+        },
+        "2": {
+            "query": 102,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -0.9400258660316467
+        },
+        "478": {
+            "query": 1,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -2.26155948638916
+        },
+        "14": {
+            "query": 568,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -2.7687225341796875
+        },
+        "804": {
+            "query": 1,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -1.9768242835998535
+        },
+        "172": {
+            "query": 80,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -1.0284242630004883
+        },
+        "196": {
+            "query": 26,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -0.9784415364265442
+        },
+        "720": {
+            "query": 1,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -2.658660888671875
+        },
+        "404": {
+            "query": 683,
+            "transfer_flag": 0,
+            "attack_flag": 0,
+            "loss_at_succ": -1.5975922346115112
+        },
+        "788": {
+            "query": 25,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -0.7402647733688354
+        },
+        "606": {
+            "query": 29,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -1.8071625232696533
+        },
+        "287": {
+            "query": 57,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -1.403666615486145
+        },
+        "812": {
+            "query": 114,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -0.8342065811157227
+        },
+        "19": {
+            "query": 609,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -2.3207554817199707
+        },
+        "979": {
+            "query": 33,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -2.0472052097320557
+        },
+        "809": {
+            "query": 10,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -1.3906917572021484
+        },
+        "104": {
+            "query": 1,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -1.5448275804519653
+        },
+        "146": {
+            "query": 2396,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -2.3978962898254395
+        },
+        "458": {
+            "query": 20,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -1.3937355279922485
+        },
+        "449": {
+            "query": 2747,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -2.187299966812134
+        },
+        "985": {
+            "query": 343,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -1.7425692081451416
+        },
+        "472": {
+            "query": 545,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -3.0625805854797363
+        },
+        "10": {
+            "query": 10000,
+            "transfer_flag": 0,
+            "attack_flag": 0,
+            "loss_at_succ": -1.2747384309768677
+        },
+        "180": {
+            "query": 33,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -1.5511903762817383
+        },
+        "759": {
+            "query": 74,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -1.9633475542068481
+        },
+        "645": {
+            "query": 1248,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -5.104525566101074
+        },
+        "360": {
+            "query": 13,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -1.0781086683273315
+        },
+        "175": {
+            "query": 20,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -1.053438425064087
+        },
+        "97": {
+            "query": 377,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -0.9975674152374268
+        },
+        "608": {
+            "query": 1,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -3.337212324142456
+        },
+        "325": {
+            "query": 1773,
+            "transfer_flag": 0,
+            "attack_flag": 0,
+            "loss_at_succ": -2.132951021194458
+        },
+        "790": {
+            "query": 22,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -1.485880732536316
+        },
+        "69": {
+            "query": 94,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -2.6261723041534424
+        },
+        "281": {
+            "query": 29,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -0.8365465402603149
+        },
+        "267": {
+            "query": 40,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -1.1514005661010742
+        },
+        "833": {
+            "query": 199,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -0.9650736451148987
+        },
+        "751": {
+            "query": 1,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -2.024705410003662
+        },
+        "668": {
+            "query": 7,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -1.8567379713058472
+        },
+        "468": {
+            "query": 420,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -0.813568651676178
+        },
+        "192": {
+            "query": 495,
+            "transfer_flag": 0,
+            "attack_flag": 0,
+            "loss_at_succ": -1.2693054676055908
+        },
+        "305": {
+            "query": 34,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -1.3997020721435547
+        },
+        "949": {
+            "query": 25,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -1.2282814979553223
+        },
+        "709": {
+            "query": 5,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -0.8495058417320251
+        },
+        "760": {
+            "query": 1,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -5.6556291580200195
+        },
+        "440": {
+            "query": 177,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -2.140744686126709
+        },
+        "445": {
+            "query": 1,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -5.051114082336426
+        },
+        "662": {
+            "query": 57,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -1.8148298263549805
+        },
+        "940": {
+            "query": 1,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -4.003665447235107
+        },
+        "27": {
+            "query": 89,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -1.341472864151001
+        },
+        "245": {
+            "query": 1,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -3.098706007003784
+        },
+        "896": {
+            "query": 180,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -3.136847496032715
+        },
+        "497": {
+            "query": 1178,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -1.8008520603179932
+        },
+        "594": {
+            "query": 1427,
+            "transfer_flag": 0,
+            "attack_flag": 0,
+            "loss_at_succ": -2.0442512035369873
+        },
+        "628": {
+            "query": 869,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -1.7403769493103027
+        },
+        "488": {
+            "query": 1417,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -2.0260605812072754
+        },
+        "130": {
+            "query": 235,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -1.5604798793792725
+        },
+        "339": {
+            "query": 70,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -0.9092406630516052
+        },
+        "235": {
+            "query": 3509,
+            "transfer_flag": 0,
+            "attack_flag": 0,
+            "loss_at_succ": -3.0177786350250244
+        },
+        "137": {
+            "query": 2,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -1.158933401107788
+        },
+        "696": {
+            "query": 1,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -7.329117298126221
+        },
+        "92": {
+            "query": 21,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -1.5708345174789429
+        },
+        "506": {
+            "query": 1265,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -3.0562453269958496
+        },
+        "479": {
+            "query": 2209,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -2.14083194732666
+        },
+        "123": {
+            "query": 56,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -1.3555731773376465
+        },
+        "297": {
+            "query": 119,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -1.218921422958374
+        },
+        "206": {
+            "query": 125,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -0.9572785496711731
+        },
+        "926": {
+            "query": 1,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -4.768844127655029
+        },
+        "811": {
+            "query": 1,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -1.908418893814087
+        },
+        "808": {
+            "query": 2438,
+            "transfer_flag": 0,
+            "attack_flag": 0,
+            "loss_at_succ": -2.032252073287964
+        },
+        "300": {
+            "query": 2238,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -1.808962106704712
+        },
+        "341": {
+            "query": 530,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -1.9333051443099976
+        },
+        "822": {
+            "query": 346,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -2.5911502838134766
+        },
+        "103": {
+            "query": 70,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -1.0703121423721313
+        },
+        "654": {
+            "query": 2,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -1.7659612894058228
+        },
+        "262": {
+            "query": 58,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -0.96446692943573
+        },
+        "3": {
+            "query": 1,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -3.3305740356445312
+        },
+        "801": {
+            "query": 280,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -2.084063768386841
+        },
+        "291": {
+            "query": 286,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -2.683123826980591
+        },
+        "62": {
+            "query": 269,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -1.943135142326355
+        },
+        "423": {
+            "query": 1,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -1.2852369546890259
+        },
+        "252": {
+            "query": 91,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -1.2316195964813232
+        },
+        "958": {
+            "query": 384,
+            "transfer_flag": 0,
+            "attack_flag": 0,
+            "loss_at_succ": -1.8238835334777832
+        },
+        "349": {
+            "query": 9,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": -0.7549028992652893
         },
         "Final Result": {
-            "success": 8,
-            "image_avai": 10,
-            "average query": 229.9
+            "success": 90,
+            "image_avai": 100,
+            "average query": 501.39
         }
     },
-    "save time": "2022-10-31 17:11:46.382316"
+    "save time": "2022-11-05 14:39:22.383132"
 }

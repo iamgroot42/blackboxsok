@@ -86,7 +86,7 @@ class BayesOpt_full(Attacker):
             f=torch.tensor(train_obj1)
             f.cuda()
             '''
-            #print("f",-f)
+            print("f",-f)
             # inverse to maxize the negative value
             #print(f.device())
             return -f
@@ -211,7 +211,7 @@ class BayesOpt_full(Attacker):
             '''
             # updates data points
             train_x = torch.cat((train_x, new_x))
-            print(train_x.shape,new_obj.shape)
+            #print(train_x.shape,new_obj.shape)
             train_obj = torch.cat((train_obj, new_obj))
 
             best_value, best_index = train_obj.max(0)
@@ -259,7 +259,7 @@ class BayesOpt_full(Attacker):
         return query_count, success,best_candidate,best_adv_added
 
 
-    def attack(self, x_orig, x_adv,  y_label, x_target, y_target):
+    def attack(self, x_orig, x_adv,  y_label,  y_target):
         print(y_target)
         suc_num = 0
         time_start = time.time()

@@ -59,7 +59,7 @@ def count(attack_name='untargeted_EMITIDIAIFGSM_BayesOpt'):
         if result[label]["attack_flag"] ==1:
             attack_succ+=1
 
-    query_avg= query_count/len(result)
+    query_avg= float(query_count/len(result))
     print("query_avg:", query_avg)
     print("Succ:", attack_succ)
 
@@ -69,6 +69,6 @@ if __name__ == "__main__":
 
         compare(args[1],args[2])
     else:
-        count(args(1))
+        count(args[1])
 
 

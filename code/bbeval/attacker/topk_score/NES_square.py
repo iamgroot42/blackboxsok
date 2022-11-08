@@ -49,8 +49,8 @@ class NES_square(Attacker):
         sigma = 1e-3
         batch_size = 10
         max_queries = 100000
-        min_lr = 1e-3
-        max_lr = 1e-2
+        min_lr = 1e-5
+        max_lr = 5
         plateau_length = 20
         plateau_drop = 2.0
         last_ls = []
@@ -70,6 +70,7 @@ class NES_square(Attacker):
 
         for idx in range(len(x_orig)):
             temp_eps = 1
+            idx+=10
 
             print("###################===================####################")
             print(idx)
@@ -83,11 +84,22 @@ class NES_square(Attacker):
             self.model.zero_grad()  # Make sure no leftover gradients
             print(f"Image {idx:d}   Target label: {target_label:d}")
             iter = 0
+            iter_sq=0
+            decay_flag =True
             success_flag=0
             transfer_flag=0
-            while num_queries+1 < max_queries:
+            x_min, x_max = 0, 1 
+            c, h, w = adv.shape[1:]
+            n_features = c*h*w
+            p_iter =0
+            # probs = ch.softmax(logits, 1)
+            target_label_l = ch.tensor([target_label]).cuda()
+            target_label_l=target_label_l.to(device='cuda', dtype=ch.int64)
+
+            while stop_queries+1 < max_queries:
                 print("i------------" + str(iter))
                 iter += 1
+                p_iter +=1
                 with ch.no_grad():
                     adv = adv.to(device='cuda', dtype=ch.float)
                     target_model_output = self.model.forward(adv)
@@ -107,48 +119,90 @@ class NES_square(Attacker):
                     break
                 num_queries+=1
                 stop_queries+=1
-                print("Current label: " + str(target_model_prediction.item()) + "   loss: " + str(l.item())+"   eps: "+ str(temp_eps))
 
+                x_best = ch.clip(ch.clip(adv,adv-(temp_eps),adv+temp_eps),0,1)
+                logits = self.model.forward(x_best, detach=True)
+                loss_min=l = get_loss_fn(self.loss_type, 'none')(logits, target_label_l)
+                decay_flag =False
+ 
                 ##Square Part
-                x_min, x_max = 0, 1 if adv.max() <= 1 else 255
-                c, h, w = adv.shape[0:]
-                n_features = c*h*w
-                init_delta = ch.zeros([adv.shape[0], c, 1, w])
-                x_best = ch.clip(ch.clip(adv + init_delta, x_image - eps, x_image + eps), x_min, x_max)
                 
-                deltas = x_best - adv
-                p = self.p_selection(0.05, 0, max_queries)
-                s = int(round(np.sqrt(p * n_features / c)))
-                s = min(max(s, 1), h-1)
-                center_h = np.random.randint(0, h - s)
-                center_w = np.random.randint(0, w - s)
+                while l>=loss_min :
+                    
+                    if decay_flag:
+                        p_iter= 0
+                        iter_sq=0
+                        print("inital complete")
+                        decay_flag =False
+                        #print(init_delta,init_delta.shape)
+                        #print(init_delta.sum())
+                        x_best = ch.clip(ch.clip(adv,adv-(temp_eps),adv+temp_eps),0,1)
+                        logits = self.model.forward(x_best, detach=True)
+                        loss_min = get_loss_fn(self.loss_type, 'none')(logits, target_label_l)
+                        num_queries+=1
+                        stop_queries+=1
 
-                x_curr_window = x_image[center_h:center_h+s, center_w:center_w+s]
-                x_adv_loc_curr_window = adv[center_h:center_h+s, center_w:center_w+s] 
-                x_best_curr_window = x_best[center_h:center_h+s, center_w:center_w+s]
-                # prevent trying out a delta if it doesn't change x_curr (e.g. an overlapping patch)
-                """
-                while ch.sum(ch.abs(ch.clip(x_curr_window + deltas[i_img, :, center_h:center_h+s, center_w:center_w+s], x_min, x_max) - x_best_curr_window) < 10**-7) == c*s*s:
-                    deltas[i_img, :, center_h:center_h+s, center_w:center_w +
-                           s] = self._workaround_choice([c, 1, 1], eps)
-                """
-                while ch.sum(ch.abs(ch.clip(ch.clip(x_adv_loc_curr_window + deltas[ center_h:center_h+s, center_w:center_w+s],x_curr_window-eps,x_curr_window+eps), x_min, x_max) - x_best_curr_window) < 10**-7) == c*s*s:
-                    deltas[ center_h:center_h+s, center_w:center_w +
-                           s] = self._workaround_choice([c, 1, 1], eps)
-                x_new = ch.clip(ch.clip(adv+deltas,x_image-eps,x_image+eps), x_min, x_max)
-                logits = self.model.forward(x_new, detach=True)
-                
-                margin = get_loss_fn('margin', 'none')(logits, target_label, self.targeted)
+                    iter_sq +=1
+                    deltas = x_best-adv
+                    #print(deltas)
+                    #print(deltas)
+                    p = self.p_selection(0.05, iter_sq, max_queries)
+                    #print(p)
+                    s = int(round(np.sqrt(p * n_features / c)))
+                    s = min(max(s, 1), h-1)
+                    #print(s)
+                    center_h = np.random.randint(0, h - s)
+                    center_w = np.random.randint(0, w - s)
 
+                    x_curr_window = adv[0,:,center_h:center_h+s, center_w:center_w+s]
+                    #print(x_curr_window.shape)
+                    x_adv_loc_curr_window = adv[0,:,center_h:center_h+s, center_w:center_w+s] 
 
-###             TO DO: get the loss value(object function)
-                l = get_loss_fn(self.loss_type, 'none')(logits, target_label)
-                print(l)
-                perturbation=deltas
+                    # x_best_curr_window = x_best[0,:,center_h:center_h+s, center_w:center_w+s]
+                    #print(x_best_curr_window.shape)
+                    # prevent trying out a delta if it doesn't change x_curr (e.g. an overlapping patch)
+                    """
+                    while ch.sum(ch.abs(ch.clip(x_curr_window + deltas[i_img, :, center_h:center_h+s, center_w:center_w+s], x_min, x_max) - x_best_curr_window) < 10**-7) == c*s*s:
+                        deltas[i_img, :, center_h:center_h+s, center_w:center_w +
+                            s] = self._workaround_choice([c, 1, 1], eps)
+                    """
+                    #print(ch.sum(ch.abs(ch.clip(ch.clip(x_adv_loc_curr_window + deltas[0,:, center_h:center_h+s, center_w:center_w+s],x_curr_window-temp_eps,x_curr_window+temp_eps), x_min, x_max) - x_adv_loc_curr_window) < 10**-7))
+                    while ch.sum(ch.abs(ch.clip(ch.clip(x_adv_loc_curr_window + deltas[0,:, center_h:center_h+s, center_w:center_w+s],x_curr_window-temp_eps,x_curr_window+temp_eps), x_min, x_max) - x_adv_loc_curr_window) < 10**-7) == c*s*s:
+                        deltas[0, :, center_h:center_h+s, center_w:center_w +s] = self._workaround_choice([c, 1, 1], 0.05)
+                        #print("adfasff")
+                        #print(deltas,deltas.shape)
+                    #print(deltas)
+                    x_new = ch.clip(ch.clip(adv+deltas,lower,upper),0,1)
+                    logits = self.model.forward(x_new, detach=True)
+                    #print(logits)
+    ###             TO DO: get the loss value(object function)
+                    l = get_loss_fn(self.loss_type, 'none')(logits, target_label_l)
+                    #print("   loss: " + str(l.item())+"   eps: "+ str(temp_eps))
+                    num_queries+=1
+                    stop_queries+=1
+
+                    if l<adv_thresh:
+                        break
+                    
+                    #print(l)
+                '''
+                idx_improved = (l < loss_min)
+                print(idx_improved,~idx_improved)
+                loss_min = idx_improved * l + ~idx_improved * loss_min
+                x_new= idx_improved * x_new + ~idx_improved * adv 
+                perturbation = x_new-adv
+                print(perturbation.sum())
+                '''
+                idx_improved = (l < loss_min)
+                loss_min = idx_improved * l + ~idx_improved * loss_min
+                x_best= idx_improved * x_new + ~idx_improved * adv 
+                print("Current label: " + str(target_model_prediction.item()) + "   loss: " + str(l.item())+"   eps: "+ str(temp_eps)+"   query: "+ str(stop_queries))
+                perturbation = x_best-adv
+
 
 
                 # PLATEAU LR ANNEALING
-                last_ls.append(l)
+                last_ls.append(loss_min)
                 last_ls = last_ls[-plateau_length:]
                 if last_ls[-1] > last_ls[0] and len(last_ls) == plateau_length:
                     if max_lr > min_lr:
@@ -159,7 +213,7 @@ class NES_square(Attacker):
                 current_lr = max_lr
                 prop_de = 0.0
 
-                adv_thresh=None#need to modify
+                adv_thresh = 1#need to modify
                 if l < adv_thresh and temp_eps > eps:
                     prop_de = delta_epsilon
 
@@ -169,15 +223,21 @@ class NES_square(Attacker):
                     lower = clip_by_tensor(x_image - proposed_epsilon, x_min_val, x_max_val)
                     upper = clip_by_tensor(x_image + proposed_epsilon, x_min_val, x_max_val)
                     # GENERAL LINE SEARCH
-                    proposed_adv = adv.cpu() - targeted * current_lr * perturbation
+                    proposed_adv = adv.cpu() + targeted * current_lr * perturbation.cpu()
+                    #print(perturbation.sum())
                     proposed_adv = clip_by_tensor(proposed_adv.cuda(), lower, upper)
+                    
                     num_queries += 1
+                    stop_queries+=1
                     if self.robust_in_top_k(target_label, proposed_adv):
                         if prop_de > 0:
                             delta_epsilon = max(prop_de, 0.1)
                             last_ls = []
                         adv = proposed_adv
+                        prev_eps=temp_eps
                         temp_eps = max(temp_eps - prop_de / conservative, eps)
+                        if prev_eps!=prev_eps:
+                            decay_flag=True
                         break
                     elif current_lr >= min_lr * 2:
                         current_lr = current_lr / 2
@@ -241,7 +301,7 @@ class NES_square(Attacker):
             p = p_init / 512
         else:
             p = p_init
-
+  
         return p
 
     def pseudo_gaussian_pert_rectangles(self, x, y):

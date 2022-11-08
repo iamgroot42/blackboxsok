@@ -1,72 +1,612 @@
 {
     "name": "square_attack_imagenet_l_infty_untargeted",
-    "start time": "2022-10-31 17:12:38.474983",
+    "start time": "2022-11-05 15:36:39.191417",
     "result": {
         "676": {
-            "query": 1000,
+            "query": 8007,
             "transfer_flag": 0,
-            "attack_flag": 0,
-            "loss_at_succ": 7.772463798522949
+            "attack_flag": 1,
+            "loss_at_succ": 1.7121655941009521
         },
         "295": {
-            "query": 1000,
+            "query": 362,
             "transfer_flag": 0,
-            "attack_flag": 0,
-            "loss_at_succ": 2.094179630279541
+            "attack_flag": 1,
+            "loss_at_succ": 1.6880919933319092
         },
         "16": {
-            "query": 1000,
+            "query": 9621,
             "transfer_flag": 0,
-            "attack_flag": 0,
-            "loss_at_succ": 7.2878289222717285
+            "attack_flag": 1,
+            "loss_at_succ": 2.142266035079956
         },
         "450": {
-            "query": 1000,
+            "query": 3268,
             "transfer_flag": 0,
-            "attack_flag": 0,
-            "loss_at_succ": 5.6011247634887695
+            "attack_flag": 1,
+            "loss_at_succ": 2.676154851913452
         },
         "202": {
-            "query": 1000,
+            "query": 5601,
             "transfer_flag": 0,
-            "attack_flag": 0,
-            "loss_at_succ": 7.033194541931152
+            "attack_flag": 1,
+            "loss_at_succ": 2.61958909034729
         },
         "456": {
-            "query": 1000,
+            "query": 2074,
             "transfer_flag": 0,
-            "attack_flag": 0,
-            "loss_at_succ": 3.7775909900665283
+            "attack_flag": 1,
+            "loss_at_succ": 2.15075421333313
         },
         "635": {
-            "query": 1000,
+            "query": 4695,
             "transfer_flag": 0,
-            "attack_flag": 0,
-            "loss_at_succ": 5.886962413787842
+            "attack_flag": 1,
+            "loss_at_succ": 3.0234646797180176
         },
         "77": {
-            "query": 1000,
+            "query": 6306,
             "transfer_flag": 0,
-            "attack_flag": 0,
-            "loss_at_succ": 7.8769450187683105
+            "attack_flag": 1,
+            "loss_at_succ": 2.004490375518799
         },
         "490": {
-            "query": 1000,
+            "query": 10000,
             "transfer_flag": 0,
             "attack_flag": 0,
-            "loss_at_succ": 7.554107189178467
+            "loss_at_succ": 4.370012283325195
         },
         "954": {
-            "query": 1000,
+            "query": 1181,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 2.832350730895996
+        },
+        "230": {
+            "query": 10000,
             "transfer_flag": 0,
             "attack_flag": 0,
-            "loss_at_succ": 4.448969841003418
+            "loss_at_succ": 4.224760055541992
+        },
+        "923": {
+            "query": 3733,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 2.921233892440796
+        },
+        "337": {
+            "query": 10000,
+            "transfer_flag": 0,
+            "attack_flag": 0,
+            "loss_at_succ": 3.026949644088745
+        },
+        "348": {
+            "query": 1240,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 2.492861747741699
+        },
+        "159": {
+            "query": 4937,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 2.271735668182373
+        },
+        "983": {
+            "query": 1877,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 2.836153745651245
+        },
+        "177": {
+            "query": 9940,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 2.337893486022949
+        },
+        "190": {
+            "query": 1787,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 1.7730698585510254
+        },
+        "2": {
+            "query": 5935,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 2.223536252975464
+        },
+        "478": {
+            "query": 2254,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 3.3011093139648438
+        },
+        "14": {
+            "query": 5271,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 2.5088000297546387
+        },
+        "804": {
+            "query": 1704,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 1.798852562904358
+        },
+        "172": {
+            "query": 5566,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 2.064767837524414
+        },
+        "196": {
+            "query": 10000,
+            "transfer_flag": 0,
+            "attack_flag": 0,
+            "loss_at_succ": 4.362896919250488
+        },
+        "720": {
+            "query": 2687,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 2.337282657623291
+        },
+        "404": {
+            "query": 10000,
+            "transfer_flag": 0,
+            "attack_flag": 0,
+            "loss_at_succ": 2.9299519062042236
+        },
+        "788": {
+            "query": 1083,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 2.3007779121398926
+        },
+        "606": {
+            "query": 8737,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 2.672694683074951
+        },
+        "287": {
+            "query": 3992,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 1.8096625804901123
+        },
+        "812": {
+            "query": 4189,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 1.6097108125686646
+        },
+        "19": {
+            "query": 10000,
+            "transfer_flag": 0,
+            "attack_flag": 0,
+            "loss_at_succ": 4.008632183074951
+        },
+        "979": {
+            "query": 4124,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 2.066845417022705
+        },
+        "809": {
+            "query": 4744,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 2.898618698120117
+        },
+        "104": {
+            "query": 6712,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 2.3561038970947266
+        },
+        "146": {
+            "query": 7106,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 2.296623468399048
+        },
+        "458": {
+            "query": 1591,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 1.7610650062561035
+        },
+        "449": {
+            "query": 10000,
+            "transfer_flag": 0,
+            "attack_flag": 0,
+            "loss_at_succ": 3.9811172485351562
+        },
+        "985": {
+            "query": 5913,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 2.6399495601654053
+        },
+        "472": {
+            "query": 2419,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 1.6684540510177612
+        },
+        "10": {
+            "query": 10000,
+            "transfer_flag": 0,
+            "attack_flag": 0,
+            "loss_at_succ": 2.2910845279693604
+        },
+        "180": {
+            "query": 1685,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 1.8734365701675415
+        },
+        "759": {
+            "query": 10000,
+            "transfer_flag": 0,
+            "attack_flag": 0,
+            "loss_at_succ": 4.3487324714660645
+        },
+        "645": {
+            "query": 4771,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 2.092665195465088
+        },
+        "360": {
+            "query": 1866,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 2.6585888862609863
+        },
+        "175": {
+            "query": 8657,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 3.072211742401123
+        },
+        "97": {
+            "query": 10000,
+            "transfer_flag": 0,
+            "attack_flag": 0,
+            "loss_at_succ": 3.2454519271850586
+        },
+        "608": {
+            "query": 9153,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 3.124691963195801
+        },
+        "325": {
+            "query": 3199,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 1.4672261476516724
+        },
+        "790": {
+            "query": 807,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 1.949604868888855
+        },
+        "69": {
+            "query": 441,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 2.718435049057007
+        },
+        "281": {
+            "query": 10000,
+            "transfer_flag": 0,
+            "attack_flag": 0,
+            "loss_at_succ": 3.4798495769500732
+        },
+        "267": {
+            "query": 1618,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 1.5677241086959839
+        },
+        "833": {
+            "query": 1742,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 2.837085008621216
+        },
+        "751": {
+            "query": 565,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 2.1576755046844482
+        },
+        "668": {
+            "query": 2200,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 1.9710943698883057
+        },
+        "468": {
+            "query": 10000,
+            "transfer_flag": 0,
+            "attack_flag": 0,
+            "loss_at_succ": 4.006037712097168
+        },
+        "192": {
+            "query": 10000,
+            "transfer_flag": 0,
+            "attack_flag": 0,
+            "loss_at_succ": 4.649614334106445
+        },
+        "305": {
+            "query": 2959,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 2.115506887435913
+        },
+        "949": {
+            "query": 2463,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 2.0844919681549072
+        },
+        "709": {
+            "query": 1224,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 2.020901918411255
+        },
+        "760": {
+            "query": 797,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 2.010822057723999
+        },
+        "440": {
+            "query": 4704,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 1.9734947681427002
+        },
+        "445": {
+            "query": 1044,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 1.8134900331497192
+        },
+        "662": {
+            "query": 3750,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 2.5811924934387207
+        },
+        "940": {
+            "query": 6539,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 2.9183101654052734
+        },
+        "27": {
+            "query": 5815,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 2.4309356212615967
+        },
+        "245": {
+            "query": 2302,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 1.974115014076233
+        },
+        "896": {
+            "query": 1205,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 2.4386446475982666
+        },
+        "497": {
+            "query": 10000,
+            "transfer_flag": 0,
+            "attack_flag": 0,
+            "loss_at_succ": 3.5309395790100098
+        },
+        "594": {
+            "query": 10000,
+            "transfer_flag": 0,
+            "attack_flag": 0,
+            "loss_at_succ": 3.55849552154541
+        },
+        "628": {
+            "query": 10000,
+            "transfer_flag": 0,
+            "attack_flag": 0,
+            "loss_at_succ": 3.1244778633117676
+        },
+        "488": {
+            "query": 10000,
+            "transfer_flag": 0,
+            "attack_flag": 0,
+            "loss_at_succ": 2.8835458755493164
+        },
+        "130": {
+            "query": 2704,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 2.358623743057251
+        },
+        "339": {
+            "query": 8238,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 3.5777878761291504
+        },
+        "235": {
+            "query": 4827,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 2.678598642349243
+        },
+        "137": {
+            "query": 10000,
+            "transfer_flag": 0,
+            "attack_flag": 0,
+            "loss_at_succ": 2.6013991832733154
+        },
+        "696": {
+            "query": 2204,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 2.563014268875122
+        },
+        "92": {
+            "query": 2344,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 2.7915844917297363
+        },
+        "506": {
+            "query": 10000,
+            "transfer_flag": 0,
+            "attack_flag": 0,
+            "loss_at_succ": 3.371558666229248
+        },
+        "479": {
+            "query": 10000,
+            "transfer_flag": 0,
+            "attack_flag": 0,
+            "loss_at_succ": 5.101133823394775
+        },
+        "123": {
+            "query": 3033,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 3.010601282119751
+        },
+        "297": {
+            "query": 2023,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 3.1926140785217285
+        },
+        "206": {
+            "query": 4642,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 2.08593487739563
+        },
+        "926": {
+            "query": 735,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 2.457880973815918
+        },
+        "811": {
+            "query": 8276,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 3.094020366668701
+        },
+        "808": {
+            "query": 10000,
+            "transfer_flag": 0,
+            "attack_flag": 0,
+            "loss_at_succ": 3.211082935333252
+        },
+        "300": {
+            "query": 10000,
+            "transfer_flag": 0,
+            "attack_flag": 0,
+            "loss_at_succ": 4.5529303550720215
+        },
+        "341": {
+            "query": 9470,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 2.065039873123169
+        },
+        "822": {
+            "query": 4615,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 2.950887441635132
+        },
+        "103": {
+            "query": 1506,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 2.051830291748047
+        },
+        "654": {
+            "query": 1322,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 2.422860622406006
+        },
+        "262": {
+            "query": 8852,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 2.497681140899658
+        },
+        "3": {
+            "query": 741,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 3.057258367538452
+        },
+        "801": {
+            "query": 4573,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 2.720322847366333
+        },
+        "291": {
+            "query": 8501,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 2.8764123916625977
+        },
+        "62": {
+            "query": 8786,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 2.4536068439483643
+        },
+        "423": {
+            "query": 1812,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 2.0228021144866943
+        },
+        "252": {
+            "query": 10000,
+            "transfer_flag": 0,
+            "attack_flag": 0,
+            "loss_at_succ": 2.4700629711151123
+        },
+        "958": {
+            "query": 1652,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 2.18542218208313
+        },
+        "349": {
+            "query": 4236,
+            "transfer_flag": 0,
+            "attack_flag": 1,
+            "loss_at_succ": 2.853308916091919
         },
         "Final Result": {
-            "success": 0,
-            "image_avai": 10,
-            "average query": 1000.0
+            "success": 77,
+            "image_avai": 100,
+            "average query":  5332.54
         }
     },
-    "save time": "2022-10-31 17:13:04.695516"
+    "save time": "2022-11-05 16:07:10.362163"
 }
