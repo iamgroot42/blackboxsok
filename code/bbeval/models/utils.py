@@ -18,10 +18,11 @@ MODEL_WRAPPER_MAPPING = {
     "cifar10robust": image.Cifar10Robust,
     "mlp3": malware.MLPClassifier,
     "rf": malware_sklearn.RFWrapper,
+    "densenet121": image.DenseNet121,
+    "densenet201": image.DenseNet201,
     "malconv": malware.SecmlMalConv,
     "gbt": malware.SecmlGBT,
-    "densenet121": image.DenseNet121,
-    "densenet201": image.DenseNet201
+    "sorel": malware.SecmlSOREL
 }
 
 
