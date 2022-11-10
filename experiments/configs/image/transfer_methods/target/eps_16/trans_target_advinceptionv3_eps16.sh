@@ -4,7 +4,7 @@ python transferred_attack_experiment.py --config configs/image/transfer_methods/
 python transferred_attack_experiment.py --config configs/image/transfer_methods/target/eps_16/advinceptionv3/targeted_DIFGSM_transfer.json
 python transferred_attack_experiment.py --config configs/image/transfer_methods/target/eps_16/advinceptionv3/targeted_SIFGSM_transfer.json
 python transferred_attack_experiment.py --config configs/image/transfer_methods/target/eps_16/advinceptionv3/targeted_ADMIXFGSM_transfer.json
-python transferred_attack_experiment.py --config configs/image/transfer_methods/taget/eps_16/advinceptionv3/targeted_EMIFGSM_transfer.json
+python transferred_attack_experiment.py --config configs/image/transfer_methods/target/eps_16/advinceptionv3/targeted_EMIFGSM_transfer.json
 python transferred_attack_experiment.py --config configs/image/transfer_methods/target/eps_16/advinceptionv3/targeted_EMITIDISIFGSM_transfer.json
 python transferred_attack_experiment.py --config configs/image/transfer_methods/target/eps_16/advinceptionv3/targeted_MIFGSM_transfer.json
 python transferred_attack_experiment.py --config configs/image/transfer_methods/target/eps_16/advinceptionv3/targeted_MIDIFGSM_transfer.json
@@ -27,6 +27,3 @@ python transferred_attack_experiment.py --config configs/image/transfer_methods/
 python transferred_attack_experiment.py --config configs/image/transfer_methods/target/eps_16/advinceptionv3/targeted_MIADMIXTIDIFGSSM_transfer.json
 python transferred_attack_experiment.py --config configs/image/transfer_methods/target/eps_16/advinceptionv3/targeted_VMITIDIAIFGSM_transfer.json
 python transferred_attack_experiment.py --config configs/image/transfer_methods/target/eps_16/advinceptionv3/targeted_VNITIDIAIFGSM_transfer.json
-
-
-blackboxsok/experiments/
