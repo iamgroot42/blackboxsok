@@ -80,6 +80,7 @@ if __name__ == "__main__":
         if attacker_config_1.targeted:
             target_images = ch.load(target_images_path)
             target_labels = ch.load(target_labels_path)
+            print("hello")
         else:
             target_images = correct_images
             target_labels = correct_labels
