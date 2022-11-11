@@ -163,22 +163,26 @@ if __name__ == "__main__":
     model_name = attacker_config_1.adv_model_config.name
 
     if attacker_config_1.targeted:
-        y_target = y_target.type(ch.float)
         y_target = ch.Tensor(y_target)
+        y_target = y_target.type(ch.float)
         y_target = y_target.type(ch.LongTensor)
         x_target = ch.Tensor(x_target)
 
         print("===============")
         print("y_target:", y_target.shape)
         print("x_target:", x_target.shape)
-        # ch.save(y_target, 'data/'+model_name+'/target_labels.pt')
-        # ch.save(x_target, 'data/'+model_name+'/target_images.pt')
-        ch.save(y_target, 'data/hard_' + model_name + '/target_labels.pt')
-        ch.save(x_target, 'data/hard_' + model_name + '/target_images.pt')
+        if mode == "hardest":
+            ch.save(y_target, '/p/blackboxsok/experiment/data/hard_' + model_name + '/target_labels.pt')
+            ch.save(x_target, '/p/blackboxsok/experiment/data/hard_' + model_name + '/target_images.pt')
+        else:
+            ch.save(y_target, '/p/blackboxsok/experiment/data/'+model_name+'/target_labels.pt')
+            ch.save(x_target, '/p/blackboxsok/experiment/data/'+model_name+'/target_images.pt')
 
-    # ch.save(correct_images, 'data/'+model_name+'/correct_images.pt')
-    # ch.save(correct_labels, 'data/'+model_name+'/correct_labels.pt')
-    ch.save(correct_images, 'data/hard_' + model_name + '/correct_images.pt')
-    ch.save(correct_labels, 'data/hard_' + model_name + '/correct_labels.pt')
+    if mode == "hardest":
+        ch.save(correct_images, '/p/blackboxsok/experiment/data/hard_' + model_name + '/correct_images.pt')
+        ch.save(correct_labels, '/p/blackboxsok/experiment/data/hard_' + model_name + '/correct_labels.pt')
+    else:
+        ch.save(correct_images, '/p/blackboxsok/experiment/data/' + model_name + '/correct_images.pt')
+        ch.save(correct_labels, '/p/blackboxsok/experiment/data/' + model_name + '/correct_labels.pt')
 
 

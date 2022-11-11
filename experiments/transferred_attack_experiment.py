@@ -65,10 +65,11 @@ if __name__ == "__main__":
 
     ds_config = config.dataset_config
     target_modal_name = attacker_config_1.adv_model_config.name
-    correct_images_path = 'data/' + target_modal_name + '/correct_images.pt'
-    correct_labels_path = 'data/' + target_modal_name + '/correct_labels.pt'
-    target_images_path = 'data/' + target_modal_name + '/target_images.pt'
-    target_labels_path = 'data/' + target_modal_name + '/target_labels.pt'
+    # / p / blackboxsok / experiment / data / hard_
+    correct_images_path = '/p/blackboxsok/experiment/data/' + target_modal_name + '/correct_images.pt'
+    correct_labels_path = '/p/blackboxsok/experiment/data/' + target_modal_name + '/correct_labels.pt'
+    target_images_path = '/p/blackboxsok/experiment/data/' + target_modal_name + '/target_images.pt'
+    target_labels_path = '/p/blackboxsok/experiment/data/' + target_modal_name + '/target_labels.pt'
     try:
         correct_images = ch.load(correct_images_path)
         correct_labels = ch.load(correct_labels_path)
