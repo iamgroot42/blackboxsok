@@ -58,7 +58,7 @@ class SectionInjection(Attacker):
             real_adv_x = b''.join([bytes([i]) for i in real_adv_x])
             x_adv_i_new: MalwareDatumWrapper = copy.deepcopy(x_orig_i)
             x_adv_i_new.bytes = real_adv_x
-            x_adv_new.append(x_adv_new)
+            x_adv_new.append(x_adv_i_new)
 
         stop_queries = 1
 

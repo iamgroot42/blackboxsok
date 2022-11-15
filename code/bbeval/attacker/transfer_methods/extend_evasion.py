@@ -9,6 +9,8 @@ from secml.array import CArray
 from typing import List
 import copy
 
+from bbeval.models.pytorch.malware import SecmlEnsemble
+
 
 class Extend(Attacker):
     def __init__(self,
@@ -25,7 +27,9 @@ class Extend(Attacker):
                 y_target=None):
         pe_header_extension = self.params['pe_header_extension']  # 512
         iterations = self.params['iterations']  # 100
-        shift = CExtendDOSEvasion(self.model.model,
+        ensemble_model = SecmlEnsemble([self.model.model, self.model.model])
+        # shift = CExtendDOSEvasion(self.model.model,
+        shift = CExtendDOSEvasion(ensemble_model,
                              pe_header_extension=pe_header_extension,
                              iterations=iterations)
         x_adv_new = []
@@ -41,7 +45,7 @@ class Extend(Attacker):
             real_adv_x = shift.create_real_sample_from_adv(x_orig_i.bytes, adv_ds.X, input_is_bytes=True)
             x_adv_i_new: MalwareDatumWrapper = copy.deepcopy(x_orig_i)
             x_adv_i_new.bytes = real_adv_x
-            x_adv_new.append(x_adv_new)
+            x_adv_new.append(x_adv_i_new)
 
         stop_queries = 1
 

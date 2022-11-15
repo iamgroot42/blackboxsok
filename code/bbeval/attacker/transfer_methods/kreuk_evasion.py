@@ -43,7 +43,7 @@ class Padding(Attacker):
             real_adv_x = fgsm.create_real_sample_from_adv(x_orig_i.bytes, adv_ds.X, input_is_bytes=True)
             x_adv_i_new: MalwareDatumWrapper = copy.deepcopy(x_orig_i)
             x_adv_i_new.bytes = real_adv_x
-            x_adv_new.append(x_adv_new)
+            x_adv_new.append(x_adv_i_new)
 
         stop_queries = 1
 
