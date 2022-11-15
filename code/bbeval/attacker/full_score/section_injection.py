@@ -10,6 +10,7 @@ from typing import List
 import copy
 
 from secml_malware.attack.blackbox.ga.c_base_genetic_engine import CGeneticAlgorithm
+from bbeval.models.pytorch.malware import SecmlEnsemblPhi
 
 
 class SectionInjection(Attacker):
@@ -21,7 +22,8 @@ class SectionInjection(Attacker):
         super().__init__(model, aux_models, config, experiment_config)
         self.goodware_path = "/p/blackboxsok/datasets/phd-dataset/combined"
         wrapper = self.model.get_phi_wrapper_class()
-        self.phi_net = wrapper(self.model.model)
+        self.phi_net = SecmlEnsemblPhi([self.model, self.model])
+        # self.phi_net = wrapper(self.model.model)
     
     def _prepare_goodware(self):
         section_population, what_from_who = CGammaSectionsEvasionProblem.create_section_population_from_folder(self.goodware_path, how_many=10, sections_to_extract=['.rdata'])
