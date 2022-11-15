@@ -1,6 +1,0 @@
-
-
-Target model: vgg16_bn 
-Aux model: inceptionv3
-The transferbility of EMITIDIAIFGSM_transferBayesOpt is 51.0 %
---- 3625.2118513584137 seconds ---

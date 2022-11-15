@@ -40,12 +40,17 @@ def rand_int_gen_exclu(num_min, num_max, num_exclu, res_len):
 
 
 def get_target_label(mode, x_orig, model, num_class, y_label, batch_size):
+    x_orig=ch.tensor(x_orig)
+    x_orig = x_orig.to(device='cuda', dtype=ch.float)
+    target_label=y_label
     if mode == "easiest":
         target_model_output = model.forward(x_orig)
         target_label = ch.kthvalue(target_model_output, num_class-1).indices
     if mode == "hardest":
-        target_model_output = model.forward(x_orig)
-        target_label = ch.min(target_model_output, 1).indices
+        for i in tqdm(range(int(1000))):
+            x_temp=x_orig[i].unsqueeze(0).cuda()
+            target_model_output = model.forward(x_temp)
+            target_label[i] = ch.min(target_model_output, 1).indices
     if mode == "random":
         target_label = rand_int_gen_exclu(
             0, num_class - 1, y_label, batch_size)

@@ -63,21 +63,24 @@ if __name__ == "__main__":
     target_model_1.set_eval()  # Make sure model is in eval model
     target_model_1.zero_grad()  # Make sure no leftover gradients
 
-
     ds_config = config.dataset_config
     target_modal_name = attacker_config_1.adv_model_config.name
-    correct_images_path = 'data/' + target_modal_name + '/correct_images.pt'
-    correct_labels_path = 'data/' + target_modal_name + '/correct_labels.pt'
-    # target_images_path = 'data/' + target_modal_name + '/target_images.pt'
-    # target_labels_path = 'data/' + target_modal_name + '/target_labels.pt'
+    # / p / blackboxsok / experiment / data / hard_
+    correct_images_path = '/p/blackboxsok/experiment/data/' + target_modal_name + '/correct_images.pt'
+    correct_labels_path = '/p/blackboxsok/experiment/data/' + target_modal_name + '/correct_labels.pt'
+    target_images_path = '/p/blackboxsok/experiment/data/' + target_modal_name + '/target_images.pt'
+    target_labels_path = '/p/blackboxsok/experiment/data/' + target_modal_name + '/target_labels.pt'
     try:
         correct_images = ch.load(correct_images_path)
         correct_labels = ch.load(correct_labels_path)
-        # target_images = correct_images
-        # target_labels = correct_labels
-        # if attacker_config_1.targeted:
-        #     target_images = ch.load(target_images_path)
-        #     target_labels = ch.load(target_labels_path)
+        if attacker_config_1.targeted:
+            target_images = ch.load(target_images_path)
+            target_labels = ch.load(target_labels_path)
+            target_labels = target_labels.type(ch.LongTensor)
+
+        else:
+            target_images = correct_images
+            target_labels = correct_labels
     except:
         raise NotImplementedError(f"The image of {target_modal_name} is not saved yet")
 
@@ -100,18 +103,9 @@ if __name__ == "__main__":
 
         x_orig, y_label = correct_images[i * 5:i * 5 + 5], correct_labels[i * 5:i * 5 + 5]
         x_orig, y_label = x_orig.cuda(), y_label.cuda()
-        x_target, y_target = correct_images[i * 5:i * 5 + 5], correct_labels[i * 5:i * 5 + 5]
-        # x_target, y_target = x_target.cuda(), y_target.cuda()
+        x_target, y_target = target_images[i * 5:i * 5 + 5], target_labels[i * 5:i * 5 + 5]
+        x_target, y_target = x_target.cuda(), y_target.cuda()
         num_class = ds.num_classes
-        if attacker_config_1.targeted:
-            # mode = "easiest"/"hardest"/"random"/"user"
-            # mode = attacker_config_1.target_label_selection_mode
-            mode = "easiest"
-            y_target = get_target_label(
-                mode, x_orig, target_model_1, num_class, y_label, 10)
-            y_target = y_target.cuda()
-        else:
-            y_target = y_label
 
         # Perform attack
         (x_sample_adv, queries_used_1), attacker_1 = single_attack(target_model_1,
@@ -141,11 +135,11 @@ if __name__ == "__main__":
     print("The transferability of %s is %s %%" % (str(attacker_config_1.name), str(transferability)))
 
 if attacker_config_1.targeted:
-    prefix="target"
+    prefix = "target"
 else:
-    prefix="untarget"
-    
-experiment_file_name=prefix+'_'+target_modal_name+'_eps'+str(int(attacker_config_1.eps))+'.txt'
+    prefix = "untarget"
+
+experiment_file_name = prefix + '_' + target_modal_name + '_eps' + str(int(attacker_config_1.eps)) + '.txt'
 with open(experiment_file_name, 'a') as f:
     f.write('\n')
     f.write("epsilon: %s" % (str(attacker_config_1.eps)))
