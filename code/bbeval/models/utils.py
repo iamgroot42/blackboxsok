@@ -21,7 +21,11 @@ MODEL_WRAPPER_MAPPING = {
     "densenet201": image.DenseNet201,
     "malconv": malware.SecmlMalConv,
     "gbt": malware.SecmlGBT,
-    "sorel": malware.SecmlSOREL
+    "sorel_0": (malware.SecmlSOREL, 0),
+    "sorel_1": (malware.SecmlSOREL, 1),
+    "sorel_2": (malware.SecmlSOREL, 2),
+    "sorel_3": (malware.SecmlSOREL, 3),
+    "sorel_4": (malware.SecmlSOREL, 4),
 }
 
 
@@ -34,6 +38,8 @@ def get_model_wrapper(model_configs: ModelConfig):
         if not wrapper:
             raise NotImplementedError(
                 f"Model {model_config.name} not implemented")
+        if isinstance(wrapper, tuple):
+            return wrapper[0](model_config, seed=wrapper[1])
         return wrapper(model_config)
 
     if isinstance(model_configs, list):

@@ -9,6 +9,8 @@ from secml.array import CArray
 from typing import List
 import copy
 
+from bbeval.models.pytorch.malware import SecmlEnsemble
+
 
 class Padding(Attacker):
     def __init__(self,
@@ -17,6 +19,9 @@ class Padding(Attacker):
                  config: MalwareAttackerConfig,
                  experiment_config: ExperimentConfig):
         super().__init__(model, aux_models, config, experiment_config)
+        self.local_model = self.model.model
+        if aux_models is not None and len(aux_models) > 0:
+            self.local_model = SecmlEnsemble(list(aux_models.values()))
 
     def _attack(self,
                 x_orig: List[MalwareDatumWrapper],
@@ -26,7 +31,7 @@ class Padding(Attacker):
         padding_bytes = self.params['how_many_padding_bytes']  # 2048
         iterations = self.params['iterations']  # 5
         epsilon = self.params['epsilon']  # 1.0
-        fgsm = CKreukEvasion(self.model.model,
+        fgsm = CKreukEvasion(self.local_model,
                              how_many_padding_bytes=padding_bytes,
                              epsilon=epsilon,
                              iterations=iterations)
@@ -34,7 +39,7 @@ class Padding(Attacker):
         results = []
         for i, (x_orig_i, x_adv_i) in enumerate(zip(x_orig, x_adv)):
             x_adv_i_feature = End2EndModel.bytes_to_numpy(
-                x_adv_i.bytes, self.model.model.get_input_max_length(), 256, False
+                x_adv_i.bytes, self.local_model.get_input_max_length(), 256, False
             )
             x_adv_i.feature = x_adv_i_feature
             y_pred, adv_score, adv_ds, f_obj = fgsm.run(

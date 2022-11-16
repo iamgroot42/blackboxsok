@@ -1,22 +1,22 @@
 from bbeval.config.core import ExperimentConfig
 from bbeval.models.core import GenericModelWrapper
-from bbeval.config import MalwareAttackerConfig
-from bbeval.attacker.core_malware import Attacker
+from bbeval.config import AttackerConfig
+from bbeval.attacker.core import Attacker
 from bbeval.datasets.malware.base import MalwareDatumWrapper
-from secml_malware.attack.whitebox.c_extend_dos_evasion import CExtendDOSEvasion
+from typing import List
 from secml_malware.models.c_classifier_end2end_malware import End2EndModel
 from secml.array import CArray
-from typing import List
 import copy
 
+from secml_malware.attack.whitebox.c_header_evasion import CHeaderEvasion
 from bbeval.models.pytorch.malware import SecmlEnsemble
 
 
-class Extend(Attacker):
+class HeaderEvasion(Attacker):
     def __init__(self,
                  model: GenericModelWrapper,
                  aux_models: dict,
-                 config: MalwareAttackerConfig,
+                 config: AttackerConfig,
                  experiment_config: ExperimentConfig):
         super().__init__(model, aux_models, config, experiment_config)
         self.local_model = self.model.model
@@ -28,12 +28,18 @@ class Extend(Attacker):
                 x_adv: List[MalwareDatumWrapper],
                 y_label=None,
                 y_target=None):
-        pe_header_extension = self.params['pe_header_extension']  # 512
-        iterations = self.params['iterations']  # 100
+        iterations = self.params['iterations']  # 50
+        random_init = self.params['random_init']  # False
+        optimize_all_dos = self.params['optimize_all_dos']  # False
+        threshold = self.params['threshold']  # 0.5
 
-        shift = CExtendDOSEvasion(self.local_model,
-                             pe_header_extension=pe_header_extension,
-                             iterations=iterations)
+        shift = CHeaderEvasion(
+            self.local_model,
+            random_init=random_init,
+            iterations=iterations,
+            optimize_all_dos=optimize_all_dos,
+            threshold=threshold)
+
         x_adv_new = []
         results = []
         for i, (x_orig_i, x_adv_i) in enumerate(zip(x_orig, x_adv)):

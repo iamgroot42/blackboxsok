@@ -9,6 +9,8 @@ from secml.array import CArray
 from typing import List
 import copy
 
+from bbeval.models.pytorch.malware import SecmlEnsemble
+
 
 class Shift(Attacker):
     def __init__(self,
@@ -17,6 +19,9 @@ class Shift(Attacker):
                  config: MalwareAttackerConfig,
                  experiment_config: ExperimentConfig):
         super().__init__(model, aux_models, config, experiment_config)
+        self.local_model = self.model.model
+        if aux_models is not None and len(aux_models) > 0:
+            self.local_model = SecmlEnsemble(list(aux_models.values()))
 
     def _attack(self,
                 x_orig: List[MalwareDatumWrapper],
@@ -25,14 +30,14 @@ class Shift(Attacker):
                 y_target=None):
         preferable_extension_amount = self.params['preferable_extension_amount']  # 512
         iterations = self.params['iterations']  # 100
-        shift = CFormatExploitEvasion(self.model.model,
+        shift = CFormatExploitEvasion(self.local_model,
                                       preferable_extension_amount=preferable_extension_amount,
                                       iterations=iterations)
         x_adv_new = []
         results = []
         for i, (x_orig_i, x_adv_i) in enumerate(zip(x_orig, x_adv)):
             x_adv_i_feature = End2EndModel.bytes_to_numpy(
-                x_adv_i.bytes, self.model.model.get_input_max_length(), 256, False
+                x_adv_i.bytes, self.local_model.get_input_max_length(), 256, False
             )
             x_adv_i.feature = x_adv_i_feature
             y_pred, adv_score, adv_ds, f_obj = shift.run(

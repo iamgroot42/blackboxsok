@@ -173,6 +173,11 @@ class MalwareAttackerConfig(Serializable):
     seed: Optional[int] = None
     """Seed for RNG"""
 
+    def __post_init__(self):
+        # Have to do this because SimpleParsing does not support list of dataclasses
+        data_class = type(self.adv_model_config)
+        if self.aux_model_configs_dict:
+            self.aux_model_configs = [data_class(**aux_dict) for aux_dict in self.aux_model_configs_dict]
 
 @dataclass
 class AttackerConfig(Serializable):

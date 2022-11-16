@@ -22,9 +22,11 @@ class SectionInjection(Attacker):
         super().__init__(model, aux_models, config, experiment_config)
         self.goodware_path = "/p/blackboxsok/datasets/phd-dataset/combined"
         wrapper = self.model.get_phi_wrapper_class()
-        self.phi_net = SecmlEnsemblPhi([self.model, self.model])
-        # self.phi_net = wrapper(self.model.model)
-    
+        self.phi_net = wrapper(self.model.model)
+        self.local_phi_net = self.phi_net
+        if aux_models is not None and len(aux_models) > 0:
+            self.local_phi_net = SecmlEnsemblPhi(list(aux_models.values()))
+
     def _prepare_goodware(self):
         section_population, what_from_who = CGammaSectionsEvasionProblem.create_section_population_from_folder(self.goodware_path, how_many=10, sections_to_extract=['.rdata'])
         return section_population
@@ -34,6 +36,10 @@ class SectionInjection(Attacker):
                 x_adv: List[MalwareDatumWrapper],
                 y_label=None,
                 y_target=None):
+        """
+            If aux models present, use them for crafting examples.
+            Else, use the 'target' model.
+        """
         population_size = self.params['population_size']  # 10
         penalty_regularizer = self.params['penalty_regularizer']  # 1e-6
         iterations = self.params['iterations']  # 10
@@ -41,7 +47,7 @@ class SectionInjection(Attacker):
         section_population = self._prepare_goodware()
 
         attack = CGammaSectionsEvasionProblem(section_population,
-                                              self.phi_net,
+                                              self.local_phi_net,
                                               population_size=population_size,
                                               penalty_regularizer=penalty_regularizer,
                                               iterations=iterations,
