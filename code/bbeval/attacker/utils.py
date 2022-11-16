@@ -42,6 +42,7 @@ from bbeval.attacker.transfer_methods.extend_evasion import Extend
 from bbeval.attacker.transfer_methods.montemutacon import MonteMutacon
 from bbeval.attacker.full_score.best_effort import BestEffort
 from bbeval.attacker.full_score.section_injection import SectionInjection
+from bbeval.attacker.full_score.shift_evasion import GammaShiftEvasion
 from bbeval.config.core import MalwareAttackerConfig
 
 from bbeval.config import AttackerConfig, ExperimentConfig
@@ -93,7 +94,8 @@ ATTACK_WRAPPER_MAPPING = {
     "extend_evasion": Extend,
     "montemutacon": MonteMutacon,
     "best_effort": BestEffort,
-    "section_injection": SectionInjection
+    "section_injection": SectionInjection,
+    "gamma_shift": GammaShiftEvasion
 }
 
 
