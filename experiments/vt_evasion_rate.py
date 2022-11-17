@@ -9,7 +9,7 @@ if __name__ == "__main__":
         "--name", help="Name of experiment", type=str)
     args = parser.parse_args()
 
-    loaddir = f"/p/blackboxsok/malware_samples/{args.name}"
+    loaddir = os.path.join("/p/blackboxsok/malware_samples/", args.name)
     if not os.path.exists(loaddir):
         raise ValueError(f"Path {loaddir} not found")
 

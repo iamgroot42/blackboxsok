@@ -1,4 +1,4 @@
-git+https://github.com/lebrice/SimpleParsing
+git+https://github.com/lebrice/SimpleParsing.git
 torch==1.10.2
 torchvision==0.11.3
 torchaudio==0.10.2

@@ -4,6 +4,7 @@ from typing import Optional, List
 import numpy as np
 from dacite import from_dict
 from simple_parsing.helpers import Serializable, choice, field
+from bbeval.utils import get_dataset_dir_path
 
 
 @dataclass
@@ -17,7 +18,7 @@ class DatasetConfig(Serializable):
     """What domain does the dataset belong to?"""
     augment: bool = False
     """Use data augmentation?"""
-    root: str = "/p/blackboxsok/datasets"
+    root: str = get_dataset_dir_path()
     """Path to datasets"""
     
 
@@ -219,7 +220,8 @@ class AttackerConfig(Serializable):
         # Have to do this because SimpleParsing does not support list of dataclasses
         data_class = type(self.adv_model_config)
         if self.aux_model_configs_dict:
-            self.aux_model_configs = [from_dict(data_class=data_class, data=aux_dict) for aux_dict in self.aux_model_configs_dict]
+            self.aux_model_configs = [data_class(**aux_dict) for aux_dict in self.aux_model_configs_dict]
+            # self.aux_model_configs = [from_dict(data_class=data_class, data=aux_dict) for aux_dict in self.aux_model_configs_dict]
 
 
 @dataclass

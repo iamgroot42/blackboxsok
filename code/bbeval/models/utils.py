@@ -20,12 +20,17 @@ MODEL_WRAPPER_MAPPING = {
     "densenet121": image.DenseNet121,
     "densenet201": image.DenseNet201,
     "malconv": malware.SecmlMalConv,
-    "gbt": malware.SecmlGBT,
     "sorel_0": (malware.SecmlSOREL, 0),
     "sorel_1": (malware.SecmlSOREL, 1),
     "sorel_2": (malware.SecmlSOREL, 2),
     "sorel_3": (malware.SecmlSOREL, 3),
     "sorel_4": (malware.SecmlSOREL, 4),
+    "gbt": malware.SecmlGBT,
+    "sorelgbt_0": (malware.SecmlGBTSorel, 0),
+    "sorelgbt_1": (malware.SecmlGBTSorel, 1),
+    "sorelgbt_2": (malware.SecmlGBTSorel, 2),
+    "sorelgbt_3": (malware.SecmlGBTSorel, 3),
+    "sorelgbt_4": (malware.SecmlGBTSorel, 4),
 }
 
 
