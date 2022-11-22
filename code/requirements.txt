@@ -13,6 +13,9 @@ git+https://github.com/RobustBench/robustbench.git
 git+https://github.com/elastic/ember.git
 dacite
 timm
+pyro-ppl
+python-magic
+secml
 git+https://github.com/iamgroot42/secml_malware.git
 git+https://github.com/iamgroot42/BODMAS.git
 lightgbm
@@ -27,3 +30,4 @@ dill
 git+https://github.com/iamgroot42/scurve.git
 git+https://github.com/iamgroot42/montemutacon.git
 vt-py
+gpytorch

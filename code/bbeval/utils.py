@@ -42,7 +42,7 @@ def get_cache_dir_path():
         Path where datasets are stored
     """
     if check_if_inside_cluster():
-        return "/project/uvasrg_paid/experiment/"
+        return "/project/uvasrg_paid/blackboxsok/experiment/"
     return "/p/blackboxsok/experiment/"
 
 

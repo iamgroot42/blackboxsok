@@ -3,3 +3,8 @@ data/*
 */.DS_Store
 ._*.py
 configs/._*.json
+rivanna_log/*
+rivanna_log_random/*
+
+# Results
+*.txt
