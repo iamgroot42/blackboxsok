@@ -1,12 +1,13 @@
 from simple_parsing import ArgumentParser
+import os
 from pathlib import Path
-
 from bbeval.config import AttackerConfig, ExperimentConfig
 from bbeval.datasets.utils import get_dataset_wrapper, get_target_label
 from bbeval.datasets.base import CustomDatasetWrapper
 from bbeval.attacker.utils import get_attack_wrapper
 from bbeval.models.utils import get_model_wrapper
 from bbeval.loss import get_loss_fn
+from bbeval.utils import get_cache_dir_path
 from tqdm import tqdm
 import time
 import torch as ch
@@ -67,11 +68,12 @@ if __name__ == "__main__":
     target_model_1.zero_grad()  # Make sure no leftover gradients
 
     ds_config = config.dataset_config
-    target_modal_name = attacker_config_1.adv_model_config.name
-    correct_images_path = 'data/' + target_modal_name + '/correct_images.pt'
-    correct_labels_path = 'data/' + target_modal_name + '/correct_labels.pt'
-    target_images_path = 'data/' + target_modal_name + '/target_images.pt'
-    target_labels_path = 'data/' + target_modal_name + '/target_labels.pt'
+    target_model_name = attacker_config_1.adv_model_config.name
+    base_path = get_cache_dir_path() #  / p / blackboxsok / experiment
+    correct_images_path = os.path.join(base_path, 'data/') + target_model_name + '/correct_images.pt'
+    correct_labels_path = os.path.join(base_path, 'data/') + target_model_name + '/correct_labels.pt'
+    target_images_path =  os.path.join(base_path, 'data/') + target_model_name + '/target_images.pt'
+    target_labels_path =  os.path.join(base_path, 'data/') + target_model_name + '/target_labels.pt'
     try:
         correct_images = ch.load(correct_images_path)
         correct_labels = ch.load(correct_labels_path)
