@@ -40,7 +40,7 @@ def single_attack(target_model, aux_models, x_orig, x_sample_adv, y_label, x_tar
     return (x_sample_adv, queries_used), attacker
 
 
-# os.environ['TORCH_HOME'] = '/p/blackboxsok/models/imagenet_torch' # download imagenet models to project directory
+os.environ['TORCH_HOME'] = '/project/uvasrg_paid/blackboxsok/models/imagenet_torch' # download imagenet models to project directory
 if __name__ == "__main__":
     parser = ArgumentParser(add_help=False)
     parser.add_argument(
@@ -65,14 +65,18 @@ if __name__ == "__main__":
     target_model_1.set_eval()  # Make sure model is in eval model
     target_model_1.zero_grad()  # Make sure no leftover gradients
 
+    # Hard/random label model
+    # mode_prefix = "hard_"
+    mode_prefix = ""
+
     ds_config = config.dataset_config
-    target_modal_name = attacker_config_1.adv_model_config.name
+    target_model_name = mode_prefix + attacker_config_1.adv_model_config.name
     # / p / blackboxsok / experiment / data / hard_
     base_path = get_cache_dir_path() #  / p / blackboxsok / experiment
-    correct_images_path = os.path.join(base_path, 'data/') + target_modal_name + '/correct_images.pt'
-    correct_labels_path = os.path.join(base_path, 'data/') + target_modal_name + '/correct_labels.pt'
-    target_images_path =  os.path.join(base_path, 'data/') + target_modal_name + '/target_images.pt'
-    target_labels_path =  os.path.join(base_path, 'data/') + target_modal_name + '/target_labels.pt'
+    correct_images_path = os.path.join(base_path, 'data/') + target_model_name + '/correct_images.pt'
+    correct_labels_path = os.path.join(base_path, 'data/') + target_model_name + '/correct_labels.pt'
+    target_images_path =  os.path.join(base_path, 'data/') + target_model_name + '/target_images.pt'
+    target_labels_path =  os.path.join(base_path, 'data/') + target_model_name + '/target_labels.pt'
     try:
         correct_images = ch.load(correct_images_path)
         correct_labels = ch.load(correct_labels_path)
@@ -85,7 +89,7 @@ if __name__ == "__main__":
             target_images = correct_images
             target_labels = correct_labels
     except:
-        raise NotImplementedError(f"The image of {target_modal_name} is not saved yet")
+        raise NotImplementedError(f"The image of {target_model_name} is not saved yet")
 
     n = 0
     start_time = time.time()
@@ -96,19 +100,30 @@ if __name__ == "__main__":
         x_orig, y_label = x_orig.cuda(), y_label.cuda()
         target_model_output = target_model_1.forward(x_orig)
         target_model_prediction = ch.max(target_model_output, 1).indices
+        # print(target_model_prediction)
+        # break
         correctly_classified += ch.count_nonzero(target_model_prediction == y_label)
         n += 10
     print("The clean accuracy is %s %%" % str(float(correctly_classified / 10)))
     #
-    for i in tqdm(range(int(20))):
+    batch_size = 5 # 10
+    n_iters = 20 # 10
+    assert batch_size * n_iters == 100, "batch_size * n_iters should be 100"
+    for i in tqdm(range(int(n_iters))):
         # the original dataset is normalized into the range of [0,1]
         # specific attacks may have different ranges and should be handled case by case
 
-        x_orig, y_label = correct_images[i * 5:i * 5 + 5], correct_labels[i * 5:i * 5 + 5]
+        x_orig, y_label = correct_images[i * batch_size:i * batch_size + batch_size], correct_labels[i * batch_size:i * batch_size + batch_size]
         x_orig, y_label = x_orig.cuda(), y_label.cuda()
-        x_target, y_target = target_images[i * 5:i * 5 + 5], target_labels[i * 5:i * 5 + 5]
+        x_target, y_target = target_images[i * batch_size:i * batch_size + batch_size], target_labels[i * batch_size:i * batch_size + batch_size]
         x_target, y_target = x_target.cuda(), y_target.cuda()
         num_class = ds.num_classes
+
+        # print(x_orig[:2])
+        # print(x_target[:2])
+        # print(y_label[:2])
+        # print(y_target[:2])
+        # exit(0)
 
         # Perform attack
         (x_sample_adv, queries_used_1), attacker_1 = single_attack(target_model_1,
@@ -142,7 +157,7 @@ if attacker_config_1.targeted:
 else:
     prefix = "untarget"
 
-experiment_file_name = prefix + '_' + target_modal_name + '_eps' + str(int(attacker_config_1.eps)) + '.txt'
+experiment_file_name = prefix + '_' + target_model_name + '_eps' + str(int(attacker_config_1.eps)) + '.txt'
 with open(experiment_file_name, 'a') as f:
     f.write('\n')
     f.write("epsilon: %s" % (str(attacker_config_1.eps)))

@@ -4,3 +4,8 @@ data/*
 ._*.py
 configs/._*.json
 vt_outputs/*
+rivanna_log/*
+rivanna_log_random/*
+
+# Results
+*.txt
