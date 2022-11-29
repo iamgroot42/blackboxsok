@@ -24,11 +24,15 @@ class GammaShiftEvasion(Attacker):
         wrapper = self.model.get_phi_wrapper_class()
         self.phi_net = wrapper(self.model.model)
         self.local_phi_net = self.phi_net
+        self.threshold = self.model.threshold
         if aux_models is not None and len(aux_models) > 0:
             self.local_phi_net = SecmlEnsemblPhi(list(aux_models.values()))
+            self.threshold = self.local_phi_net.threshold
 
-    def _prepare_goodware(self):
-        section_population, what_from_who = CGammaShiftEvasionProblem.create_section_population_from_folder(self.goodware_path, how_many=10, sections_to_extract=['.rdata'])
+    def _prepare_goodware(self, how_many: int):
+        section_population, what_from_who = CGammaShiftEvasionProblem.create_section_population_from_folder(self.goodware_path,
+            how_many=how_many,
+            sections_to_extract=['.rdata'])
         return section_population
 
     def _attack(self,
@@ -43,15 +47,16 @@ class GammaShiftEvasion(Attacker):
         population_size = self.params['population_size']  # 10
         penalty_regularizer = self.params['penalty_regularizer']  # 1e-6
         iterations = self.params['iterations']  # 10
+        how_many = self.params['how_many']  # 100
 
-        section_population = self._prepare_goodware()
+        section_population = self._prepare_goodware(how_many)
 
         attack = CGammaShiftEvasionProblem(section_population,
                                            self.local_phi_net,
                                            population_size=population_size,
                                            penalty_regularizer=penalty_regularizer,
                                            iterations=iterations,
-                                           threshold=0)
+                                           threshold=self.threshold)
         engine = CGeneticAlgorithm(attack)
 
         x_adv_new = []

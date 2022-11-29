@@ -42,7 +42,11 @@ from bbeval.attacker.transfer_methods.extend_evasion import Extend
 from bbeval.attacker.transfer_methods.montemutacon import MonteMutacon
 from bbeval.attacker.full_score.best_effort import BestEffort
 from bbeval.attacker.full_score.section_injection import SectionInjection
+from bbeval.attacker.full_score.padding import GammaPadding
 from bbeval.attacker.full_score.shift_evasion import GammaShiftEvasion
+from bbeval.attacker.full_score.header import DOSHeader
+from bbeval.attacker.full_score.dos_header import DOSExtend
+from bbeval.attacker.full_score.bb_shift import BlackboxSectionInjection
 from bbeval.config.core import MalwareAttackerConfig
 
 from bbeval.config import AttackerConfig, ExperimentConfig
@@ -95,7 +99,11 @@ ATTACK_WRAPPER_MAPPING = {
     "montemutacon": MonteMutacon,
     "best_effort": BestEffort,
     "section_injection": SectionInjection,
-    "gamma_shift": GammaShiftEvasion
+    "gamma_shift": GammaShiftEvasion,
+    "gamma_padding": GammaPadding,
+    "dos_header": DOSHeader,
+    "bb_shift": BlackboxSectionInjection,
+    "dos_extend": DOSExtend
 }
 
 

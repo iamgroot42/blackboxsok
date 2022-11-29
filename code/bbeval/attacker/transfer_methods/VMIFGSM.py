@@ -89,6 +89,7 @@ class VMIFGSM(Attacker):
             loss.backward()
             adv_grad = adv.grad.data
             grad = momentum * decay + (adv_grad+v) / ch.mean(ch.abs(adv_grad+v), dim=(1, 2, 3), keepdim=True)
+            # Should be 'sum' (official implementation is wrong), but doesn't matter for L_inf
             momentum = grad
 
             # Calculate Gradient Variance

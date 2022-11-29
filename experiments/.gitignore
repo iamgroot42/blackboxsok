@@ -3,3 +3,4 @@ data/*
 */.DS_Store
 ._*.py
 configs/._*.json
+vt_outputs/*
