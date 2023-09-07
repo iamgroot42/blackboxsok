@@ -16,11 +16,9 @@
                 "name": "inceptionv3",
                 "dataset": "imagenet"
             },
-
             "attack_params": {
                 "max_queries": 100000
             }
-
         }
     ],
     "batch_size": 10

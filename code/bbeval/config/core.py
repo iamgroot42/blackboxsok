@@ -86,6 +86,7 @@ class TransferredAttackConfig(Serializable):
     interpol_dim: int = 256
     """Interpolation dimension"""
 
+
 @dataclass
 class SquareAttackConfig(Serializable):
     """
@@ -112,6 +113,7 @@ class BayesOpt(Serializable):
     interpol_dim: int = 256
     """Interpolation dimension"""
 
+
 @dataclass
 class BayesOpt_full(Serializable):
     """
@@ -125,7 +127,8 @@ class BayesOpt_full(Serializable):
     """Width of image"""
     interpol_dim: int = 256
     """Interpolation dimension"""
-    
+
+
 @dataclass
 class SparseEvoConfig(Serializable):
     """
@@ -179,6 +182,7 @@ class MalwareAttackerConfig(Serializable):
         data_class = type(self.adv_model_config)
         if self.aux_model_configs_dict:
             self.aux_model_configs = [data_class(**aux_dict) for aux_dict in self.aux_model_configs_dict]
+
 
 @dataclass
 class AttackerConfig(Serializable):
@@ -239,6 +243,8 @@ class ExperimentConfig(Serializable):
     """Config ficts (converted to dataclasses later) for each attack in order"""
     batch_size: Optional[int] = 32
     """Batch size for executing attacks"""
+    profiler: Optional[bool] = False
+    """Run profiler to measure GPU runtime?"""
 
     def first_attack_config(self):
         return self.attack_configs[0]

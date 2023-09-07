@@ -4,6 +4,7 @@
         "name": "imagenet",
         "type": "image"
     },
+    "profiler": true,
     "attack_configs_dict": [
         {
             "name": "rays",
@@ -17,5 +18,5 @@
                 "dataset": "imagenet"
             }
         }
-    ]   
+    ]
 }

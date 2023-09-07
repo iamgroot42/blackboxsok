@@ -29,14 +29,15 @@ def get_model_and_aux_models(attacker_config: AttackerConfig):
     return target_model, aux_models
 
 
-def single_attack(target_model, aux_models, x_orig, x_sample_adv, y_label, x_target, y_target, attacker_config: AttackerConfig,
-                  experiment_config: ExperimentConfig):
+def single_attack(target_model, aux_models, x_orig, x_sample_adv, y_label, x_target, y_target,
+                  attacker_config: AttackerConfig, experiment_config: ExperimentConfig):
     attacker = get_attack_wrapper(target_model, aux_models, attacker_config, experiment_config)
     x_sample_adv, queries_used = attacker.attack(x_orig=x_orig, x_adv=x_sample_adv, y_label=y_label, x_target=x_target, y_target=y_target)
     return (x_sample_adv, queries_used), attacker
 
-def second_attack(target_model, aux_models, x_orig, x_sample_adv, y_label, x_target, y_target, attacker_config: AttackerConfig,
-                  experiment_config: ExperimentConfig):
+
+def second_attack(target_model, aux_models, x_orig, x_sample_adv, y_label, x_target, y_target,
+                  attacker_config: AttackerConfig, experiment_config: ExperimentConfig):
     attacker = get_attack_wrapper(target_model, aux_models, attacker_config, experiment_config)
     x_sample_adv, queries_used = attacker.attack(x_orig=x_orig, x_adv=x_sample_adv, y_label=y_label, x_target=x_target, y_target=y_target)
     return (x_sample_adv, queries_used), attacker
@@ -59,7 +60,6 @@ if __name__ == "__main__":
     # Extract configs
     attacker_config_1: AttackerConfig = config.first_attack_config()
     attacker_config_2: AttackerConfig = config.second_attack_config()
-    #attacker_config_2: AttackerConfig = config.second_attack_config()
 
     # Load up model(s)
     target_model_1, aux_models_1 = get_model_and_aux_models(attacker_config_1)
@@ -145,14 +145,14 @@ if __name__ == "__main__":
         #print(y_target.shape)
         # Perform attack
         (x_sample_adv, queries_used_1), attacker_1 = single_attack(target_model_1,
-                                                                                   aux_models=aux_models_1,
-                                                                                   x_orig=x_orig,
-                                                                                   x_sample_adv=x_orig,
-                                                                                   y_label=y_label,
-                                                                                   x_target=x_target,
-                                                                                   y_target=y_target,
-                                                                                   attacker_config=attacker_config_1,
-                                                                                   experiment_config=config)
+                                                                   aux_models=aux_models_1,
+                                                                   x_orig=x_orig,
+                                                                   x_sample_adv=x_orig,
+                                                                   y_label=y_label,
+                                                                   x_target=x_target,
+                                                                   y_target=y_target,
+                                                                   attacker_config=attacker_config_1,
+                                                                   experiment_config=config)
         attacker_1.save_results()
         
         
@@ -185,14 +185,14 @@ if __name__ == "__main__":
             target_model_2, aux_models_2 = get_model_and_aux_models(attacker_config_2)
             # Perform attack
             (x_sample_adv, queries_used_2), attacker_2 = second_attack(target_model_2,
-                                                                                    aux_models=aux_models_2,
-                                                                                    x_orig=second_attack_x,
-                                                                                    x_sample_adv=second_attack_x,
-                                                                                    x_target=x_target,
-                                                                                    y_label=second_attack_y,
-                                                                                    y_target=y_target,
-                                                                                    attacker_config=attacker_config_2,
-                                                                                    experiment_config=config)
+                                                                       aux_models=aux_models_2,
+                                                                       x_orig=second_attack_x,
+                                                                       x_sample_adv=second_attack_x,
+                                                                       x_target=x_target,
+                                                                       y_label=second_attack_y,
+                                                                       y_target=y_target,
+                                                                       attacker_config=attacker_config_2,
+                                                                       experiment_config=config)
             total_queries_used += queries_used_2
             attacker_2.save_results()
             print("transferability:", total_transfered)
