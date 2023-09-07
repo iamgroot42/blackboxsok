@@ -26,6 +26,13 @@ class Padding(Attacker):
             self.local_model = SecmlEnsemble(list(aux_models.values()))
             self.threshold = self.local_model.threshold
 
+        override_threshold = self.params.get('override_threshold', False)
+        absolute_nuts = self.params.get('absolute_nuts', False)
+        if override_threshold:
+            self.threshold = 0.5
+        if absolute_nuts:
+            self.threshold = 0.0
+
     def _attack(self,
                 x_orig: List[MalwareDatumWrapper],
                 x_adv: List[MalwareDatumWrapper],
