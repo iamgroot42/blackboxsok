@@ -33,14 +33,14 @@ def get_model_and_aux_models(attacker_config: AttackerConfig):
 
 def single_attack(target_model, aux_models, x_orig, x_sample_adv, y_label, x_target, y_target,
                   attacker_config: AttackerConfig,
-                  experiment_config: ExperimentConfig):
+                  experiment_config: ExperimentConfig,experiment_file_name):
     attacker = get_attack_wrapper(target_model, aux_models, attacker_config, experiment_config)
     x_sample_adv, queries_used = attacker.attack(x_orig=x_orig, x_adv=x_sample_adv, y_label=y_label, x_target=x_target,
-                                                 y_target=y_target)
+                                                 y_target=y_target,experiment_file_name=experiment_file_name)
     return (x_sample_adv, queries_used), attacker
 
 
-os.environ['TORCH_HOME'] = '/project/uvasrg_paid/blackboxsok/models/imagenet_torch' # download imagenet models to project directory
+# os.environ['TORCH_HOME'] = '/project/uvasrg_paid/blackboxsok/models/imagenet_torch' # download imagenet models to project directory
 if __name__ == "__main__":
     parser = ArgumentParser(add_help=False)
     parser.add_argument(
@@ -91,9 +91,17 @@ if __name__ == "__main__":
     except:
         raise NotImplementedError(f"The image of {target_model_name} is not saved yet")
 
-    n = 0
-    start_time = time.time()
+    if attacker_config_1.targeted:
+        prefix = "target"
+        iterations=100
+    else:
+        prefix = "untarget"
+        iterations=10
 
+    experiment_file_name = 'result/' + attacker_config_1.name + '_' + prefix + '_' + target_model_name + '_eps' + str(
+        int(attacker_config_1.eps)) + '.txt'
+
+    n=0
     while n < 1000:
         x_orig = correct_images[n:n + 10]
         y_label = correct_labels[n:n + 10]
@@ -109,9 +117,24 @@ if __name__ == "__main__":
     batch_size = 5 # 10
     n_iters = 20 # 10
     assert batch_size * n_iters == 100, "batch_size * n_iters should be 100"
+
+
+    with open(experiment_file_name, 'a') as f:
+        f.write("epsilon: %s" % (str(attacker_config_1.eps)))
+        f.write('\n')
+        f.write("Target model: %s " % (str(attacker_config_1.adv_model_config.name)))
+        f.write('\n')
+        f.write("batch size: %s" % (str(10)))
+        f.write('\n')
+        f.write("number of iteration: %s" % (str(iterations)))
+        f.write('\n')
+
     for i in tqdm(range(int(n_iters))):
         # the original dataset is normalized into the range of [0,1]
         # specific attacks may have different ranges and should be handled case by case
+        with open(experiment_file_name, 'a') as f:
+            f.write("batch: %s" % (str(i)))
+            f.write('\n')
 
         x_orig, y_label = correct_images[i * batch_size:i * batch_size + batch_size], correct_labels[i * batch_size:i * batch_size + batch_size]
         x_orig, y_label = x_orig.cuda(), y_label.cuda()
@@ -134,7 +157,8 @@ if __name__ == "__main__":
                                                                    x_target=x_target,
                                                                    y_target=y_target,
                                                                    attacker_config=attacker_config_1,
-                                                                   experiment_config=config)
+                                                                   experiment_config=config,
+                                                                   experiment_file_name=experiment_file_name)
         total_queries_used += queries_used_1
         attacker_1.save_results()
         x_sample_adv = x_sample_adv.to(device='cuda', dtype=ch.float)
@@ -151,22 +175,3 @@ if __name__ == "__main__":
     print("Target model: %s " % (str(attacker_config_1.adv_model_config.name)))
     print("Aux model: %s" % (str(attacker_config_1.aux_model_configs[0].name)))
     print("The transferability of %s is %s %%" % (str(attacker_config_1.name), str(transferability)))
-
-if attacker_config_1.targeted:
-    prefix = "target"
-else:
-    prefix = "untarget"
-
-experiment_file_name = prefix + '_' + target_model_name + '_eps' + str(int(attacker_config_1.eps)) + '.txt'
-with open(experiment_file_name, 'a') as f:
-    f.write('\n')
-    f.write("epsilon: %s" % (str(attacker_config_1.eps)))
-    f.write('\n')
-    f.write("Target model: %s " % (str(attacker_config_1.adv_model_config.name)))
-    f.write('\n')
-    f.write("Aux model: %s" % (str(attacker_config_1.aux_model_configs[0].name)))
-    f.write('\n')
-    f.write("The transferbility of %s is %s %%" % (str(config.experiment_name), str(transferability)))
-    f.write('\n')
-    f.write("--- %s seconds ---" % (time.time() - start_time))
-    f.write('\n')
