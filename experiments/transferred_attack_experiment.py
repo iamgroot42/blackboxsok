@@ -114,8 +114,8 @@ if __name__ == "__main__":
         n += 10
     print("The clean accuracy is %s %%" % str(float(correctly_classified / 10)))
     #
-    batch_size = 5 # 10
-    n_iters = 20 # 10
+    batch_size = 10 # 10
+    n_iters = 10 # 10
     assert batch_size * n_iters == 100, "batch_size * n_iters should be 100"
 
 
