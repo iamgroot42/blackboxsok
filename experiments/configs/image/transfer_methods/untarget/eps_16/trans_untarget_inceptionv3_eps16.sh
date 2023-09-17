@@ -1,3 +1,4 @@
+python transferred_attack_experiment.py --config configs/image/transfer_methods/untarget/eps_16/inceptionv3/untargeted_ODS_transfer.json
 python transferred_attack_experiment.py --config configs/image/transfer_methods/untarget/eps_16/inceptionv3/untargeted_FGSM_transfer.json
 python transferred_attack_experiment.py --config configs/image/transfer_methods/untarget/eps_16/inceptionv3/untargeted_IFGSM_transfer.json
 python transferred_attack_experiment.py --config configs/image/transfer_methods/untarget/eps_16/inceptionv3/untargeted_TIFGSM_transfer.json

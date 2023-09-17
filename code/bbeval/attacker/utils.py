@@ -1,5 +1,6 @@
 from bbeval.attacker.full_score.square import Square_Attack
 from bbeval.attacker.top1_score.rays import RayS
+from bbeval.attacker.transfer_methods.ODS import ODS
 from bbeval.attacker.transfer_methods.FGSM import FGSM
 from bbeval.attacker.transfer_methods.IFGSM import IFGSM
 from bbeval.attacker.transfer_methods.MIFGSM import MIFGSM
@@ -57,6 +58,7 @@ from typing import Union
 ATTACK_WRAPPER_MAPPING = {
     "square_attack": Square_Attack,
     "rays": RayS,
+    "ODS_transfer": ODS,
     "FGSM_transfer": FGSM,
     "IFGSM_transfer": IFGSM,
     "MIFGSM_transfer": MIFGSM,
