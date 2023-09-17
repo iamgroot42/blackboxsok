@@ -73,7 +73,9 @@ class FGSM(Attacker):
             # corr_classified = ch.argmax(logits_clean, dim=1) == y_label
             # print('Clean accuracy of candidate samples: {:.2%}'.format(ch.mean(1. * corr_classified).item()))
 
-        for i in range(10):
+        for i in range(1):
+            if adv.grad is not None:
+                adv.grad.zero_()
             start_time = time.time()
 
             if i == 0:
@@ -120,6 +122,10 @@ class FGSM(Attacker):
                 f.write("ASR: %s" % (str(transferability)))
                 f.write('\n')
 
+            del output, output_clone, target_model_output, target_model_prediction
+            ch.cuda.empty_cache()
+            del loss
+            gc.collect()  # Explicitly call the garbage collector
 
         stop_queries = 1
         # print(abs(adv - x_orig))
