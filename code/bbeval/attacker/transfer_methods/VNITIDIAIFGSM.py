@@ -13,6 +13,7 @@ from bbeval.attacker.transfer_methods._manipulate_input import ensemble_input_di
 
 import torchvision.models as models  # TODO: remove after test
 import time
+import gc
 
 np.set_printoptions(precision=5, suppress=True)
 

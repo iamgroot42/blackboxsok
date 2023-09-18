@@ -15,6 +15,7 @@ import torchvision.models as models  # TODO: remove after test
 
 np.set_printoptions(precision=5, suppress=True)
 import time
+import gc
 
 # https://arxiv.org/pdf/2203.13479.pdf
 

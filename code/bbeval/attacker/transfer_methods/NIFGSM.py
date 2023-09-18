@@ -13,6 +13,7 @@ from bbeval.attacker.transfer_methods._manipulate_input import ensemble_input_di
 
 np.set_printoptions(precision=5, suppress=True)
 import time
+import gc
 
 class NIFGSM(Attacker):
     def __init__(self, model: GenericModelWrapper, aux_models: dict, config: AttackerConfig,
