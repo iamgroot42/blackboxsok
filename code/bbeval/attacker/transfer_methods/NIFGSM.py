@@ -66,7 +66,8 @@ class NIFGSM(Attacker):
             model.set_eval()  # Make sure model is in eval model
             model.zero_grad()  # Make sure no leftover gradients
 
-        for i in range(n_iters):
+        i = 0
+        while self.optimization_loop_condition_satisfied(i, sum_time, n_iters):
             if adv.grad is not None:
                 adv.grad.zero_()
             start_time = time.time()
@@ -97,7 +98,7 @@ class NIFGSM(Attacker):
             adv = V(adv, requires_grad=True)
 
             end_time = time.time()
-            sum_time = end_time - start_time + sum_time
+            sum_time += end_time - start_time
             # outputs the transferability
             self.model.set_eval()  # Make sure model is in eval model
             self.model.zero_grad()  # Make sure no leftover gradients
@@ -123,6 +124,8 @@ class NIFGSM(Attacker):
             ch.cuda.empty_cache()
             del loss
             gc.collect()  # Explicitly call the garbage collector
+
+            i += 1
 
         stop_queries = 1
 

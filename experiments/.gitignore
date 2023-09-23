@@ -9,3 +9,9 @@ rivanna_log_random/*
 
 # Results
 *.txt
+
+# Logs
+cluster_logs/*
+
+# SLURM files
+*.slurm

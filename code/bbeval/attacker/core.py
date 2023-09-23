@@ -44,6 +44,13 @@ class Attacker:
 
         return self._attack(x_orig, x_adv, y_label, y_target)
 
+    def optimization_loop_condition_satisfied(self, iter: int, time: float, n_iters: int):
+        """Utility function to check whether optimization loop should continue or not"""
+        if self.config.time_based_attack:
+            return time < self.config.time_per_batch
+        else:
+            return iter < n_iters
+
     def save_results(self):
         # Save logger
         self.logger.save()
