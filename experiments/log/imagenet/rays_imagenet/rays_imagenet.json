@@ -1,247 +1,467 @@
 {
     "name": "rays_imagenet",
-    "start time": "2022-06-27 11:17:40.178550",
+    "start time": "2023-09-27 17:19:42.428645",
     "result": {
-        "1": {
-            "d_t": 272.87481689453125,
-            "adbd": 0.5269041061401367,
-            "queries": 20.0,
-            "rob acc": 0.90625
+        "252": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
-        "2": {
-            "d_t": 210.9623260498047,
-            "adbd": 0.40735507011413574,
-            "queries": 21.0,
-            "rob acc": 0.875
+        "788": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
-        "3": {
-            "d_t": 182.85000610351562,
-            "adbd": 0.353071928024292,
-            "queries": 22.0,
-            "rob acc": 0.8125
+        "512": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
-        "4": {
-            "d_t": 144.23065185546875,
-            "adbd": 0.27850037813186646,
-            "queries": 23.0,
-            "rob acc": 0.75
+        "128": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
-        "5": {
-            "d_t": 138.218017578125,
-            "adbd": 0.26689037680625916,
-            "queries": 24.0,
-            "rob acc": 0.71875
+        "190": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
-        "6": {
-            "d_t": 133.44146728515625,
-            "adbd": 0.2576671838760376,
-            "queries": 25.0,
-            "rob acc": 0.71875
+        "941": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
-        "7": {
-            "d_t": 127.64203643798828,
-            "adbd": 0.24646879732608795,
-            "queries": 26.0,
-            "rob acc": 0.71875
+        "574": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
-        "8": {
-            "d_t": 115.20861053466797,
-            "adbd": 0.22246062755584717,
-            "queries": 27.0,
-            "rob acc": 0.6875
+        "528": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
-        "9": {
-            "d_t": 107.8797836303711,
-            "adbd": 0.2083091288805008,
-            "queries": 36.0,
-            "rob acc": 0.6875
+        "789": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
-        "10": {
-            "d_t": 104.24720764160156,
-            "adbd": 0.20129485428333282,
-            "queries": 38.0,
-            "rob acc": 0.6875
+        "978": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
-        "11": {
-            "d_t": 99.55050659179688,
-            "adbd": 0.19222581386566162,
-            "queries": 40.0,
-            "rob acc": 0.6875
+        "318": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
-        "12": {
-            "d_t": 97.33340454101562,
-            "adbd": 0.18794474005699158,
-            "queries": 42.0,
-            "rob acc": 0.6875
+        "198": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
-        "13": {
-            "d_t": 95.68128967285156,
-            "adbd": 0.18475459516048431,
-            "queries": 44.0,
-            "rob acc": 0.6875
+        "626": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
-        "14": {
-            "d_t": 91.2481689453125,
-            "adbd": 0.17619451880455017,
-            "queries": 46.0,
-            "rob acc": 0.6875
+        "851": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
-        "15": {
-            "d_t": 88.56103515625,
-            "adbd": 0.17100584506988525,
-            "queries": 48.0,
-            "rob acc": 0.6875
+        "582": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
-        "16": {
-            "d_t": 88.11443328857422,
-            "adbd": 0.1701434701681137,
-            "queries": 50.0,
-            "rob acc": 0.6875
+        "679": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
-        "17": {
-            "d_t": 87.07572937011719,
-            "adbd": 0.168137788772583,
-            "queries": 52.0,
-            "rob acc": 0.6875
+        "877": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
-        "18": {
-            "d_t": 86.5670394897461,
-            "adbd": 0.16715554893016815,
-            "queries": 54.0,
-            "rob acc": 0.65625
+        "948": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
-        "19": {
-            "d_t": 85.89286804199219,
-            "adbd": 0.16585376858711243,
-            "queries": 56.0,
-            "rob acc": 0.65625
+        "823": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
-        "20": {
-            "d_t": 85.89286804199219,
-            "adbd": 0.16585376858711243,
-            "queries": 58.0,
-            "rob acc": 0.65625
+        "880": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
-        "21": {
-            "d_t": 85.89286804199219,
-            "adbd": 0.16585376858711243,
-            "queries": 60.0,
-            "rob acc": 0.65625
+        "428": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
-        "22": {
-            "d_t": 85.89286804199219,
-            "adbd": 0.16585376858711243,
-            "queries": 62.0,
-            "rob acc": 0.65625
+        "100": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
-        "23": {
-            "d_t": 85.89286804199219,
-            "adbd": 0.16585376858711243,
-            "queries": 64.0,
-            "rob acc": 0.65625
+        "804": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
-        "24": {
-            "d_t": 84.49199676513672,
-            "adbd": 0.16314876079559326,
-            "queries": 66.0,
-            "rob acc": 0.65625
+        "761": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
-        "25": {
-            "d_t": 84.49199676513672,
-            "adbd": 0.16314876079559326,
-            "queries": 68.0,
-            "rob acc": 0.65625
+        "250": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
-        "26": {
-            "d_t": 84.49199676513672,
-            "adbd": 0.16314876079559326,
-            "queries": 70.0,
-            "rob acc": 0.65625
+        "474": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
-        "27": {
-            "d_t": 84.49199676513672,
-            "adbd": 0.16314876079559326,
-            "queries": 72.0,
-            "rob acc": 0.65625
+        "324": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
-        "28": {
-            "d_t": 84.49199676513672,
-            "adbd": 0.16314876079559326,
-            "queries": 74.0,
-            "rob acc": 0.65625
+        "132": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
-        "29": {
-            "d_t": 84.49199676513672,
-            "adbd": 0.16314876079559326,
-            "queries": 76.0,
-            "rob acc": 0.65625
+        "260": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
-        "30": {
-            "d_t": 84.49199676513672,
-            "adbd": 0.16314876079559326,
-            "queries": 78.0,
-            "rob acc": 0.65625
+        "44": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
-        "31": {
-            "d_t": 84.49199676513672,
-            "adbd": 0.16314876079559326,
-            "queries": 80.0,
-            "rob acc": 0.65625
+        "172": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
-        "32": {
-            "d_t": 84.48175811767578,
-            "adbd": 0.16312898695468903,
-            "queries": 82.0,
-            "rob acc": 0.65625
+        "719": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
-        "33": {
-            "d_t": 84.48175811767578,
-            "adbd": 0.16312898695468903,
-            "queries": 84.0,
-            "rob acc": 0.65625
+        "811": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
-        "34": {
-            "d_t": 84.48175811767578,
-            "adbd": 0.16312898695468903,
-            "queries": 86.0,
-            "rob acc": 0.65625
+        "291": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
-        "35": {
-            "d_t": 84.48175811767578,
-            "adbd": 0.16312898695468903,
-            "queries": 88.0,
-            "rob acc": 0.65625
+        "122": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
-        "36": {
-            "d_t": 84.48175811767578,
-            "adbd": 0.16312898695468903,
-            "queries": 90.0,
-            "rob acc": 0.65625
+        "553": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
-        "37": {
-            "d_t": 84.48175811767578,
-            "adbd": 0.16312898695468903,
-            "queries": 92.0,
-            "rob acc": 0.65625
+        "396": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
-        "38": {
-            "d_t": 84.48175811767578,
-            "adbd": 0.16312898695468903,
-            "queries": 94.0,
-            "rob acc": 0.65625
+        "837": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
-        "39": {
-            "d_t": 84.48175811767578,
-            "adbd": 0.16312898695468903,
-            "queries": 96.0,
-            "rob acc": 0.65625
+        "484": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
         },
-        "40": {
-            "d_t": 84.48175811767578,
-            "adbd": 0.16312898695468903,
-            "queries": 98.0,
-            "rob acc": 0.65625
+        "314": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
+        },
+        "42": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
+        },
+        "177": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
+        },
+        "759": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
+        },
+        "45": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
+        },
+        "400": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
+        },
+        "368": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
+        },
+        "307": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
+        },
+        "981": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
+        },
+        "233": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
+        },
+        "356": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
+        },
+        "130": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
+        },
+        "748": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
+        },
+        "769": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
+        },
+        "628": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
+        },
+        "622": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
+        },
+        "673": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
+        },
+        "76": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
+        },
+        "445": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
+        },
+        "920": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
+        },
+        "906": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
+        },
+        "816": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
+        },
+        "139": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
+        },
+        "165": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
+        },
+        "774": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
+        },
+        "620": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
+        },
+        "844": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
+        },
+        "83": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
+        },
+        "230": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
+        },
+        "879": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
+        },
+        "563": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
+        },
+        "910": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
+        },
+        "576": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
+        },
+        "780": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
+        },
+        "308": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
+        },
+        "926": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
+        },
+        "367": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
+        },
+        "915": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
+        },
+        "369": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
+        },
+        "304": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
+        },
+        "538": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
+        },
+        "378": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
+        },
+        "859": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
+        },
+        "427": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
+        },
+        "131": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
+        },
+        "647": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
+        },
+        "800": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
+        },
+        "701": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
+        },
+        "832": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
+        },
+        "583": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
+        },
+        "480": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
+        },
+        "79": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
+        },
+        "592": {
+            "query": 100,
+            "transfer_flag": 0,
+            "attack_flag": 0
         }
     },
-    "save time": "2022-06-27 11:17:51.663414"
+    "save time": "2023-09-27 17:20:19.009853"
 }
