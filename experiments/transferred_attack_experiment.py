@@ -114,13 +114,17 @@ if __name__ == "__main__":
         n += 10
     print("The clean accuracy is %s %%" % str(float(correctly_classified / 10)))
     #
-    batch_size = 10 # 10
-    n_iters = 10 # 10
+    batch_size = 5
+    if attacker_config_1.targeted:
+        n_iters = 2 * 10
+    else:
+        # n_iters = 2 * 100 # Was previous
+        n_iters = 2 * 10
     if attacker_config_1.targeted:
         assert batch_size * n_iters == 100, "batch_size * n_iters should be 100"
     if not attacker_config_1.targeted:
-        assert batch_size * n_iters == 1000, "batch_size * n_iters should be 1000"
-
+        # assert batch_size * n_iters == 1000, "batch_size * n_iters should be 1000" # Was previous
+        assert batch_size * n_iters == 100, "batch_size * n_iters should be 100"
 
     with open(experiment_file_name, 'a') as f:
         f.write("epsilon: %s" % (str(attacker_config_1.eps)))

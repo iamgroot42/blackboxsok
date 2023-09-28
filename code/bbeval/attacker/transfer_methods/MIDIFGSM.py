@@ -94,6 +94,15 @@ class MIDIFGSM(Attacker):
             loss = self.criterion(output_clone, y_target)
             # print(i)
             # print(loss)
+            if self.config.track_local_metrics:
+                with ch.no_grad():
+                    current_local_loss = loss.item()
+                    if targeted:
+                        current_local_asr = ch.count_nonzero(ch.max(output_clone, 1).indices == y_target)
+                    else:
+                        current_local_asr = ch.count_nonzero(ch.max(output_clone, 1).indices != y_target)
+                    current_local_asr = float(current_local_asr / len(y_target)) * 100
+
             loss.backward()
             grad=adv.grad.data
             grad = momentum * decay + grad / ch.mean(ch.abs(grad), dim=(1,2,3), keepdim=True)
@@ -128,6 +137,11 @@ class MIDIFGSM(Attacker):
                 f.write('\n')
                 f.write("ASR: %s" % (str(transferability)))
                 f.write('\n')
+                if self.config.track_local_metrics:
+                    f.write("local ASR: %s" % (str(current_local_asr)))
+                    f.write('\n')
+                    f.write("local loss: %s" % (str(current_local_loss)))
+                    f.write('\n')
 
             del output, output_clone, target_model_output, target_model_prediction
             ch.cuda.empty_cache()
