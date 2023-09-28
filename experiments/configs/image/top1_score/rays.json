@@ -10,7 +10,7 @@
             "name": "rays",
             "access_level": "all",
             "eps": 0.05,
-            "targeted": false,
+            "targeted": true,
             "query_budget": 100,
             "adv_model_config": {
                 "use_pretrained": true,
