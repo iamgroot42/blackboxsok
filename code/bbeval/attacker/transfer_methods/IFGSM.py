@@ -91,6 +91,16 @@ class IFGSM(Attacker):
 
             output_clone = output.clone()
             loss = self.criterion(output_clone, y_target)
+
+            if self.config.track_local_metrics:
+                with ch.no_grad():
+                    current_local_loss = loss.item()
+                    if targeted:
+                        current_local_asr = ch.count_nonzero(ch.max(output_clone, 1).indices == y_target)
+                    else:
+                        current_local_asr = ch.count_nonzero(ch.max(output_clone, 1).indices != y_target)
+                    current_local_asr = float(current_local_asr / len(y_target)) * 100
+
             # print(i)
             # print(loss)
             loss.backward()
@@ -123,6 +133,11 @@ class IFGSM(Attacker):
                 f.write('\n')
                 f.write("ASR: %s" % (str(transferability)))
                 f.write('\n')
+                if self.config.track_local_metrics:
+                    f.write("local ASR: %s" % (str(current_local_asr)))
+                    f.write('\n')
+                    f.write("local loss: %s" % (str(current_local_loss)))
+                    f.write('\n')
 
             del output, output_clone, target_model_output, target_model_prediction
             ch.cuda.empty_cache()
