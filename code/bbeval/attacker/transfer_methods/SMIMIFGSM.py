@@ -58,7 +58,6 @@ class SMIMIFGSM(Attacker):
         momentum = 0
         num_transformations = 12
         lamda = 1 / num_transformations
-        Gradients = []
 
         # initializes the advesarial example
         # x.requires_grad = True
@@ -79,6 +78,7 @@ class SMIMIFGSM(Attacker):
 
         i = 0
         while self.optimization_loop_condition_satisfied(i, sum_time, n_iters):
+            Gradients = []
             if adv.grad is not None:
                 adv.grad.zero_()
             start_time = time.time()
@@ -87,6 +87,8 @@ class SMIMIFGSM(Attacker):
                 adv = clip_by_tensor(adv, x_min, x_max)
                 adv = V(adv, requires_grad=True)
             grad = 0
+
+            current_local_loss, current_local_asr = 0, 0
             for t in range(num_transformations):
                 adv = adv
                 output = 0
@@ -96,8 +98,19 @@ class SMIMIFGSM(Attacker):
 
                 output_clone = output.clone()
                 loss = self.criterion(output_clone, y_target)
+
+                if self.config.track_local_metrics:
+                    with ch.no_grad():
+                        current_local_loss += loss.item()
+                        if targeted:
+                            current_local_asr += ch.count_nonzero(ch.max(output_clone, 1).indices == y_target)
+                        else:
+                            current_local_asr += ch.count_nonzero(ch.max(output_clone, 1).indices != y_target)
+                        current_local_asr = float(current_local_asr / len(y_target)) * 100
+
                 # print(loss)
                 loss.backward()
+
                 Gradients.append(adv.grad.data)
 
             for gradient in Gradients:
@@ -135,6 +148,11 @@ class SMIMIFGSM(Attacker):
                 f.write('\n')
                 f.write("ASR: %s" % (str(transferability)))
                 f.write('\n')
+                if self.config.track_local_metrics:
+                    f.write("local ASR: %s" % (str(current_local_asr)))
+                    f.write('\n')
+                    f.write("local loss: %s" % (str(current_local_loss)))
+                    f.write('\n')
 
             del output, output_clone, target_model_output, target_model_prediction
             ch.cuda.empty_cache()
