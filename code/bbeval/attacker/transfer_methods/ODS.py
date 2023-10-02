@@ -100,11 +100,14 @@ class ODS(Attacker):
             if self.config.track_local_metrics:
                 with ch.no_grad():
                     current_local_loss = loss.item()
-                    if targeted:
-                        current_local_asr = ch.count_nonzero(ch.max(output_clone, 1).indices == y_target)
+                    if i < ODI_num_steps:
+                        current_local_asr = 0
                     else:
-                        current_local_asr = ch.count_nonzero(ch.max(output_clone, 1).indices != y_target)
-                    current_local_asr = float(current_local_asr / len(y_target)) * 100
+                        if targeted:
+                            current_local_asr = ch.count_nonzero(ch.max(output_clone, 1).indices == y_target)
+                        else:
+                            current_local_asr = ch.count_nonzero(ch.max(output_clone, 1).indices != y_target)
+                        current_local_asr = float(current_local_asr / len(y_target)) * 100
 
             loss.backward()
             if i < ODI_num_steps:

@@ -224,7 +224,7 @@ class AttackerConfig(Serializable):
     """If true, attack (per batch) terminates upon crossing time limit, not iteration limit"""
     time_per_batch: Optional[int] = 1800
     """If time_based_attack is True, this is the time limit per batch (in seconds)"""
-    track_local_metrics: Optional[bool] = False
+    track_local_metrics: Optional[bool] = True
     """Track local attack metrics (ASR and loss) while running attack?"""
 
     def __post_init__(self):

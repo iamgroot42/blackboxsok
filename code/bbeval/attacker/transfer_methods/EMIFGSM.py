@@ -93,6 +93,7 @@ class EMIFGSM(Attacker):
 
             x_lookaheads = [adv + factor * grad_bar for factor in factors]
 
+            current_local_loss, current_local_asr = 0, 0
             for num in range(sampling_number):
                 # print(num)
                 x_input = x_lookaheads[num]
@@ -104,6 +105,15 @@ class EMIFGSM(Attacker):
 
                 output_clone = output.clone()
                 loss = self.criterion(output_clone, y_target)
+
+                if self.config.track_local_metrics:
+                    with ch.no_grad():
+                        current_local_loss += loss.item()
+                        if targeted:
+                            current_local_asr += ch.count_nonzero(ch.max(output_clone, 1).indices == y_target)
+                        else:
+                            current_local_asr += ch.count_nonzero(ch.max(output_clone, 1).indices != y_target)
+
                 # print(loss)
                 # if i == 0:
                 #     loss.backward(retain_graph=True)
@@ -111,6 +121,10 @@ class EMIFGSM(Attacker):
                 # else:
                 loss.backward()
                 grad_bar += x_input.grad.data / sampling_number
+            
+            if self.config.track_local_metrics:
+                current_local_asr = float(current_local_asr / (len(y_target) * sampling_number)) * 100
+                current_local_loss = float(current_local_loss / sampling_number)
 
             grad = momentum * decay + grad_bar / ch.mean(ch.abs(grad_bar), dim=(1, 2, 3), keepdim=True)
             momentum = grad
@@ -144,6 +158,11 @@ class EMIFGSM(Attacker):
                 f.write('\n')
                 f.write("ASR: %s" % (str(transferability)))
                 f.write('\n')
+                if self.config.track_local_metrics:
+                    f.write("local ASR: %s" % (str(current_local_asr)))
+                    f.write('\n')
+                    f.write("local loss: %s" % (str(current_local_loss)))
+                    f.write('\n')
 
             del output, output_clone, target_model_output, target_model_prediction
             ch.cuda.empty_cache()

@@ -84,6 +84,8 @@ class ADMIXFGSM(Attacker):
             grad = 0
             # print(i)
             admix_adv=self.admix(adv)
+
+            current_local_loss, current_local_asr = 0, 0
             for s in range(size):
                 temp_adv=admix_adv[s]
 
@@ -97,8 +99,21 @@ class ADMIXFGSM(Attacker):
 
                     output_clone = output.clone()
                     loss = self.criterion(output_clone, y_target)
+
+                    if self.config.track_local_metrics:
+                        with ch.no_grad():
+                            current_local_loss += loss.item()
+                            if targeted:
+                                current_local_asr += ch.count_nonzero(ch.max(output_clone, 1).indices == y_target)
+                            else:
+                                current_local_asr += ch.count_nonzero(ch.max(output_clone, 1).indices != y_target)
+
                     loss.backward()
                     grad += x_nes.grad.data/m/size
+
+            if self.config.track_local_metrics:
+                current_local_asr = float(current_local_asr / (len(y_target) * m * size)) * 100
+                current_local_loss = float(current_local_loss / (m * size))
 
             if targeted:
                 adv = adv - alpha * ch.sign(grad)
@@ -129,6 +144,11 @@ class ADMIXFGSM(Attacker):
                 f.write('\n')
                 f.write("ASR: %s" % (str(transferability)))
                 f.write('\n')
+                if self.config.track_local_metrics:
+                    f.write("local ASR: %s" % (str(current_local_asr)))
+                    f.write('\n')
+                    f.write("local loss: %s" % (str(current_local_loss)))
+                    f.write('\n')
 
             del output, output_clone, target_model_output, target_model_prediction
             ch.cuda.empty_cache()

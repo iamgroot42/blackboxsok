@@ -106,12 +106,15 @@ class SMIMIFGSM(Attacker):
                             current_local_asr += ch.count_nonzero(ch.max(output_clone, 1).indices == y_target)
                         else:
                             current_local_asr += ch.count_nonzero(ch.max(output_clone, 1).indices != y_target)
-                        current_local_asr = float(current_local_asr / len(y_target)) * 100
 
                 # print(loss)
                 loss.backward()
 
                 Gradients.append(adv.grad.data)
+            
+            if self.config.track_local_metrics:
+                current_local_asr = float(current_local_asr / (len(y_target) * num_transformations)) * 100
+                current_local_loss = float(current_local_loss / num_transformations)
 
             for gradient in Gradients:
                 grad += lamda * gradient
