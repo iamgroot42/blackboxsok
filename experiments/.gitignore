@@ -15,3 +15,5 @@ cluster_logs/*
 
 # SLURM files
 *.slurm
+cluster_old/*
+cluster_logs_local/*
