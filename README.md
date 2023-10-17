@@ -2,9 +2,17 @@
 
 Codebase for our SoK on black-box attacks.
 
-
-### Using the package
+### Installing the package
 
 1. Install any dependencies 
 2. Install the package via `pip install -e .`  from the `code/` folder.
-3. Make sure paths (where you want to save data and models) are set appropriately in `code/bbeval/utils.py`
+
+### Setting things up
+
+Make sure you set the following paths:
+
+```bash
+export BLACKBOXSOK_DATA_PATH=/path/to/data
+export BLACKBOXSOK_MODELS_PATH=/path/to/models
+export BLACKBOXSOK_CACHE_PATH=/path/to/cache
+```

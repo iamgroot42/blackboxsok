@@ -1,15 +1,15 @@
-# TODO: Read these from a config file instead of hardcoding in .py file
 import os
 
 
-def check_if_inside_cluster():
-    """
-        Check if current code is being run inside a cluster.
-        Set this flag in your .bashrc for your Rivanna env
-    """
-    if os.environ.get('ISRIVANNA') == "1":
-        return True
-    return False
+DATA_PATH = os.environ.get("BLACKBOXSOK_DATA_PATH", None)
+if DATA_PATH is None:
+    raise ValueError("Please set the environment variable BLACKBOXSOK_DATA_PATH")
+MODELS_PATH = os.environ.get("BLACKBOXSOK_MODELS_PATH", None)
+if MODELS_PATH is None:
+    raise ValueError("Please set the environment variable BLACKBOXSOK_MODELS_PATH")
+CACHE_PATH = os.environ.get("BLACKBOXSOK_CACHE_PATH", None)
+if CACHE_PATH is None:
+    raise ValueError("Please set the environment variable BLACKBOXSOK_CACHE_PATH")
 
 
 def get_log_save_path():
@@ -23,27 +23,21 @@ def get_models_save_path():
     """
         Path where models are stored
     """
-    if check_if_inside_cluster():
-        return "/project/uvasrg_paid/blackboxsok/models"
-    return "/p/blackboxsok/models"
+    return MODELS_PATH
 
 
 def get_dataset_dir_path():
     """
         Path where datasets are stored
     """
-    if check_if_inside_cluster():
-        return "/project/uvasrg_paid/blackboxsok/datasets"
-    return "/p/blackboxsok/datasets"
+    return DATA_PATH
 
 
 def get_cache_dir_path():
     """
         Path where datasets are stored
     """
-    if check_if_inside_cluster():
-        return "/project/uvasrg_paid/blackboxsok/experiment/"
-    return "/p/blackboxsok/experiment/"
+    return CACHE_PATH
 
 
 class AverageMeter(object):
