@@ -20,6 +20,6 @@ export BLACKBOXSOK_CACHE_PATH=/path/to/cache
 ### Reference of Attacks
 
 1. Square Attack: https://github.com/max-andr/square-attack 
-2. Bayes Attack: 
+2. Bayes Attack: https://github.com/satyanshukla/bayes_attack
 3. NES Attack: https://github.com/labsix/limited-blackbox-attacks
 4. Rays Attack: https://github.com/uclaml/RayS
