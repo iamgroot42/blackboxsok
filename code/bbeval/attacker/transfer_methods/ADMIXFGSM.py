@@ -11,14 +11,15 @@ from bbeval.attacker.transfer_methods._manipulate_gradient import torch_staircas
     project_kern
 from bbeval.attacker.transfer_methods._manipulate_input import ensemble_input_diversity, input_diversity, clip_by_tensor
 
-import torchvision.models as models  # TODO: remove after test
 import time
 import gc
 
 np.set_printoptions(precision=5, suppress=True)
 
-# https://arxiv.org/pdf/2102.00436.pdf
 class ADMIXFGSM(Attacker):
+    """
+    ADMIXFGSM attack (https://arxiv.org/pdf/2102.00436.pdf)
+    """
     def __init__(self, model: GenericModelWrapper, aux_models: dict, config: AttackerConfig,
                  experiment_config: ExperimentConfig):
         super().__init__(model, aux_models, config, experiment_config)

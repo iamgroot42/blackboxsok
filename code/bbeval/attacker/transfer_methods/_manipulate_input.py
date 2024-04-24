@@ -59,9 +59,9 @@ def ensemble_input_diversity(input_tensor, image_width, image_resize, prob=1.0, 
     padded = input_diversity(input_tensor, image_width, image_resize, prob, interpol_dim, mode)
     return padded
 
-def transformation_function(x):
+def transformation_function(x, resize_to: int = 270):
     img_size = x.shape[-1]
-    img_resize = 270
+    img_resize = resize_to
     rnd = ch.randint(low=img_resize, high=img_size, size=(1,), dtype=ch.int32)
     rescaled = F.interpolate(x, size=[rnd, rnd], mode='bilinear', align_corners=False)
     h_rem = img_size - rnd

@@ -7,20 +7,19 @@ from bbeval.attacker.core import Attacker
 from bbeval.config import TransferredAttackConfig, AttackerConfig, ExperimentConfig
 from bbeval.models.core import GenericModelWrapper
 from bbeval.loss import get_loss_fn
-from bbeval.attacker.transfer_methods._manipulate_gradient import torch_staircase_sign, project_noise, gkern, \
-    project_kern
-from bbeval.attacker.transfer_methods._manipulate_input import ensemble_input_diversity, input_diversity, clip_by_tensor
+from bbeval.attacker.transfer_methods._manipulate_gradient import gkern
+from bbeval.attacker.transfer_methods._manipulate_input import input_diversity, clip_by_tensor
 
-import torchvision.models as models  # TODO: remove after test
 import time
 import gc
 
 np.set_printoptions(precision=5, suppress=True)
 
 
-# https://arxiv.org/pdf/2103.15571.pdf
-
 class VNITIDIAIFGSM(Attacker):
+    """
+    VNITIDIAIFGSM attack (https://arxiv.org/pdf/2103.15571.pdf)
+    """
     def __init__(self, model: GenericModelWrapper, aux_models: dict, config: AttackerConfig,
                  experiment_config: ExperimentConfig):
         super().__init__(model, aux_models, config, experiment_config)
