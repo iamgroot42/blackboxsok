@@ -23,13 +23,12 @@ Coming soon
 
 ## Citation
 
-If you use our package in your research, please cite our paper:
-
-```bibtex
+If you use our repository/codebase for your experiments, please cite our work as:
+```bib
 @inproceedings{suya2024sok,
-    title={Sok: Pitfalls in Evaluating Black-Box Attacks},
-    author={Suya, Fnu and Suri, Anshuman and Zhang, Tingwei and Hong, Jingtao and Tian, Yuan and Evans, David},
-    booktitle={IEEE Conference on Secure and Trustworthy Machine Learning (SaTML)},
-    year={2024}
+  title={Sok: Pitfalls in Evaluating Black-Box Attacks},
+  author={Suya, Fnu and Suri, Anshuman and Zhang, Tingwei and Hong, Jingtao and Tian, Yuan and Evans, David},
+  booktitle={IEEE Conference on Secure and Trustworthy Machine Learning (SaTML)},
+  year={2024}
 }
 ```
