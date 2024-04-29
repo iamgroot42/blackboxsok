@@ -1,17 +1,13 @@
 import numpy as np
 import torch as ch
-import torch.nn.functional as F
 from torch.autograd import Variable as V
 
 from bbeval.attacker.core import Attacker
 from bbeval.config import TransferredAttackConfig, AttackerConfig, ExperimentConfig
 from bbeval.models.core import GenericModelWrapper
 from bbeval.loss import get_loss_fn
-from bbeval.attacker.transfer_methods._manipulate_gradient import torch_staircase_sign, project_noise, gkern, \
-    project_kern
 from bbeval.attacker.transfer_methods._manipulate_input import ensemble_input_diversity, input_diversity, clip_by_tensor
 
-import torchvision.models as models  # TODO: remove after test
 import time
 import gc
 

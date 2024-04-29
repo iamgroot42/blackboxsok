@@ -1,7 +1,5 @@
 import numpy as np
 import torch as ch
-import torch.nn.functional as F
-from torch.autograd import Variable as V
 
 from bbeval.attacker.core import Attacker
 from bbeval.config import NESConfig, AttackerConfig, ExperimentConfig
@@ -11,12 +9,11 @@ from bbeval.attacker.transfer_methods._manipulate_input import clip_by_tensor
 from botorch.models import SingleTaskGP
 from botorch.fit import fit_gpytorch_model
 from gpytorch.mlls import ExactMarginalLogLikelihood
-from botorch.acquisition import qExpectedImprovement, ExpectedImprovement, PosteriorMean
+from botorch.acquisition import ExpectedImprovement, PosteriorMean
 from botorch.acquisition import ProbabilityOfImprovement, UpperConfidenceBound
-from botorch.sampling.samplers import SobolQMCNormalSampler
 from botorch.optim import  gen_batch_initial_conditions
 from botorch.generation.gen import gen_candidates_torch, get_best_candidates
-from bbeval.attacker.full_score.BayesOpt_full_util import  proj,latent_proj,fft_transform,fft_transform_mc,transform
+from bbeval.attacker.full_score.BayesOpt_full_util import  proj,latent_proj,transform
 np.set_printoptions(precision=5, suppress=True)
 
 
@@ -47,6 +44,7 @@ class NES_bayes(Attacker):
         self.criterion = get_loss_fn("scel")
         self.norm = None
         self.k = 1
+
     def obj_func(self, x,x0,target_label=None):
         # evaluate objective function
         # if hard label: -1 if image is correctly classified, 0 otherwise

@@ -1,7 +1,5 @@
 import numpy as np
 import torch as ch
-import torch.nn.functional as F
-from torch.autograd import Variable as V
 
 from bbeval.attacker.core import Attacker
 from bbeval.config import NESConfig, AttackerConfig, ExperimentConfig

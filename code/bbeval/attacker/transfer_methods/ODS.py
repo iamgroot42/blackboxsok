@@ -12,7 +12,6 @@ from bbeval.attacker.transfer_methods._manipulate_gradient import torch_staircas
     project_kern
 from bbeval.attacker.transfer_methods._manipulate_input import ensemble_input_diversity, input_diversity, clip_by_tensor
 
-import torchvision.models as models  # TODO: remove after test
 import time
 import gc
 
